@@ -1,0 +1,25 @@
+<h1 class="display-4">{{page.title}}</h1>
+
+<div class="row justify-content-md-center">
+	<div class="col-md-10">
+		{{content}}
+	</div>
+	<div class="col-md-2">
+		<h4><a href="/pages/sdl2/">Tutorial Index</a></h4>
+		<h4>Helpful Links</h4>
+		<a href="http://wiki.libsdl.org/moin.fcg/FrontPage">SDL Documentation</a>
+		<br />
+		<a href="http://forums.libsdl.org/">SDL Forums</a>
+		<br />
+		<a href="irc://irc.freenode.net/SDL">IRC: #SDL on freenode</a>
+		<br />
+		<a href="http://en.cppreference.com/w/">C++ Reference</a>
+		<br />
+		<a href="https://github.com/Twinklebear/TwinklebearDev-Lessons">Code on Github</a>
+		<p>Published: {{page.date | date_to_long_string}}
+	</div>
+</div>
+<div class="col-md-12 comments">
+	{% include JB/comments %}
+</div>
+
