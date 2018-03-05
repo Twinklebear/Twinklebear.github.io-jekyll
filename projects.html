@@ -12,7 +12,7 @@ title: Projects
 		{% assign alphabetical = site.data.projects | sort: "title" %}
 		{% for prj in alphabetical %}
 		<div class="col-3">
-			<a href="/projects/#{{prj.title}}">{{prj.title}}</a>
+			<a href="/projects#{{prj.title}}">{{prj.title}}</a>
 		</div>
 		{% endfor %}
 	</div>
