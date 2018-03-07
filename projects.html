@@ -24,7 +24,7 @@ title: Projects
 			<h2><b>{{prj.title}}</b></h2>
 		</div>
 {% if prj.layout == 1 %}
-		<div class="col-8">
+	<div class="col-12 col-sm-8">
 			{{prj.description | markdownify}}
 			<a aria-label="Star {{ prj.gh_user }}/{{ prj.gh_repo }} on GitHub"
 				data-count-aria-label="# stargazers on GitHub"
@@ -36,7 +36,7 @@ title: Projects
 				aria-label="Star {{ prj.gh_user }}/{{ prj.gh_repo }} on GitHub"
 				class="github-button">Star</a>
 		</div>
-		<div class="col-4">
+		<div class="col-12 mt-2 mt-sm-0 col-sm-4 mx-auto">
 			<img class="img-fluid" src="{{prj.img}}">
 		</div>
 {% elsif prj.layout == 2 %}
@@ -52,9 +52,9 @@ title: Projects
 				aria-label="Star {{ prj.gh_user }}/{{ prj.gh_repo }} on GitHub"
 				class="github-button">Star</a>
 		</div>
-		<div class="row mt-3 justify-content-center col-12">
+		<div class="row mt-0 mt-sm-3 justify-content-center col-12 mx-auto">
 			{% for img in prj.img %}
-			<div class="col-4">
+			<div class="col-12 mt-2 mt-sm-0 col-sm-4">
 				<img class="img-fluid" src="{{img}}">
 			</div>
 			{% endfor %}
@@ -72,9 +72,9 @@ title: Projects
 				aria-label="Star {{ prj.gh_user }}/{{ prj.gh_repo }} on GitHub"
 				class="github-button">Star</a>
 		</div>
-		<div class="row mt-3 justify-content-center text-center col-12">
+		<div class="row mt-0 mt-sm-3 justify-content-center text-center col-12 mx-auto">
 			{% for img in prj.img %}
-			<div class="col-3">
+			<div class="col-6 mt-2 mt-sm-0 col-sm-3">
 				<img class="img-fluid" src="{{img}}">
 			</div>
 			{% endfor %}
@@ -92,7 +92,7 @@ title: Projects
 				aria-label="Star {{ prj.gh_user }}/{{ prj.gh_repo }} on GitHub"
 				class="github-button">Star</a>
 		</div>
-		<div class="row mt-3 col-12">
+		<div class="row mt-3 col-12 mx-auto">
 			{% if {{prj.img}} contains "youtube.com" %}
 			<div class="embed-responsive embed-responsive-16by9">
 				<iframe class="embed-responsive-item" allowfullscreen src="{{prj.img}}">
@@ -116,7 +116,7 @@ title: Projects
 				class="github-button">Star</a>
 		</div>
 {% elsif prj.layout == 6 %}
-		<div class="col-6">
+		<div class="col-12 col-sm-6">
 			{{prj.description | markdownify}}
 			<a aria-label="Star {{ prj.gh_user }}/{{ prj.gh_repo }} on GitHub"
 				data-count-aria-label="# stargazers on GitHub"
@@ -128,7 +128,7 @@ title: Projects
 				aria-label="Star {{ prj.gh_user }}/{{ prj.gh_repo }} on GitHub"
 				class="github-button">Star</a>
 		</div>
-		<div class="col-6">
+		<div class="col-12 col-sm-6 mt-2 mt-sm-0 mx-auto">
 			{% if {{prj.wide_img}} contains "youtube.com" %}
 			<div class="embed-responsive embed-responsive-16by9">
 				<iframe class="embed-responsive-item" allowfullscreen src="{{prj.wide_img}}">
@@ -138,9 +138,9 @@ title: Projects
 			<img class="img-fluid" src="{{prj.wide_img}}">
 			{% endif %}
 		</div>
-		<div class="row mt-3 justify-content-center text-center col-12">
+		<div class="row mt-0 mt-sm-0 justify-content-center text-center col-12 mx-auto">
 			{% for img in prj.img %}
-			<div class="col-3">
+			<div class="col-6 mt-2 mt-sm-0 col-sm-3">
 				<img class="img-fluid" src="{{img}}">
 			</div>
 			{% endfor %}
@@ -158,9 +158,9 @@ title: Projects
 				aria-label="Star {{ prj.gh_user }}/{{ prj.gh_repo }} on GitHub"
 				class="github-button">Star</a>
 		</div>
-		<div class="row mt-3 justify-content-center text-center col-12">
+		<div class="row mt-0 mt-sm-3 justify-content-center text-center col-12 mx-auto">
 			{% for img in prj.img %}
-			<div class="col-6">
+			<div class="col-12 col-sm-6 mt-2 mt-sm-0">
 				{% if img contains "youtube.com" %}
 				<div class="embed-responsive embed-responsive-16by9">
 					<iframe class="embed-responsive-item" allowfullscreen src="{{img}}">
