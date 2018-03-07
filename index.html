@@ -5,10 +5,10 @@ title: Will Usher
 {% include JB/setup %}
 
 <div class="row col-md-12 mt-4">
-	<div class="col-md-12 float-left col-lg-5">
+	<div class="col-12 float-sm-left col-sm-5">
 		<img class="rounded img-fluid" src="https://i.imgur.com/HZO90XJ.jpg">
 	</div>
-	<div class="col-md-12 col-lg-4 text-sm-center text-md-left">
+	<div class="col-12 col-sm-4 text-left">
 		<h2 class="display-4">Will Usher</h2>
 		<h4>Graduate Research Assistant</h4>
 		<p>
@@ -27,10 +27,10 @@ title: Will Usher
 			<i class="fas fa-graduation-cap"></i> Google Scholar profile</a>
 		</p>
 	</div>
-	<div class="col-md-12 mb-4 mt-3">
+	<div class="col-12 mb-4 mt-3">
 		<!-- I'm torn whether or not I like the display class -->
 		<h2 class="border-bottom border-secondary">Bio</h2>
-		<div class="col-md-12">
+		<div class="col-12">
 			I'm a Graduate Research Assistant at the <a href="https://sci.utah.edu/">Scientific
 				Computing and Imaging Institute</a> at the
 			<a href="https://www.cs.utah.edu/">University of Utah</a>, working
@@ -46,15 +46,15 @@ title: Will Usher
 	<div class="col-12 mb-1">
 		<h2 class="border-bottom border-secondary">Publications</h2>
 		{% for pub in site.data.publications %}
-		<div class="row col-md-12 mb-3 float-left">
-			<div class="float-left col-md-2 col-sm-12">
+		<div class="row col-12 mb-3 float-sm-left">
+			<div class="float-sm-left col-12 col-sm-2">
 				{% if pub.thumb %}
 				<!-- I'm debating if I prefer with or without the thumbnail border -->
-				<img class="img-thumbnail" src="{{pub.thumb}}">
+				<img class="mx-auto img-thumbnail" src="{{pub.thumb}}">
 				{% endif %}
 				<!-- todo: something for pubss wihtout thumbs? -->
 			</div>
-			<div class="col-md-10 col-sm-12 text-center text-md-left">
+			<div class="col-sm-10 col-12 text-center text-sm-left">
 				<h5><b>{{pub.title}}</b></h5>
 				{{pub.authors}}. <i>{{pub.venue}}</i>, {{pub.year}}.
 				<br/>
@@ -79,11 +79,11 @@ title: Will Usher
 		<h2 class="border-bottom border-secondary">Selected Projects</h2>
 		<div class="col-12 justify-content-center row">
 		{% for prj in site.data.projects limit:6 %}
-		<div class="row col-sm-12 col-md-6 col-lg-4 mb-3">
-			<div class="col-12">
+		<div class="row col-12 col-sm-4 mb-3">
+			<div class="col-12 mx-auto">
 				<img class="rounded img-fluid" src="{{prj.thumb}}">
 			</div>
-			<div class="col-12 text-center text-md-left">
+			<div class="col-12 text-center text-sm-left">
 				<h5><b>{{prj.title}}</b></h5>
 				<a class="mr-2" href="/projects#{{prj.title}}">
 					<i class="far fa-file-alt"></i> Project Page</a>
@@ -93,7 +93,7 @@ title: Will Usher
 		</div>
 		{% endfor %}
 		<div>
-		<div class="col-12">
+		<div class="col-12 text-center">
 			<h5>More projects can be found on my <a href="/projects">projects page</a>.</h5>
 		</div>
 	</div>
