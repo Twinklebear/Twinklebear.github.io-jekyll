@@ -29,7 +29,7 @@
 	},
 	{
 		"date": "2017-11-12",
-		"text": "I gave a lightning talk about our work on *Flexible In Situ Visulization of LAMMPS Simulations* at
+		"text": "I gave a lightning talk about our work on *Flexible In Situ Visualization of LAMMPS Simulations* at
 		[ISAV17](http://vis.lbl.gov/Events/ISAV-2017/) in Denver."
 	},
 	{
@@ -73,8 +73,8 @@
 	},
 	{
 		"date": "2016-6-23",
-		"text": "I presented our work on [*in situ* exploration of particle
-		simulations](/publications/isp-jsfi) at the
+		"text": "I presented our work on [*In Situ Exploration of Particle
+		Simulations with CPU Ray Tracing*](/publications/isp-jsfi) at the
 		[ISC Workshop on In Situ Visualization](http://woiv.org/2016/index.html) in Frankfurt."
 	},
 	{
