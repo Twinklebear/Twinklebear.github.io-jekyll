@@ -6,12 +6,14 @@ title: Blog
 
 <div class="row mt-4 justify-content-center">
 	{% for post in site.posts limit:4 %}
-	<div class="col-9 mb-4">
+	<div class="col-9 mb-2">
 		<a href="{{ post.url }}"><h3>{{ post.title }}</h3></a>
 		<b>{{ post.date | date_to_string }}</b>
 		{{ post.excerpt }}
 
 		<a href="{{ post.url }}">Continue &nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+		<div class="mt-2 mx-auto col-8 border-bottom border-secondary">
+		</div>
 	</div>
 	{% endfor %}
 

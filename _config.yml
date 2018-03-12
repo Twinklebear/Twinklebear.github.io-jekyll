@@ -31,6 +31,7 @@ nav_pages:
     - {title: Projects, group: navigation, url: /projects}
     - {title: Blog, group: navigation, url: /blog}
     - {title: SDL2 Tutorials, group: navigation, url: /pages/sdl2}
+    - {title: News, group: navigation, url: /news}
     - {title: Archive, group: navigation, url: /archive}
 
 page_gen:

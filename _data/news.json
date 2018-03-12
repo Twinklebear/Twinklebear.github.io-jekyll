@@ -1,0 +1,101 @@
+[
+	{
+		"date": "2018-2-19",
+		"text": "I'm visiting [Argonne National Laboratory](https://www.alcf.anl.gov/)
+		for the next two weeks to work with Silvio Rizzi and Joe Insley on our interactive
+		in situ visulization project."
+	},
+	{
+		"date": "2018-1-1",
+		"text": "Our paper [*A Virtual Reality Visualization Tool for Neuron Tracing*](/publications/vrnt)
+		has been published in [IEEE TVCG](http://ieeexplore.ieee.org/document/8017617/)."
+	},
+	{
+		"date": "2017-11-30",
+		"text": "Carson Brownlee presented our paper on
+		[*CPU Volume Rendering of Adaptive Mesh Refinement Data*](/publications/cvamr) at the
+		[SIGGRAPH Asia 2017 Symposium on Visualization](https://sa2017.siggraph.org/submitters/symposium-on-visualization) in Bangkok."
+	},
+	{
+		"date": "2017-11-19",
+		"text": "An article covering our virtual reality tool for neuron tracing appeared
+		in [Scientific American](https://www.scientificamerican.com/article/technology-from-harry-potter-movies-brings-magic-of-brain-into-focus/)."
+	},
+	{
+		"date": "2017-11-14",
+		"text": "Pavol Klacansky and I presented a poster on our [virtual reality visualization tool for neuron tracing](/publications/vrnt)
+		at the 2017 [Society of Neuroscience annual meeting](https://www.sfn.org/annual-meeting/neuroscience-2017)
+		in Washington D.C."
+	},
+	{
+		"date": "2017-11-12",
+		"text": "I gave a lightning talk about our work on *Flexible In Situ Visulization of LAMMPS Simulations* at
+		[ISAV17](http://vis.lbl.gov/Events/ISAV-2017/) in Denver."
+	},
+	{
+		"date": "2017-11-11",
+		"text": "I presented our hands-on tutorial *Using OSPRay with Data-Distributed Applications*
+		at the 2017 Intel HPC Developer Conference in Denver. A PDF of the [slides is available online](https://software.intel.com/sites/default/files/managed/a0/70/In-Situ-Software-Defined-Visualization-Hands-on-Lab-with-a-Talk-on-Using-OSPRay.pdf).\n\n
+		Silvio Rizzi presented our work on *Interactive In Situ Visualization
+			of LAMMPS Simulations with OSPRay* at the 2017 Intel HPC Developer Conference in Denver.
+			A [recording of the talk](https://software.intel.com/en-us/events/hpc-devcon/2017/parallel-programming?multiplayer=5714674720001)
+			and [slides](https://software.intel.com/sites/default/files/managed/a8/3e/133416-Interactive-In-Situ-Visualization-of-LAMMPS-Simulations-with-OSPRay.zip) are available online."
+	},
+	{
+		"date": "2017-10-3",
+		"text": "I presented our paper [*A Virtual Reality Visualization Tool for Neuron Tracing*](/publications/vrnt)
+		at [IEEE VIS17](http://ieeevis.org/year/2017/welcome) in Phoenix."
+	},
+	{
+		"date": "2017-10-1",
+		"text": "I presented the CPU-based rendering section of the [*Interactive Visulization
+		of Large Dynamic Particle Data*](http://ieeevis.org/year/2017/info/tutorials#Interactive_Particle_Vis)
+		tutorial with Martin Falk, Michael Krone and Guido Reina
+		at [IEEE VIS17](http://ieeevis.org/year/2017/welcome) in Phoenix."
+	},
+	{
+		"date": "2017-6-12",
+		"text": "I presented our paper [*Progressive CPU Volume Rendering with Sample Accumulation*](/publications/savr) at [EGPGV 2017](http://egpgv.visus.uni-stuttgart.de/egpgv2017/) in Barcelona. "
+	},
+	{
+		"date": "2017-5-15",
+		"text": "I'm returning for an internship at Intel in Austin with the
+		[OSPRay](http://www.ospray.org/) team."
+	},
+	{
+		"date": "2016-5-12",
+		"text": "I'm starting my summer internship at Intel in Austin, where I'll be working with the
+		[OSPRay](http://www.ospray.org/) team."
+	},
+	{
+		"date": "2016-10-1",
+		"text": "Our paper [*In Situ Exploration of Particle Simulations with CPU Ray Tracing*](/publications/isp-jsfi) has been published in Supercomputing Frontiers and Innovations."
+	},
+	{
+		"date": "2016-6-23",
+		"text": "I presented our work on [*in situ* exploration of particle
+		simulations](/publications/isp-jsfi) at the
+		[ISC Workshop on In Situ Visualization](http://woiv.org/2016/index.html) in Frankfurt."
+	},
+	{
+		"date": "2016-5-9",
+		"text": "Our paper [*VTK-m: Accelerating the Visualization Toolkit for Massively Threaded Architectures*](/publications/vtkm) has been published in IEEE Computer Graphics & Applications."
+	},
+	{
+		"date": "2015-10-29",
+		"text": "Ingo Wald presented our paper
+		[*CPU Ray Tracing Large Particle Data with Balanced P-k-d Trees*](/publications/pkd) at
+		[IEEE VIS15](http://ieeevis.org/year/2015/info/vis-welcome/welcome) in Chicago."
+	},
+	{
+		"date": "2015-6-12",
+		"text": "I'm starting my summer internship at [Los Alamos National Lab](http://www.lanl.gov/) as
+		part of the [Data Science at Scale School](http://datascience.dsscale.org/school/). I'll be working
+		with Chris Sewell on the [VTK-m](https://gitlab.kitware.com/vtk/vtk-m) project."
+	},
+	{
+		"date": "2014-8-22",
+		"text": "I'm starting my PhD in Computer Science at the University of Utah!"
+	}
+]
+
