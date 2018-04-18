@@ -14,7 +14,7 @@ you're using the 32bit version of mingw and the 32bit libraries. You should chan
 match your compiler (32/64bit) and the location of your SDL folder. To use makefiles with mingw call
 `mingw32-make.exe` in the folder containing the makefile.
 
-If you're unfamiliar with Makefiles a basic introduction can be found [here](http://mrbook.org/tutorials/make/).
+If you're unfamiliar with Makefiles a basic introduction can be found [here](http://mrbook.org/blog/tutorials/make/).
 
 <!--more-->
 

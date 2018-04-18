@@ -11,7 +11,7 @@ To build the projects on OS X we'll be using a simple makefile that will include
 The makefile assumes you've installed SDL following the instructions in the .dmg file on the SDL2
 downloads page and now have it available as a framework. 
 
-If you're unfamiliar with Makefiles a basic introduction can be found [here](http://mrbook.org/tutorials/make/).
+If you're unfamiliar with Makefiles a basic introduction can be found [here](http://mrbook.org/blog/tutorials/make/).
 
 <!--more-->
 
