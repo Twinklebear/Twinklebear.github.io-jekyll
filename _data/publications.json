@@ -46,6 +46,48 @@
 		"teaser_caption": "A screenshot of our VR neuron tracing tool using the isosurface rendering mode. The dark gray floor represents the extent of the tracked space. Users can orient themselves in the dataset via the minimap (right), which shows the world extent in blue, the current focus region in orange, and the previously traced neuronal structures. The focus region is displayed in the center of the space. The 3D interaction and visualization provides an intuitive environment for exploring the data and a natural interface for neuron tracing, resulting in faster, high-quality traces with less fatigue reported by users compared to existing 2D tools."
 	},
 	{
+		"title": "VisIt-OSPRay: Toward an Exascale Volume Visualization System",
+		"authors": "Qi Wu, Will Usher, Steve Petruzza, Sidharth Kumar, Feng Wang,
+			Ingo Wald, Valerio Pascucci, and Charles D. Hansen",
+		"venue": "Eurographics Symposium on Parallel Graphics and Visualization (To Appear)",
+		"paper_pdf": "http://sci.utah.edu/~will/papers/visit-ospray-egpgv18.pdf",
+		"teaser": "https://i.imgur.com/JgAOmst.png",
+		"thumb": "https://i.imgur.com/RxCFTxo.jpg",
+		"year": 2018,
+		"short_title": "visit-ospray",
+		"bibtex": "@article{Wu_VisItOSPRay_2018,\n
+			author={Q. Wu and W. Usher and S. Petruzza and S. Kumar and F. Wang
+				and I. Wald and V. Pascucci and C. D. Hansen},\n
+			booktitle={Eurographics Symposium on Parallel Graphics and Visualization (To Appear)},\n
+			editor={Hank Childs and Fernando Cucchietti},\n
+			title={{VisIt-OSPRay: Toward an Exascale Volume Visualization System}},\n
+			year={2018},\n
+			publisher={The Eurographics Association},\n
+			}",
+		"abstract": "Large-scale simulations can easily produce data in excess of what can be
+		efficiently visualized using production visualization software, making it
+		challenging for scientists to gain insights from the results of these 
+		simulations.
+		This trend is expected to grow with exascale. To meet this challenge,
+		and run on the highly parallel hardware being deployed on HPC system,
+		rendering systems in production visualization software must be redesigned
+		to perform well at these new scales and levels of parallelism.
+		In this work, we present VisIt-OSPRay, a high-performance,
+		scalable, hybrid-parallel rendering system in VisIt, using OSPRay and IceT, 
+		coupled with PIDX for scalable I/O. 
+		We examine the scalability and memory efficiency of this system and 
+		investigate further areas for improvement to prepare VisIt for 
+		upcoming exascale workloads.",
+		"teaser_caption": "High-quality interactive volume visualization using VisIt-OSPRay:
+		<b>a)</b> volume rendering of O<sub>2</sub> concentration inside a combustion chamber,
+		data courtesy of the <a href=\"http://ccmsc.sci.utah.edu/\">University of Utah CCMSC</a>;
+		<b>b)</b> volume rendering of the Richtmyer-Meshkov Instability;
+		<b>c)</b> visualization of a supernova simulation;
+		<b>d)</b> visualization of the aneurysm dataset using volume rendering and streamlines;
+		<b>e)</b> scalable volume rendering of the 966GB DNS data on 64 Stampede2 Intel Xeon Phi
+		Knight's Landing nodes."
+	},
+	{
 		"title": "Scalable Data Management of the Uintah Simulation Framework for Next-Generation Engineering Problems with Radiation",
 		"authors": "Sidharth Kumar, Alan Humphrey, Will Usher, Steve Petruzza
 				Brad Peterson, John A. Schmidt, Derek Harris, Ben Isaac,
