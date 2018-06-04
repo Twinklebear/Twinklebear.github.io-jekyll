@@ -49,21 +49,24 @@
 		"title": "VisIt-OSPRay: Toward an Exascale Volume Visualization System",
 		"authors": "Qi Wu, Will Usher, Steve Petruzza, Sidharth Kumar, Feng Wang,
 			Ingo Wald, Valerio Pascucci, and Charles D. Hansen",
-		"venue": "Eurographics Symposium on Parallel Graphics and Visualization (To Appear)",
+		"venue": "Eurographics Symposium on Parallel Graphics and Visualization",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/visit-ospray-egpgv18.pdf",
 		"teaser": "https://i.imgur.com/JgAOmst.png",
 		"thumb": "https://i.imgur.com/RxCFTxo.jpg",
 		"year": 2018,
 		"short_title": "visit-ospray",
-		"bibtex": "@article{Wu_VisItOSPRay_2018,\n
-			author={Q. Wu and W. Usher and S. Petruzza and S. Kumar and F. Wang
-				and I. Wald and V. Pascucci and C. D. Hansen},\n
-			booktitle={Eurographics Symposium on Parallel Graphics and Visualization (To Appear)},\n
-			editor={Hank Childs and Fernando Cucchietti},\n
-			title={{VisIt-OSPRay: Toward an Exascale Volume Visualization System}},\n
-			year={2018},\n
-			publisher={The Eurographics Association},\n
-			}",
+		"doi": "10.2312/pgv.20181091",
+		"bibtex": "@inproceedings{Wu_VisItOSPRay_2018,\n
+			booktitle = {Eurographics Symposium on Parallel Graphics and Visualization},\n
+			editor = {Hank Childs and Fernando Cucchietti},\n
+			title = {{VisIt-OSPRay: Toward an Exascale Volume Visualization System}},\n
+			author = {Wu, Qi and Usher, Will and Petruzza, Steve and Kumar, Sidharth and Wang, Feng and Wald, Ingo and Pascucci, Valerio and Hansen, Charles D.},\n
+			year = {2018},\n
+			publisher = {The Eurographics Association},\n
+			ISSN = {1727-348X},\n
+			ISBN = {978-3-03868-054-3},\n
+			DOI = {10.2312/pgv.20181091}\n
+		}",
 		"abstract": "Large-scale simulations can easily produce data in excess of what can be
 		efficiently visualized using production visualization software, making it
 		challenging for scientists to gain insights from the results of these 
