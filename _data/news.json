@@ -1,5 +1,11 @@
 [
 	{
+		"date": "2018-6-4",
+		"text": "Chuck Hansen presented our paper
+		[*VisIt-OSPRay: Toward an Exascale Volume Visualization System*](/publications/visit-ospray)
+			at [EGPGV18](http://egpgv.org/) in Brno."
+	},
+	{
 		"date": "2018-3-28",
 		"text": "Sidharth Kumar presented our paper
 		[*Scalable Data Management of the Uintah Simulation Framework for
