@@ -4,7 +4,8 @@ title: "Volume Rendering with WebGL"
 description: ""
 category: webgl
 tags: [webgl, javascript]
-published: false
+published: true
+mathjax: false
 ---
 {% include JB/setup %}
 
@@ -39,6 +40,10 @@ entirely in the browser!
 # 1. Introduction
 
 What is volume rendering?
+
+\\[
+C(r) = \int_0^L C(s) \mu(s) e^{-\int_0^s \mu(t) dt} ds
+\\]
 
 # 1.1 WebGL 2
 
