@@ -5,7 +5,7 @@ description: ""
 category: webgl
 tags: [webgl, javascript]
 published: true
-mathjax: false
+mathjax: true
 ---
 {% include JB/setup %}
 
