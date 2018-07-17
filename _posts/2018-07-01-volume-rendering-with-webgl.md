@@ -4,7 +4,7 @@ title: "Volume Rendering with WebGL"
 description: ""
 category: webgl
 tags: [webgl, javascript]
-published: true
+published: false
 mathjax: true
 ---
 {% include JB/setup %}
@@ -21,15 +21,16 @@ e.g., charge density around a molecule,
 an MRI scan, air pressure around an airplane, etc.
 Volume rendering is a conceptually straightforward method
 for turning such data into an image: by sampling the data
-along rays from the eye and applying
-a color and transparency value to each point we can
-produce useful and beautiful images of such scalar fields.
-While previous WebGL1 implementations had to work around
-the lack of 3D texture support, this is no longer
-the case with WebGL2. Using WebGL2 we can implement
-an elegant and fast volume renderer in the browser,
-to deliver interactive volume visualization to users.
-We'll discuss the mathematical background
+along rays from the eye and picking
+a color and transparency value for each sample, we can
+produce useful and beautiful images of such scalar fields
+(see e.g., Figure 1).
+In a GPU renderer, these 3D scalar fields are stored
+as 3D textures; however, in WebGL1 3D textures were
+not supported. WebGL2 added support for 3D textures,
+allowing for an elegant and fast volume renderer to be
+implemented entirely in the browser.
+In this post we'll discuss the mathematical background
 for volume rendering, and how it can be implemented using
 WebGL2 to create an
 [interactive volume renderer](https://www.willusher.io/webgl-volume-raycaster/)

@@ -1,5 +1,23 @@
 [
 	{
+		"title": "CPU Isosurface Ray Tracing of Adaptive Mesh Refinement Data",
+		"authors": "Feng Wang, Ingo Wald, Qi Wu, Will Usher and Chris R. Johnson",
+		"venue": "IEEE Transactions on Visualization and Computer Graphics (To Appear)",
+		"paper_pdf": "http://sci.utah.edu/~will/papers/amr-isosurface.pdf",
+		"teaser": "https://i.imgur.com/PqmRTuz.jpg",
+		"thumb": "https://i.imgur.com/Yzxf5OT.jpg",
+		"year": 2019,
+		"short_title": "amr-iso",
+		"bibtex": "@article{Wang_AMR_Iso_2019,\n
+			author={F. Wang and I. Wald and Q. Wu and W. Usher and C. R. Johnson},\n
+			journal={{IEEE} {Transactions} on {Visualization} and {Computer} {Graphics}},\n
+			title={{CPU} {Isosurface} {Ray} {Tracing} of {Adaptive} {Mesh} {Refinement} {Data}},\n
+			year={2019},\n
+			month={Jan},\n}",
+		"abstract": "Adaptive mesh refinement (AMR) is a key technology for large-scale simulations that allows for adaptively changing the simulation mesh resolution, resulting in significant computational and storage savings. However, visualizing such AMR data poses a significant challenge due to the difficulties introduced by the hierarchical representation when reconstructing continuous field values. In this paper, we detail a comprehensive solution for interactive isosurface rendering of block-structured AMR data. We contribute a novel reconstruction strategy&mdash;the <i>octant</i> method&mdash;which is continuous, adaptive and simple to implement. Furthermore, we present a generally applicable hybrid implicit isosurface ray-tracing method, which provides better rendering quality and performance than the built-in sampling-based approach in OSPRay. Finally, we integrate our <i>octant</i> method and hybrid isosurface geometry into OSPRay as a module, providing the ability to create high-quality interactive visualizations combining volume and isosurface representations of BS-AMR data. We evaluate the rendering performance, memory consumption and quality of our method on two gigascale block-structured AMR datasets.",
+		"teaser_caption": "High-fidelity isosurface visualizations of gigascale block-structured adaptive mesh refinement (BS-AMR) data using our method. Left: a 28GB GR-Chombo simulation of gravitational waves resulting from the collision of two black holes. Middle and Right: a 57GB AMR dataset computed with LAVA at NASA, simulating multiple fields over the landing gear of an aircraft. Middle: isosurface representation of the vorticity, rendered with path tracing. Right: a combined visualization of volume rending and an isosurface of the pressure over the landing gear, rendered with OSPRay's SciVis renderer.  Using our approach for ray tracing such AMR data, we can interactively render crack-free implicit isosurfaces in combination with direct volume rendering and advanced shading effects like transparency, ambient occlusion and path tracing."
+	},
+	{
 		"title": "A Virtual Reality Visualization Tool for Neuron Tracing",
 		"authors": "Will Usher, Pavol Klacansky, Frederick Federer, Peer-Timo Bremer,
 				Aaron Knoll, Jeff Yarch, Alessandra Angelucci, and Valerio Pascucci",
@@ -33,7 +51,7 @@
 		],
 		"bibtex": "@article{Usher_VRNT_2018,\n
 			author={W. Usher and P. Klacansky and F. Federer and P. T. Bremer and A. Knoll and J. Yarch and A. Angelucci and V. Pascucci},\n
-			journal={IEEE Transactions on Visualization and Computer Graphics},\n
+			journal={{IEEE} {Transactions} on {Visualization} and {Computer} {Graphics}},\n
 			title={A {Virtual} {Reality} {Visualization} {Tool} for {Neuron} {Tracing}},\n
 			year={2018},\n
 			volume={24},\n
@@ -59,7 +77,7 @@
 		"bibtex": "@inproceedings{Wu_VisItOSPRay_2018,\n
 			booktitle = {Eurographics Symposium on Parallel Graphics and Visualization},\n
 			editor = {Hank Childs and Fernando Cucchietti},\n
-			title = {{VisIt-OSPRay: Toward an Exascale Volume Visualization System}},\n
+			title = {{VisIt}-{OSPRay}: {Toward} an {Exascale} {Volume} {Visualization} {System}},\n
 			author = {Wu, Qi and Usher, Will and Petruzza, Steve and Kumar, Sidharth and Wang, Feng and Wald, Ingo and Pascucci, Valerio and Hansen, Charles D.},\n
 			year = {2018},\n
 			publisher = {The Eurographics Association},\n
@@ -235,7 +253,7 @@
 		"bibtex": "@article{Usher_InSituParticles_2016,\n
 			author={Will Usher and Ingo Wald and Aaron Knoll and Michael Papka and Valerio Pascucci},\n
 			title={In {Situ} {Exploration} of {Particle} {Simulations} with {CPU} {Ray} {Tracing}},\n
-			journal={Supercomputing Frontiers and Innovations},\n
+			journal={{Supercomputing} {Frontiers} and {Innovations}},\n
 			volume={3},\n
 			number={4},\n
 			year={2016},\n
@@ -256,7 +274,7 @@
 		"short_title": "vtkm",
 		"bibtex": "@article{Moreland_VTKm_2016,\n
 			author={K. Moreland and C. Sewell and W. Usher and L. t. Lo and J. Meredith and D. Pugmire and J. Kress and H. Schroots and K. L. Ma and H. Childs and M. Larsen and C. M. Chen and R. Maynard and B. Geveci},\n
-			journal={IEEE Computer Graphics and Applications},\n
+			journal={{IEEE} {Computer} {Graphics} and {Applications}},\n
 			title={{VTK-m}: {Accelerating} the {Visualization} {Toolkit} for {Massively} {Threaded} {Architectures}},\n
 			year={2016},\n
 			volume={36},\n
