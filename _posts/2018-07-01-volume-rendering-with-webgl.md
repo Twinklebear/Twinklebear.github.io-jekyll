@@ -95,9 +95,8 @@ $$
 Note that in this final equation we use pre-multiplied opacity for
 correct interpolation, $$\hat{C}(i\Delta s) = C(i\Delta s) \alpha(i \Delta s)$$.
 
-# 1.1 WebGL 2
+# 2. GPU Implementation with WebGL2
 
-Something about recent 3D textures, maybe skip this entirely?
-
-# 2. WebGL2 Implementation
+Now talk about the front/back face box rasterization, similarities to shadertoy
+i guess for scheduling work on the GPU using the fragment shader.
 
