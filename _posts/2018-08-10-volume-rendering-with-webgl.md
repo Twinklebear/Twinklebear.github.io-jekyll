@@ -92,11 +92,33 @@ $$
 	\alpha_i = \alpha_{i - 1} + (1 - \alpha_{i-1}) \alpha(i \Delta s)
 $$
 
-Note that in this final equation we use pre-multiplied opacity for
+Note that in these final equations we use pre-multiplied opacity for
 correct interpolation, $$\hat{C}(i\Delta s) = C(i\Delta s) \alpha(i \Delta s)$$.
+
+These equations amount to a for loop, where we step along the ray
+for each pixel, and accumulate the color and opacity as we go.
+This loop continues until the ray either leaves the volume,
+or the accumulated color has become opaque ($$\alpha = 1$$).
+Each pixel we process is independent, and needs read-only
+access to our shared state (i.e., the volume). If we want
+to compute the image quickly, we just need a way to process
+a large amount of pixels executing the same instruction
+on some different inputs. This is where the GPU comes in.
+By implementing the above equation in a fragment shader,
+we can implement a very fast volume renderer!
 
 # 2. GPU Implementation with WebGL2
 
-Now talk about the front/back face box rasterization, similarities to shadertoy
-i guess for scheduling work on the GPU using the fragment shader.
+We need some geometry to give to the vertex part of the pipeline,
+so that we can spawn the fragment shader work on the pixels that need
+to render the volume. So we can have some lead in to why we want to
+render the front and back faces of the box of the volume.
+Can mention the hints of how this is similar to shadertoy,
+where you schedule fragment shader execution by rendering
+two triangles.
+
+We can then discuss how we use this vertex part to create the
+world-space eye rays and pass them to the fragment shader.
+Maybe at this point insert a rendering of a cube shaded by the
+eye ray direction?
 
