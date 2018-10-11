@@ -42,6 +42,8 @@ layout: default
 				<dd><a href="{{link.link}}">
 					{% if link.link contains "youtu.be" %}
 					<i class="fab fa-youtube"></i>
+					{% elsif link.icon %}
+					<i class="{{link.icon}}"></i>
 					{% else %}
 					<i class="fas fa-external-link-alt"></i>
 					{% endif %}
@@ -49,13 +51,6 @@ layout: default
 				{% endfor %}
 			</dt>
 			{% endfor %}
-			{% if page.gh_repo %}
-			<dt>Code</dt>
-			<dd>
-			<a href="https://github.com/{{ page.gh_user }}/{{ page.gh_repo }}">
-				<i class="fab fa-github"></i> GitHub</a>
-			</dd>
-			{% endif %}
 		</dl>
 	</div>
 	{% if page.supplemental_video %}

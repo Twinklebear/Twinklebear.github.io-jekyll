@@ -15,7 +15,19 @@
 			year={2019},\n
 			month={Jan},\n}",
 		"abstract": "Adaptive mesh refinement (AMR) is a key technology for large-scale simulations that allows for adaptively changing the simulation mesh resolution, resulting in significant computational and storage savings. However, visualizing such AMR data poses a significant challenge due to the difficulties introduced by the hierarchical representation when reconstructing continuous field values. In this paper, we detail a comprehensive solution for interactive isosurface rendering of block-structured AMR data. We contribute a novel reconstruction strategy&mdash;the <i>octant</i> method&mdash;which is continuous, adaptive and simple to implement. Furthermore, we present a generally applicable hybrid implicit isosurface ray-tracing method, which provides better rendering quality and performance than the built-in sampling-based approach in OSPRay. Finally, we integrate our <i>octant</i> method and hybrid isosurface geometry into OSPRay as a module, providing the ability to create high-quality interactive visualizations combining volume and isosurface representations of BS-AMR data. We evaluate the rendering performance, memory consumption and quality of our method on two gigascale block-structured AMR datasets.",
-		"teaser_caption": "High-fidelity isosurface visualizations of gigascale block-structured adaptive mesh refinement (BS-AMR) data using our method. Left: a 28GB GR-Chombo simulation of gravitational waves resulting from the collision of two black holes. Middle and Right: a 57GB AMR dataset computed with LAVA at NASA, simulating multiple fields over the landing gear of an aircraft. Middle: isosurface representation of the vorticity, rendered with path tracing. Right: a combined visualization of volume rending and an isosurface of the pressure over the landing gear, rendered with OSPRay's SciVis renderer.  Using our approach for ray tracing such AMR data, we can interactively render crack-free implicit isosurfaces in combination with direct volume rendering and advanced shading effects like transparency, ambient occlusion and path tracing."
+		"teaser_caption": "High-fidelity isosurface visualizations of gigascale block-structured adaptive mesh refinement (BS-AMR) data using our method. Left: a 28GB GR-Chombo simulation of gravitational waves resulting from the collision of two black holes. Middle and Right: a 57GB AMR dataset computed with LAVA at NASA, simulating multiple fields over the landing gear of an aircraft. Middle: isosurface representation of the vorticity, rendered with path tracing. Right: a combined visualization of volume rending and an isosurface of the pressure over the landing gear, rendered with OSPRay's SciVis renderer.  Using our approach for ray tracing such AMR data, we can interactively render crack-free implicit isosurfaces in combination with direct volume rendering and advanced shading effects like transparency, ambient occlusion and path tracing.",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "AMR Isosurface module for OSPRay",
+						"link": "https://github.com/ethan0911/module-impi",
+						"icon": "fab fa-github"
+					}
+				]
+			}
+		]
 	},
 	{
 		"title": "A Virtual Reality Visualization Tool for Neuron Tracing",
@@ -45,6 +57,16 @@
 					{
 						"title": "VIS17 Fast Forward",
 						"link": "https://youtu.be/mZ6YT_y7Kx0"
+					}
+				]
+			},
+			{
+				"title": "Software",
+				"list": [
+					{
+						"title": "Available on Steam!",
+						"link": "https://store.steampowered.com/app/791040/Virtual_Reality_Neuron_Tracer/",
+						"icon": "fab fa-steam"
 					}
 				]
 			}
@@ -90,27 +112,30 @@
 				Papka, Michael E. and Pascucci, Valerio},\n
 			doi={10.1145/3281464.3281466}\n
 		}",
-		"teaser_caption": "Interactive in situ visualization of a 172k atom
-			simulation of silicene formation with 128 LAMMPS ranks sending
-			to 16 OSPRay renderer ranks, all executed on Theta in the mpi-multi configuration.
-			When taking four ambient occlusion
-			samples per-pixel, our viewer averages 7FPS at 1024x1024.",
-		"abstract": "As simulations grow in scale, the need for in situ analysis methods
-			to handle the large data produced grows correspondingly. One desirable
-			approach to in situ visualization is in transit visualization.
-			By decoupling the simulation and visualization code, in transit
-			approaches alleviate common difficulties with regard to the
-			scalability of the analysis, ease of integration, usability, and
-			impact on the simulation. We present libIS, a lightweight,
-			flexible library which lowers the bar for using in transit visualization.
-			Our library works on the concept of abstract regions of space containing
-			data, which are transferred from the simulation to the visualization
-			clients upon request, using a client-server model. We also provide a SENSEI
-			analysis adaptor, which allows for transparent
-			deployment of in transit visualization.
-			We demonstrate the flexibility of our approach on batch
-			analysis and interactive visualization use cases on
-			different HPC resources."
+		"teaser_caption": "Interactive in situ visualization of a 172k atom simulation of silicene formation with 128 LAMMPS ranks sending to 16 OSPRay renderer ranks, all executed on Theta in the mpi-multi configuration. When taking four ambient occlusion samples per-pixel, our viewer averages 7FPS at 1024x1024. Simulation dataset is courtesy of <a href='https://pubs.rsc.org/en/content/articlelanding/2017/nr/c7nr03153j#!divAbstract'>Cherukara et al.</a>",
+		"abstract": "As simulations grow in scale, the need for in situ analysis methods to handle the large data produced grows correspondingly. One desirable approach to in situ visualization is in transit visualization. By decoupling the simulation and visualization code, in transit approaches alleviate common difficulties with regard to the scalability of the analysis, ease of integration, usability, and impact on the simulation. We present libIS, a lightweight, flexible library which lowers the bar for using in transit visualization. Our library works on the concept of abstract regions of space containing data, which are transferred from the simulation to the visualization clients upon request, using a client-server model. We also provide a SENSEI analysis adaptor, which allows for transparent deployment of in transit visualization. We demonstrate the flexibility of our approach on batch analysis and interactive visualization use cases on different HPC resources.",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "libIS",
+						"link": "https://github.com/ospray/libIS",
+						"icon": "fab fa-github"
+					},
+					{
+						"title": "OSPRay-based Viewer Application",
+						"link": "https://github.com/ospray/ospray_senpai",
+						"icon": "fab fa-github"
+					},
+					{
+						"title": "SENSEI Adaptor for libIS and LAMMPS",
+						"link": "https://gitlab.kitware.com/sensei/sensei/tree/lammps",
+						"icon": "fab fa-gitlab"
+					}
+				]
+			}
+		]
 	},
 	{
 		"title": "VisIt-OSPRay: Toward an Exascale Volume Visualization System",
@@ -134,28 +159,8 @@
 			ISBN = {978-3-03868-054-3},\n
 			DOI = {10.2312/pgv.20181091}\n
 		}",
-		"abstract": "Large-scale simulations can easily produce data in excess of what can be
-		efficiently visualized using production visualization software, making it
-		challenging for scientists to gain insights from the results of these 
-		simulations.
-		This trend is expected to grow with exascale. To meet this challenge,
-		and run on the highly parallel hardware being deployed on HPC system,
-		rendering systems in production visualization software must be redesigned
-		to perform well at these new scales and levels of parallelism.
-		In this work, we present VisIt-OSPRay, a high-performance,
-		scalable, hybrid-parallel rendering system in VisIt, using OSPRay and IceT, 
-		coupled with PIDX for scalable I/O. 
-		We examine the scalability and memory efficiency of this system and 
-		investigate further areas for improvement to prepare VisIt for 
-		upcoming exascale workloads.",
-		"teaser_caption": "High-quality interactive volume visualization using VisIt-OSPRay:
-		<b>a)</b> volume rendering of O<sub>2</sub> concentration inside a combustion chamber,
-		data courtesy of the <a href=\"http://ccmsc.sci.utah.edu/\">University of Utah CCMSC</a>;
-		<b>b)</b> volume rendering of the Richtmyer-Meshkov Instability;
-		<b>c)</b> visualization of a supernova simulation;
-		<b>d)</b> visualization of the aneurysm dataset using volume rendering and streamlines;
-		<b>e)</b> scalable volume rendering of the 966GB DNS data on 64 Stampede2 Intel Xeon Phi
-		Knight's Landing nodes."
+		"abstract": "Large-scale simulations can easily produce data in excess of what can be efficiently visualized using production visualization software, making it challenging for scientists to gain insights from the results of these simulations. This trend is expected to grow with exascale. To meet this challenge, and run on the highly parallel hardware being deployed on HPC system, rendering systems in production visualization software must be redesigned to perform well at these new scales and levels of parallelism. In this work, we present VisIt-OSPRay, a high-performance, scalable, hybrid-parallel rendering system in VisIt, using OSPRay and IceT, coupled with PIDX for scalable I/O. We examine the scalability and memory efficiency of this system and investigate further areas for improvement to prepare VisIt for upcoming exascale workloads.",
+		"teaser_caption": "High-quality interactive volume visualization using VisIt-OSPRay: <b>a)</b> volume rendering of O<sub>2</sub> concentration inside a combustion chamber, data courtesy of the <a href=\"http://ccmsc.sci.utah.edu/\">University of Utah CCMSC</a>; <b>b)</b> volume rendering of the Richtmyer-Meshkov Instability; <b>c)</b> visualization of a supernova simulation; <b>d)</b> visualization of the aneurysm dataset using volume rendering and streamlines; <b>e)</b> scalable volume rendering of the 966GB DNS data on 64 Stampede2 Intel Xeon Phi Knight's Landing nodes."
 	},
 	{
 		"title": "Scalable Data Management of the Uintah Simulation Framework for Next-Generation Engineering Problems with Radiation",
@@ -271,8 +276,6 @@
 		"thumb": "https://i.imgur.com/tdxjYs3.png",
 		"short_title": "savr",
 		"doi": "10.2312/pgv.20171090",
-		"gh_user": "ospray",
-		"gh_repo": "module_savr",
 		"year": 2017,
 		"bibtex": "@inproceedings{Usher_SAVR_2017,\n
 			booktitle={Eurographics Symposium on Parallel Graphics and Visualization},\n
@@ -285,7 +288,19 @@
 			isbn={978-3-03868-034-5},\n
 			doi={10.2312/pgv.20171090},\n}",
 		"abstract": "We present a new method for progressive volume rendering by accumulating object-space samples over successively rendered frames. Existing methods for progressive refinement either use image space methods or average pixels over frames, which can blur features or integrate incorrectly with respect to depth. Our approach stores samples along each ray, accumulates new samples each frame into a buffer, and progressively interleaves and integrates these samples. Though this process requires additional memory, it ensures interactivity and is well suited for CPU architectures with large memory and cache. This approach also extends well to distributed rendering in cluster environments. We implement this technique in Intel’s open source OSPRay CPU ray tracing framework and demonstrate that it is particularly useful for rendering volumetric data with costly sampling functions.",
-		"teaser_caption": "(a-c) Progressive refinement with Sample-Accumulation Volume Rendering (SAVR) on the 40GB Landing Gear AMR dataset using a prototype AMR sampler. The SAVR algorithm correctly accumulates frames to progressively refine the image. After 16 frames of accumulation the volume is sampled at the Nyquist limit, with some small noise, by 32 frames the noise has been removed. SAVR extends to distributed data, in (d) we show the 1TB DNS dataset, a 10240×7680×1536 uniform grid, rendered interactively across 64 second-generation Intel Xeon Phi \"Knights Landing\" (KNL) processor nodes on Stampede 1.5 at a 6144×1024 resolution. While interacting, our method achieves around 5.73 FPS."
+		"teaser_caption": "(a-c) Progressive refinement with Sample-Accumulation Volume Rendering (SAVR) on the 40GB Landing Gear AMR dataset using a prototype AMR sampler. The SAVR algorithm correctly accumulates frames to progressively refine the image. After 16 frames of accumulation the volume is sampled at the Nyquist limit, with some small noise, by 32 frames the noise has been removed. SAVR extends to distributed data, in (d) we show the 1TB DNS dataset, a 10240×7680×1536 uniform grid, rendered interactively across 64 second-generation Intel Xeon Phi \"Knights Landing\" (KNL) processor nodes on Stampede 1.5 at a 6144×1024 resolution. While interacting, our method achieves around 5.73 FPS.",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "SAVR module for OSPRay",
+						"link": "https://github.com/ospray/module_savr",
+						"icon": "fab fa-github"
+					}
+				]
+			}
+		]
 	},
 	{
 		"title": "In Situ Exploration of Particle Simulations with CPU Ray Tracing",
@@ -296,8 +311,6 @@
 		"thumb": "https://i.imgur.com/gieTAy3.png",
 		"short_title": "isp-jsfi",
 		"doi": "10.14529/jsfi160401",
-		"gh_user": "Twinklebear",
-		"gh_repo": "in-situ-particles",
 		"year": 2016,
 		"bibtex": "@article{Usher_InSituParticles_2016,\n
 			author={Will Usher and Ingo Wald and Aaron Knoll and Michael Papka and Valerio Pascucci},\n
@@ -309,7 +322,19 @@
 			issn={2313-8734},\n
 			doi={10.14529/jsfi160401},\n}",
 		"abstract": "We present a system for interactive in situ visualization of large particle simulations, suitable for general CPU-based HPC architectures. As simulations grow in scale, in situ methods are needed to alleviate IO bottlenecks and visualize data at full spatio-temporal resolution. We use a lightweight loosely-coupled layer serving distributed data from the simulation to a data-parallel renderer running in separate processes. Leveraging the OSPRay ray tracing framework for visualization and balanced P-k-d trees, we can render simulation data in real-time, as they arrive, with negligible memory overhead. This flexible solution allows users to perform exploratory in situ visualization on the same computational resources as the simulation code, on dedicated visualization clusters or remote workstations, via a standalone rendering client that can be connected or disconnected as needed. We evaluate this system on simulations with up to 227M particles in the LAMMPS and Uintah computational frameworks, and show that our approach provides many of the advantages of tightly-coupled systems, with the flexibility to render on a wide variety of remote and co-processing resources.",
-		"teaser_caption": "A coal particle combustion simulation in Uintah at three different timesteps with (left to right): 34.61M, 48.46M and 55.39M particles, with attribute based culling showing the full jet (top) and the front in detail (bottom). Using our in situ library to query and send data to our rendering client in OSPRay these images are rendered interactively with ambient occlusion, averaging around 13 FPS at 1920×1080. The renderer is run on 12 nodes of the Stampede supercomputer and pulls data from a Uintah simulation running on 64 processes (4 nodes). Our loosely-coupled in situ approach allows for live exploration at the full temporal fidelity of the simulation, without prohibitive IO cost."
+		"teaser_caption": "A coal particle combustion simulation in Uintah at three different timesteps with (left to right): 34.61M, 48.46M and 55.39M particles, with attribute based culling showing the full jet (top) and the front in detail (bottom). Using our in situ library to query and send data to our rendering client in OSPRay these images are rendered interactively with ambient occlusion, averaging around 13 FPS at 1920×1080. The renderer is run on 12 nodes of the Stampede supercomputer and pulls data from a Uintah simulation running on 64 processes (4 nodes). Our loosely-coupled in situ approach allows for live exploration at the full temporal fidelity of the simulation, without prohibitive IO cost.",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "In Situ Particles module for OSPRay",
+						"link": "https://github.com/Twinklebear/in-situ-particles",
+						"icon": "fab fa-github"
+					}
+				]
+			}
+		]
 	},
 	{
 		"title": "VTK-m: Accelerating the Visualization Toolkit for Massively Threaded Architectures",
@@ -332,7 +357,19 @@
 			doi={10.1109/MCG.2016.48},\n
 			ISSN={0272-1716},\n
 			month={May},\n}",
-		"abstract": "One of the most critical challenges for high-performance computing (HPC) scientific visualization is execution on massively threaded processors. Of the many fundamental changes we are seeing in HPC systems, one of the most profound is a reliance on new processor types optimized for execution bandwidth over latency hiding. Our current production scientific visualization software is not designed for these new types of architectures. To address this issue, the VTK-m framework serves as a container for algorithms, provides flexible data representation, and simplifies the design of visualization algorithms on new and future computer architecture."
+		"abstract": "One of the most critical challenges for high-performance computing (HPC) scientific visualization is execution on massively threaded processors. Of the many fundamental changes we are seeing in HPC systems, one of the most profound is a reliance on new processor types optimized for execution bandwidth over latency hiding. Our current production scientific visualization software is not designed for these new types of architectures. To address this issue, the VTK-m framework serves as a container for algorithms, provides flexible data representation, and simplifies the design of visualization algorithms on new and future computer architecture.",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "VTK-m",
+						"link": "https://gitlab.kitware.com/vtk/vtk-m",
+						"icon": "fab fa-gitlab"
+					}
+				]
+			}
+		]
 	},
 	{
 		"title": "CPU Ray Tracing Large Particle Data with Balanced P-k-d Trees",
@@ -342,8 +379,6 @@
 		"doi": "10.1109/SciVis.2015.7429492",
 		"teaser": "https://i.imgur.com/1YNpRJ1.png",
 		"thumb": "https://i.imgur.com/qpTN5kR.png",
-		"gh_user": "ingowald",
-		"gh_repo": "ospray-module-pkd",
 		"short_title": "pkd",
 		"year": 2015,
 		"bibtex": "@inproceedings{Wald_PKD_2015,\n
@@ -355,7 +390,19 @@
 			doi={10.1109/SciVis.2015.7429492},\n
 			month={Oct},\n}",
 		"abstract": "We present a novel approach to rendering large particle data sets from molecular dynamics, astrophysics and other sources. We employ a new data structure adapted from the original balanced k-d tree, which allows for representation of data with trivial or no overhead. In the OSPRay visualization framework, we have developed an efficient CPU algorithm for traversing, classifying and ray tracing these data. Our approach is able to render up to billions of particles on a typical workstation, purely on the CPU, without any approximations or level-of-detail techniques, and optionally with attribute-based color mapping, dynamic range query, and advanced lighting models such as ambient occlusion and path tracing.",
-		"teaser_caption": "Full-detail ray tracing of giga-particle data sets. From left to right: CosmicWeb early universe data set from a P3D simulation with 29 billion particles; a 100 million atom molecular dynamics Al<sub>2</sub>O<sub>3</sub>−SiC materials fracture simulation; and a 1.3 billion particle Uintah MPM detonation simulation. Using a quad-socket, 72-core 2.5GHz Intel Xeon E7-8890 v3 Processor with 3TB RAM and path-tracing with progressive refinement at 1 sample per pixel, these far and close images (above and below) are rendered at 1.6 (far) / 1.0 (close) FPS (left), 2.0 / 1.2 FPS (center), and 1.0 / 0.9 FPS (right), respectively, at 4K (3840×2160) resolution. All examples use our balanced P-k-d tree, an acceleration structure which requires little or no memory cost beyond the original data."
+		"teaser_caption": "Full-detail ray tracing of giga-particle data sets. From left to right: CosmicWeb early universe data set from a P3D simulation with 29 billion particles; a 100 million atom molecular dynamics Al<sub>2</sub>O<sub>3</sub>−SiC materials fracture simulation; and a 1.3 billion particle Uintah MPM detonation simulation. Using a quad-socket, 72-core 2.5GHz Intel Xeon E7-8890 v3 Processor with 3TB RAM and path-tracing with progressive refinement at 1 sample per pixel, these far and close images (above and below) are rendered at 1.6 (far) / 1.0 (close) FPS (left), 2.0 / 1.2 FPS (center), and 1.0 / 0.9 FPS (right), respectively, at 4K (3840×2160) resolution. All examples use our balanced P-k-d tree, an acceleration structure which requires little or no memory cost beyond the original data.",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "PKD module for OSPRay",
+						"link": "https://github.com/ingowald/ospray-module-pkd",
+						"icon": "fab fa-github"
+					}
+				]
+			}
+		]
 	}
 ]
 
