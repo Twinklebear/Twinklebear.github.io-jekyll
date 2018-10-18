@@ -1,5 +1,9 @@
 [
 	{
+		"date": "2018-10-21",
+		"text": "I'll be presenting part of the [Topology Toolkit Tutorial at IEEE VIS](https://topology-tool-kit.github.io/ieeeVisTutorial.html) in Berlin."
+	},
+	{
 		"date": "2018-9-21",
 		"text": "Our paper
 		[*libIS: A Lightweight Library for Flexible In Transit Visualization*](/publications/libis-isav18)
