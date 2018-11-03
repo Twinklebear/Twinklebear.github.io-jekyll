@@ -1,5 +1,9 @@
 [
 	{
+		"date": "2018-10-25",
+		"text": "Feng Wang presented our paper [*CPU Isosurface Ray Tracing of Adaptive Mesh Refinement Data*](/publications/amr-iso) at [IEEE VIS 2018](http://ieeevis.org/year/2018/welcome) in Berlin."
+	},
+	{
 		"date": "2018-10-21",
 		"text": "I'll be presenting part of the [Topology Toolkit Tutorial at IEEE VIS](https://topology-tool-kit.github.io/ieeeVisTutorial.html) in Berlin."
 	},
