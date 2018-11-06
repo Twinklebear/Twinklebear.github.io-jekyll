@@ -130,7 +130,7 @@
 						"icon": "fab fa-github"
 					},
 					{
-						"title": "SENSEI Adaptor for libIS and LAMMPS",
+						"title": "SENSEI Adaptor for LAMMPS",
 						"link": "https://gitlab.kitware.com/sensei/sensei/tree/lammps",
 						"icon": "fab fa-gitlab"
 					}
