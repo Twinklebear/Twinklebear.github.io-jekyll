@@ -4,7 +4,7 @@ title: "Volume Rendering with WebGL"
 description: ""
 category: webgl
 tags: [webgl, javascript]
-published: true
+published: false
 mathjax: true
 ---
 {% include JB/setup %}

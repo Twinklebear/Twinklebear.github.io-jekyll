@@ -131,7 +131,7 @@
 					},
 					{
 						"title": "SENSEI Adaptor for libIS and LAMMPS",
-						"link": "https://gitlab.kitware.com/sensei/sensei/tree/lammps",
+						"link": "https://gitlab.kitware.com/sensei/sensei/tree/lammps/miniapps/lammps",
 						"icon": "fab fa-gitlab"
 					}
 				]
