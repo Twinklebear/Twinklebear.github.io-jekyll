@@ -1,5 +1,10 @@
 [
 	{
+		"date": "2018-11-12",
+		"text": "I presented our paper [*libIS: A Lightweight Library for Flexible In
+			Transit Visualization*](/publications/libis-isav18) at [ISAV 2018](http://vis.lbl.gov/events/ISAV2018/) in Dallas."
+	},
+	{
 		"date": "2018-10-25",
 		"text": "Feng Wang presented our paper [*CPU Isosurface Ray Tracing of Adaptive Mesh Refinement Data*](/publications/amr-iso) at [IEEE VIS 2018](http://ieeevis.org/year/2018/welcome) in Berlin."
 	},
