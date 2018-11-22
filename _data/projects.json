@@ -108,11 +108,40 @@
 			of my ray tracing work is now going on there."
 	},
 	{
+		"title": "WebGL Volume Raycaster",
+		"layout": 2,
+		"gh_user": "Twinklebear",
+		"gh_repo": "webgl-volume-raycaster",
+		"img": [
+			"https://i.imgur.com/yLa27hG.png",
+			"https://i.imgur.com/FOUKtV1.png",
+			"https://i.imgur.com/Vv98vJZ.png"
+		],
+		"thumb": "https://i.imgur.com/g5a0I5Y.jpg",
+		"description": "A scientific visualization style volume raycaster written
+			using WebGL2 and Javascript. The renderer uses an arcball camera which supports
+			mouse or touch input, and dynamically adjusts the sampling rate
+			to maintain a smooth framerate, even on mobile devices. The volumes
+			are downloaded via XMLHttpRequest from Dropbox when selected.
+			[Try it out online!](https://www.willusher.io/webgl-volume-raycaster/)"
+	},
+	{
+		"title": "Charm++ Experiments",
+		"layout": 1,
+		"gh_user": "Twinklebear",
+		"gh_repo": "Charm-experiments",
+		"img": "https://i.imgur.com/V47bIPs.png",
+		"description": "A set of different test applications to learn and try
+			out [Charm++](http://charmplusplus.org/) for distributed rendering applications. The image
+			shown is from the [pathtracing](https://github.com/Twinklebear/Charm-experiments/tree/master/pathtracer) test application, which renders distributed data with global illumination
+			by routing rays around the network. There's also a basic image-parallel
+			and data-parallel scientific visualization [volume renderer](https://github.com/Twinklebear/Charm-experiments/tree/master/scivis)."
+	},
+	{
 		"title": "bspline",
 		"layout": 1,
 		"gh_user": "Twinklebear",
 		"gh_repo": "bspline",
-		"thumb": "https://i.imgur.com/T66iVg0.png",
 		"img": "http://i.imgur.com/JvVlYKf.png",
 		"description": "A Rust library for computing B-spline interpolating curves on generic control points.
 			bspline can be used to evaluate B-splines of varying orders on any type that can be linearly

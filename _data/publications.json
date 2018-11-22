@@ -137,6 +137,11 @@
 						"title": "SENSEI Adaptor for libIS and LAMMPS",
 						"link": "https://gitlab.kitware.com/sensei/sensei/tree/lammps/miniapps/lammps",
 						"icon": "fab fa-gitlab"
+					},
+					{
+						"title": "Theta SSH Tunneling Script",
+						"link": "https://github.com/Twinklebear/theta-tunnel",
+						"icon": "fab fa-github"
 					}
 				]
 			}
