@@ -162,7 +162,8 @@ End of Lesson
 -
 If everything went well you should see the image you loaded render over the entire window, wait for 2s and then exit.
 If you have any problems, make sure you've got SDL installed and your project configured properly as discussed in 
-[Lesson 0: Setting up SDL]({% post_url 2013-08-15-lesson-0-setting-up-sdl %}), or post a question below.
+[Lesson 0: Setting up SDL]({% post_url 2013-08-15-lesson-0-setting-up-sdl %}), or send an email or tweet.
+In the [postscript]({% post_url 2014-08-01-postscript-1-easy-cleanup %}) I cover an easy way to simplify the cleanup calls behind a variadic template function.
 
 I'll see you again soon in [Lesson 2: Don't Put Everything in Main]({% post_url 2013-08-17-lesson-2-dont-put-everything-in-main %}).
 

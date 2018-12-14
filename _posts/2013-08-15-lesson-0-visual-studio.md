@@ -137,7 +137,7 @@ project selection page.
 
 End of Lesson 0
 -
-If you're having any trouble setting up SDL please leave a comment below.
+If you're having any trouble setting up SDL please send an email or tweet.
 
 I'll see you again soon in [Postscript 0: Properly Finding Resource Paths!]({% post_url 2014-06-16-postscript-0-properly-finding-resource-paths %})
 

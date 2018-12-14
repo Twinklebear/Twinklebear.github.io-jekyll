@@ -200,7 +200,7 @@ End of Lesson 5
 -
 When you run the program you should see clip 0 (green circle) draw in the center of the screen and should be able to select 
 different clips to be drawn with the number keys. If you run into any issues double check your code 
-and/or post a question below.
+and/or send me an email or tweet.
 
 I'll see you again soon in [Lesson 6: True Type Fonts with SDL_ttf!]({% post_url 2013-12-18-lesson-6-true-type-fonts-with-sdl_ttf %})
 

@@ -112,7 +112,7 @@ Our program will repeat until the user asks to exit and will re-draw our image e
 End of Lesson 4
 -
 When you run the program you should be able to quit by closing the window, pressing any key or clicking the mouse.
-If you have any issues double check your code and/or post your question below.
+If you have any issues double check your code and/or send me an email or tweet.
 
 **Extra Fun:** How could we move the image around? What about moving based on key input?
 

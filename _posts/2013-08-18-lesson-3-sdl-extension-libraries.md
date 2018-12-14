@@ -285,8 +285,8 @@ If everything went well you should see this draw to your window.
 <img class="centered" width="500" height="auto"	src="/assets/img/lesson_3/result.png">
 <br />
 
-If you have any issues check your error log and check back through the lesson. Feel free to post
-any questions you may have below.
+If you have any issues check your error log and check back through the lesson. Feel free to
+send an email or tweet for any questions you may have.
 
 I'll see you again soon in [Lesson 4: Handling Events!]({% post_url 2013-08-20-lesson-4-handling-events %})
 

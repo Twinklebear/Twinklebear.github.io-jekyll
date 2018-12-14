@@ -259,7 +259,8 @@ If everything went well and you used the images provided you should see this dra
 <img class="centered" width="500" height="auto" src="/assets/img/lesson_2/result.png">
 <br />
 
-If you have any issues check your error log to see where problems may have occurred and/or post a comment below.
+If you have any issues check your error log to see where problems may have occurred and/or send an email
+or tweet.
 
 I'll see you again soon in [Lesson 3: SDL Extension Libraries!]({% post_url 2013-08-18-lesson-3-sdl-extension-libraries %})
 

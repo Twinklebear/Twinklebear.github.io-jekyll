@@ -159,5 +159,10 @@ If everything goes well you should see something like this rendered to the scree
 End of Lesson 6
 -
 That's it for our quick look at SDL_ttf! Don't forget to check out the [documentation](http://www.libsdl.org/projects/SDL_ttf/docs/index.html) for the library to see what else it's capable of. As always, if you run into any issues with
-the lesson feel free to post a comment below. I'll see you again soon in Lesson 7: Taking Advantage of Classes.
+the lesson feel free to send me an email or tweet.
+
+While I meant to continue writing more lessons, I got tied up with other projects
+and didn't get back to it. From this point you could continue following some
+of the [Lazy Foo](http://lazyfoo.net/tutorials/SDL/) tutorials, or follow
+the [SDL wiki](https://wiki.libsdl.org/FrontPage) examples and documentation.
 
