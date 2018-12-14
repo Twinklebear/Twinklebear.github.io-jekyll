@@ -2,7 +2,7 @@
 	{
 		"title": "CPU Isosurface Ray Tracing of Adaptive Mesh Refinement Data",
 		"authors": "Feng Wang, Ingo Wald, Qi Wu, Will Usher and Chris R. Johnson",
-		"venue": "IEEE Transactions on Visualization and Computer Graphics (To Appear)",
+		"venue": "IEEE Transactions on Visualization and Computer Graphics",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/amr-isosurface.pdf",
 		"teaser": "https://i.imgur.com/PqmRTuz.jpg",
 		"thumb": "https://i.imgur.com/Yzxf5OT.jpg",
