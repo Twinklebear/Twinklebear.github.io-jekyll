@@ -126,6 +126,24 @@
 			[Try it out online!](https://www.willusher.io/webgl-volume-raycaster/)"
 	},
 	{
+		"title": "WebGL EWA Surface Splatter",
+		"layout": 2,
+		"gh_user": "Twinklebear",
+		"gh_repo": "webgl-ewa-splatter",
+		"img": [
+			"https://i.imgur.com/yqCfPZz.png",
+			"https://i.imgur.com/c6Cj6xa.png",
+			"https://i.imgur.com/UBjFKRa.png"
+		],
+		"description": "An elliptical weighted average (EWA) surface splatter, implemented in WebGL.
+		This implements the papers: *Object Space EWA Surface Splatting: A Hardware Accelerated
+		Approach to High Quality Point Rendering* by Ren, Pfister and Zwicker, and
+		*High-Quality Point-Based Rendering on Modern GPUs* by Botsch and Kobbelt, with a few shortcuts.
+		Similar to the volume raycaster, the renderer uses an arcball camera which supports
+		mouse or touch input, and downloads datasets via XMLHttpRequest from Dropbox when selected.
+		[Try it out online!](https://www.willusher.io/webgl-ewa-splatter/)"
+	},
+	{
 		"title": "Charm++ Experiments",
 		"layout": 1,
 		"gh_user": "Twinklebear",
