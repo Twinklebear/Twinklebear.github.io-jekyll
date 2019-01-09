@@ -144,7 +144,15 @@ the vertex shader, responsible for transforming input triangle
 vertices into clip space, and the fragment shader, responsible
 for shading each pixel covered by the transformed triangle.
 
-*Insert here a diagram of the pipeline*
+<figure>
+	<img class="img-fluid"
+		src="/assets/img/webgl-volumes/webgl-triangle-pipeline.svg"/>
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><i>Fig. {{figurecount}}:
+	The WebGL pipeline for a single triangle.
+	</i></figcaption>
+</figure>
+
 
 However, in the case of volume rendering we have a volume,
 not a set of triangles. To get our volume data rendered we
