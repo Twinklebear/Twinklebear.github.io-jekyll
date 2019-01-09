@@ -4,14 +4,18 @@ title: "Volume Rendering with WebGL"
 description: ""
 category: webgl
 tags: [webgl, javascript]
-published: false
+published: true
 mathjax: true
 ---
 {% include JB/setup %}
 
+{% assign figurecount = 0 %}
+
 <figure>
 	<img class="img-fluid" src="https://i.imgur.com/YqdyKCj.png"/>
-	<figcaption><i>Fig. 1: Sample volumes CAP TODO</i></figcaption>
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><i>Fig. {{figurecount}}:
+	Sample volumes CAP TODO</i></figcaption>
 </figure>
 
 In scientific visualization, volume rendering is used to visualize
@@ -39,6 +43,18 @@ entirely in the browser!
 <!--more-->
 
 # 1. Introduction
+
+<figure>
+	<img class="img-fluid" width="80%"
+		src="/assets/img/webgl-volumes/cloud.svg"/>
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><i>Fig. {{figurecount}}:
+	Volume rendering.
+	*TODO: a fig showing a cloud w/ emission, absorption and scattering*
+	</i></figcaption>
+</figure>
+
+
 To produce an image from volumetric data we need to model how light rays
 are absorbed, scattered, and emitted by the medium. However,
 a complete physically based model with scattering is typically too expensive for
@@ -92,8 +108,9 @@ $$
 	\alpha_i = \alpha_{i - 1} + (1 - \alpha_{i-1}) \alpha(i \Delta s)
 $$
 
-Note that in these final equations we use pre-multiplied opacity for
+In these final equations we use pre-multiplied opacity for
 correct interpolation, $$\hat{C}(i\Delta s) = C(i\Delta s) \alpha(i \Delta s)$$.
+*Do I mean interpolation here? Or do i mean blending between samples?*
 
 These equations amount to a for loop, where we step along the ray
 for each pixel, and accumulate the color and opacity as we go.
@@ -107,14 +124,24 @@ on some different inputs. This is where the GPU comes in.
 By implementing the above equation in a fragment shader,
 we can implement a very fast volume renderer!
 
+<figure>
+	<img class="img-fluid" width="70%"
+		src="/assets/img/webgl-volumes/raymarching-grid.svg"/>
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><i>Fig. {{figurecount}}:
+	Raymarching the volume grid.
+	</i></figcaption>
+</figure>
+
+
 # 2. GPU Implementation with WebGL2
 
 We'll begin by briefly reviewing the basic OpenGL rendering pipeline,
 then discuss how we can implement the above volume rendering equation
 in this context.
-The simplest OpenGL pipeline consists of two shader stages:
+The simplest OpenGL pipeline in WebGL consists of two shader stages:
 the vertex shader, responsible for transforming input triangle
-vertices into the camera space *or is it NDC?*, and the fragment shader, responsible
+vertices into clip space, and the fragment shader, responsible
 for shading each pixel covered by the transformed triangle.
 
 *Insert here a diagram of the pipeline*
@@ -148,8 +175,12 @@ To illustrate the first step of our rendering process, the back
 faces of the volume bounding box
 are shown below, shaded by the ray direction.
 
-*Insert the interactive rendering of the back faces shaded
-by ray direction here*
+<figure>
+	<img class="img-fluid" width="70%" src="https://i.imgur.com/FMWE7UR.png"/>
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><i>Fig. {{figurecount}}:
+	Volume box back faces, colored by ray direction</i></figcaption>
+</figure>
 
 Here is the vertex shader for rendering our bounding box:
 
@@ -157,6 +188,13 @@ and the fragment shader:
 
 Now that we can run the fragment shader for pixels the volume
 projects to and compute the eye
+
+<figure>
+	<img class="img-fluid" width="80%" src="https://i.imgur.com/vtZqe4m.png"/>
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><i>Fig. {{figurecount}}:
+	Final rendered result, on the Bonsai</i></figcaption>
+</figure>
 
 {% highlight glsl %}
 #version 300 es
