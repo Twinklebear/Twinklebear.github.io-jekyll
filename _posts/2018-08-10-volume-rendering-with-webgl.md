@@ -136,6 +136,7 @@ we can implement a very fast volume renderer!
 
 # 2. GPU Implementation with WebGL2
 
+**Basic review of webgl pipeline**
 We'll begin by briefly reviewing the basic OpenGL rendering pipeline,
 then discuss how we can implement the above volume rendering equation
 in this context.
@@ -153,14 +154,18 @@ for shading each pixel covered by the transformed triangle.
 	</i></figcaption>
 </figure>
 
-
+**Talk about idea of two-triangles, dummy geometry to spawn
+fragment processing to run work**
 However, in the case of volume rendering we have a volume,
 not a set of triangles. To get our volume data rendered we
 have to either create some geometric representation of it,
-or follow an approach like [Shader Toy]() where we use
-some dummy geometry to spawn fragment processing. The former
-option is known as slice-based rendering, and was used widely
-before the growth of programmable GPUs. Our approach will
+or follow an approach like [Shader Toy](https://www.shadertoy.com/)
+and [demoscene renderers](https://iquilezles.org/www/material/nvscene2008/nvscene2008.htm)
+where we use some dummy geometry to spawn fragment processing, where
+the actual rendering work is done.
+
+**Now mention how we'll use this idea to do volume rendering**
+Our approach will
 bear more resemblence to that of Shader Toy; however, to save
 on some compute work we'll just rasterize the volume's bounding
 box, instead of two full screen triangles. Rasterizing only
@@ -178,6 +183,8 @@ step described above.
 	</i></figcaption>
 </figure>
 
+**Now: what's the proxy geom we're rendering, why pick a unit cube?
+why the back-faces**
 
 To allow users to zoom fully in to the volume, we'll rasterize just
 the back-faces of the box, by setting OpenGL's face culling to cull
@@ -196,8 +203,11 @@ are shown below, shaded by the ray direction.
 	Volume box back faces, colored by ray direction</i></figcaption>
 </figure>
 
+**Now the vertex shader for rendering our box**
 Here is the vertex shader for rendering our bounding box:
 
+**Now let's implement the raymarching in the fragment shader to
+process each eye ray in parallel**
 and the fragment shader:
 
 Now that we can run the fragment shader for pixels the volume
