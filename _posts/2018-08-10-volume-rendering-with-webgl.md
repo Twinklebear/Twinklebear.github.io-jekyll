@@ -94,13 +94,17 @@ $$
 
 As the ray passes through the volume, we integrate over it
 to accumulate the emitted color $$C(s)$$ and absorption $$\mu(s)$$
-through the volume. The volume emission is then attenuated as it returns
-to the eye by the volume's absorption, this is computed by the
-$$e^{-\int_0^s \mu(t) dt}$$ term, which computes the absorption
-from the entry point to the current point.
+through the volume. The emitted color at each point is attenuated as it returns
+to the eye by the volume's absorption, which we compute with the
+$$e^{-\int_0^s \mu(t) dt}$$ term, which computes the absorption from
+the entry point to the current point $$s$$.
+
 In general, this integral cannot be computed analytically and
 we must use a numeric approximation. To do so we take a set of $$N$$
-samples along the ray on the interval $$s = [0, L]$$, each a distance $$\Delta s$$ apart.
+samples along the ray on the interval $$s = [0, L]$$, each a distance $$\Delta s$$ apart
+(labelled in Figure 3), and sum them together. The attenuation term at
+each sample point becomes a product series, accumulating the absorption at
+previous samples.
 
 $$
 	C(r) = \sum_{i=0}^N C(i \Delta s) \mu (i \Delta s) \Delta s
@@ -108,9 +112,9 @@ $$
 $$
 
 We can simplify this sum further, and approximate the
-attenuation term for each sample (the product of $$e^{-\mu(j \Delta s) \Delta s}$$ terms)
-by its Taylor series. This yields the well known front-to-back alpha
-compositing equation:
+previous samples's attenuation terms  ($$e^{-\mu(j \Delta s) \Delta s}$$)
+by their Taylor series. We also introduce $$\alpha(i \Delta s) = \mu(i \Delta s) \Delta s$$
+for convenience. This yields the well known front-to-back alpha compositing equation:
 
 $$
 	C(r) = \sum_{i=0}^N C(i \Delta s) \alpha (i \Delta s)
