@@ -74,24 +74,30 @@ to ask and answer questions about their research problem.
 As a complete physically based model with scattering is too expensive
 for interactive rendering, visualization applications
 employ a simplified emission-absorption model, ignoring expensive
-effects such as scattering.
+effects such as scattering, or approximating them in some manner.
+Here we will just focus on the emission-absorption model.
 
-In the emission-absorption model we only compute the lighting effects
-from the black arrow in Figure 2, and ignore effects from the dashed gray
-rays. Rays passing through the volume and reaching the eye accumulate color emitted by the
-volume, and are attenuated as they traverse it due to absorption by the volume. If we trace
-rays from the eye through the volume, we can compute the light which
-is received at the eye using the following integral, where
-the ray enters the volume at $$s = 0$$, and exits it at $$s = L$$.
+In the emission-absorption model, we only compute the lighting effects
+along the black arrow in Figure 2, and ignore effects from the dashed gray
+ones. Rays passing through the volume and reaching the eye accumulate color emitted by the
+volume, and are attenuated as they traverse it due to absorption by the volume.
+If we trace rays from the eye through the volume, we can
+compute they light received at the eye by integrating the ray through
+the volume, to accumulate the emission and absorption along the ray.
+Given a ray from the eye which enters the volume at $$s = 0$$ and exits it at
+$$s = L$$, we can compute the light which
+is received at the eye using the following integral:
 
 $$
 C(r) = \int_0^L C(s) \mu(s) e^{-\int_0^s \mu(t) dt} ds
 $$
 
-At each point $$s$$ along the ray we sample the volume, and
-accumulate the emitted color $$C(s)$$ and absorption $$\mu(s)$$,
-attenuated by the absorption along the ray between the current point $$s$$
-and the point the ray entered the volume ($$e^{-\int_0^s \mu(t) dt}$$).
+As the ray passes through the volume, we integrate over it
+to accumulate the emitted color $$C(s)$$ and absorption $$\mu(s)$$
+through the volume. The volume emission is then attenuated as it returns
+to the eye by the volume's absorption, this is computed by the
+$$e^{-\int_0^s \mu(t) dt}$$ term, which computes the absorption
+from the entry point to the current point.
 In general, this integral cannot be computed analytically and
 we must use a numeric approximation. To do so we take a set of $$N$$
 samples along the ray on the interval $$s = [0, L]$$, each a distance $$\Delta s$$ apart.
