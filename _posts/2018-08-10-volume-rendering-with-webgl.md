@@ -15,23 +15,32 @@ mathjax: true
 	<img class="img-fluid" src="https://i.imgur.com/YqdyKCj.png"/>
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><i>Fig. {{figurecount}}:
-	Sample volumes CAP TODO</i></figcaption>
+	Example volume renderings, using the WebGL volume renderer described in this post.
+	Left: A simulation of the spatial probability distribution
+	of elections in a high potential protein molecule.
+	Right: A CT scan of a Bonsai Tree.
+	Both datasets are frome the
+	<a href="https://klacansky.com/open-scivis-datasets/">Open SciVis Datasets</a>
+	repository.
+	</i></figcaption>
 </figure>
 
 In scientific visualization, volume rendering is used to visualize
 3D scalar fields. These scalar fields are often
 uniform grids of values, representing,
-e.g., charge density around a molecule,
+for example, charge density around a molecule,
 an MRI scan, air pressure around an airplane, etc.
 Volume rendering is a conceptually straightforward method
 for turning such data into an image: by sampling the data
-along rays from the eye and picking
-a color and transparency value for each sample, we can
+along rays from the eye and assigning
+a color and transparency to each sample, we can
 produce useful and beautiful images of such scalar fields
-(see e.g., Figure 1).
+(see Figure 1).
 In a GPU renderer, these 3D scalar fields are stored
 as 3D textures; however, in WebGL1 3D textures were
-not supported. WebGL2 added support for 3D textures,
+not supported, requiring additional hacks to emulate them
+for volume rendering.
+Recently, WebGL2 added support for 3D textures,
 allowing for an elegant and fast volume renderer to be
 implemented entirely in the browser.
 In this post we'll discuss the mathematical background
@@ -46,50 +55,84 @@ entirely in the browser!
 
 <figure>
 	<img class="img-fluid" width="80%"
-		src="/assets/img/webgl-volumes/cloud.svg"/>
+		src="/assets/img/webgl-volumes/volume-rendering-cloud.svg"/>
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><i>Fig. {{figurecount}}:
-	Volume rendering.
-	*TODO: a fig showing a cloud w/ emission, absorption and scattering*
+	Physically based volume rendering, accounting for absorption and
+	light emission by the volume, along with scattering effects.
 	</i></figcaption>
 </figure>
 
+To produce a physically realistic image from volumetric data, we need to model how light rays
+are absorbed, emitted, and scattered by the medium (Figure 2).
+While modelling light transport through a medium at this level
+produces beautiful, physically correct images, it is too expensive for
+interactive rendering, which is our goal in visualization software.
+In scientific visualization, our end goal is
+to allow scientists to interactively explore their data, enabling them
+to ask and answer questions about their research problem.
+As a complete physically based model with scattering is too expensive
+for interactive rendering, visualization applications
+employ a simplified emission-absorption model, ignoring expensive
+effects such as scattering.
 
-To produce an image from volumetric data we need to model how light rays
-are absorbed, scattered, and emitted by the medium. However,
-a complete physically based model with scattering is typically too expensive for
-interactive rendering. Instead, interactive scientific visualization applications
-employ a simplified emission-absorption model, and ignore more expensive
-effects such as scattering. In the emission-absorption model light
-rays entering the eye from the volume pick up color emitted by the
-medium, and are attenuated as they traverse it due to absorption. If we trace
-rays from the eye through the volume, we can compute the color
-returning back along the ray to the pixel with the following integral.
+In the emission-absorption model we only compute the lighting effects
+from the black arrow in Figure 2, and ignore effects from the dashed gray
+rays. Rays passing through the volume and reaching the eye accumulate color emitted by the
+volume, and are attenuated as they traverse it due to absorption by the volume. If we trace
+rays from the eye through the volume, we can compute the light which
+is received at the eye using the following integral, where
+the ray enters the volume at $$s = 0$$, and exits it at $$s = L$$.
 
-$$C(r) = \int_0^L C(s) \mu(s) e^{-\int_0^s \mu(t) dt} ds$$
+$$
+C(r) = \int_0^L C(s) \mu(s) e^{-\int_0^s \mu(t) dt} ds
+$$
 
 At each point $$s$$ along the ray we sample the volume, and
-accumulate the color $$C(s)$$ and absorption $$\mu(s)$$,
-attenuated by the absorption along the ray between $$s$$
-and the entry point of the volume ($$e^{-\int_0^s \mu(t) dt}$$).
-In general this integral cannot be computed analytically, and
+accumulate the emitted color $$C(s)$$ and absorption $$\mu(s)$$,
+attenuated by the absorption along the ray between the current point $$s$$
+and the point the ray entered the volume ($$e^{-\int_0^s \mu(t) dt}$$).
+In general, this integral cannot be computed analytically and
 we must use a numeric approximation. To do so we take a set of $$N$$
-samples along the ray, each a distance $$\Delta s$$ apart.
+samples along the ray on the interval $$s = [0, L]$$, each a distance $$\Delta s$$ apart.
 
 $$
 	C(r) = \sum_{i=0}^N C(i \Delta s) \mu (i \Delta s) \Delta s
 			\prod_{j=0}^{i-1} e^{-\mu(j \Delta s) \Delta s}
 $$
 
-We can apply a further simplification, and approximate the
+We can simplify this sum further, and approximate the
 attenuation term for each sample (the product of $$e^{-\mu(j \Delta s) \Delta s}$$ terms)
-by it's Taylor series. This yields the well known front-to-back alpha
-compositing algorithm.
+by its Taylor series. This yields the well known front-to-back alpha
+compositing equation:
 
 $$
 	C(r) = \sum_{i=0}^N C(i \Delta s) \alpha (i \Delta s)
 			\prod_{j=0}^{i-1} (1 - \alpha(j \Delta s))
 $$
+
+<figure>
+	<img class="img-fluid" width="80%"
+		src="/assets/img/webgl-volumes/volume-rendering-cloud-labelled.svg"/>
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><i>Fig. {{figurecount}}:
+	Computing the emission-absorption rendering integral on a volume.
+	</i></figcaption>
+</figure>
+
+**Rework this a bit to intro that we just have a for loop doing the bottom eqns**
+These equations amount to a for loop, where we step along the ray
+for each pixel, and accumulate the color and opacity as we go.
+This loop continues until the ray either leaves the volume,
+or the accumulated color has become opaque ($$\alpha = 1$$).
+Each pixel we process is independent, and needs read-only
+access to our shared state (i.e., the volume). If we want
+to compute the image quickly, we just need a way to process
+a large amount of pixels executing the same instruction
+on some different inputs. This is where the GPU comes in.
+By implementing the above equation in a fragment shader,
+we can implement a very fast volume renderer!
+
 
 In scientific visualization both the color, $$C(s)$$,
 and opacity, $$\alpha(s)$$, of each sample are set by a
@@ -109,21 +152,12 @@ $$
 $$
 
 In these final equations we use pre-multiplied opacity for
-correct interpolation, $$\hat{C}(i\Delta s) = C(i\Delta s) \alpha(i \Delta s)$$.
-*Do I mean interpolation here? Or do i mean blending between samples?*
+correct blending, $$\hat{C}(i\Delta s) = C(i\Delta s) \alpha(i \Delta s)$$.
 
-These equations amount to a for loop, where we step along the ray
-for each pixel, and accumulate the color and opacity as we go.
-This loop continues until the ray either leaves the volume,
-or the accumulated color has become opaque ($$\alpha = 1$$).
-Each pixel we process is independent, and needs read-only
-access to our shared state (i.e., the volume). If we want
-to compute the image quickly, we just need a way to process
-a large amount of pixels executing the same instruction
-on some different inputs. This is where the GPU comes in.
-By implementing the above equation in a fragment shader,
-we can implement a very fast volume renderer!
-
+<!--
+**Todo: mention that the volume represents a continous field,
+so when we sample along the grid we'll do trilinear interpolation to
+get the sample value**
 <figure>
 	<img class="img-fluid" width="70%"
 		src="/assets/img/webgl-volumes/raymarching-grid.svg"/>
@@ -132,7 +166,7 @@ we can implement a very fast volume renderer!
 	Raymarching the volume grid.
 	</i></figcaption>
 </figure>
-
+-->
 
 # 2. GPU Implementation with WebGL2
 
