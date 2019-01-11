@@ -111,9 +111,10 @@ $$
 			\prod_{j=0}^{i-1} e^{-\mu(j \Delta s) \Delta s}
 $$
 
-We can simplify this sum further, and approximate the
+To simplify this sum further, we approximate the
 previous samples's attenuation terms  ($$e^{-\mu(j \Delta s) \Delta s}$$)
-by their Taylor series. We also introduce $$\alpha(i \Delta s) = \mu(i \Delta s) \Delta s$$
+by their Taylor series. We also introduce the alpha term,
+$$\alpha(i \Delta s) = \mu(i \Delta s) \Delta s$$,
 for convenience. This yields the well known front-to-back alpha compositing equation:
 
 $$
@@ -130,28 +131,12 @@ $$
 	</i></figcaption>
 </figure>
 
-**Rework this a bit to intro that we just have a for loop doing the bottom eqns**
-These equations amount to a for loop, where we step along the ray
-for each pixel, and accumulate the color and opacity as we go.
+The above equation amounts to a for loop, where we step the ray through
+the volume, and accumulate the color and opacity iteratively as we go.
 This loop continues until the ray either leaves the volume,
 or the accumulated color has become opaque ($$\alpha = 1$$).
-Each pixel we process is independent, and needs read-only
-access to our shared state (i.e., the volume). If we want
-to compute the image quickly, we just need a way to process
-a large amount of pixels executing the same instruction
-on some different inputs. This is where the GPU comes in.
-By implementing the above equation in a fragment shader,
-we can implement a very fast volume renderer!
-
-
-In scientific visualization both the color, $$C(s)$$,
-and opacity, $$\alpha(s)$$, of each sample are set by a
-user-specified transfer function. The transfer function is
-used to hide or accent areas of interest in the data,
-for example to hide noise or background.
-Our final volume raytracer then can iteratively step a ray front-to-back
-through the volume, accumulating the color and opacity terms as
-we go.
+The iterative computation of the above sum is done using the familiar
+front-to-back compositing equations:
 
 $$
 	\hat{C}_i = \hat{C}_{i-1} + (1 - \alpha_{i-1}) \hat{C}(i \Delta s)
@@ -163,6 +148,18 @@ $$
 
 In these final equations we use pre-multiplied opacity for
 correct blending, $$\hat{C}(i\Delta s) = C(i\Delta s) \alpha(i \Delta s)$$.
+
+To render an image of the volume we just need to trace a ray
+from the eye through each pixel, and perform the above
+iteration for each ray intersecting the volume.
+Each ray we process is independent, and needs read-only
+access to our shared state (the volume). If we want
+to compute the image quickly, all we need is a way to process
+a large number of pixels in parallel.
+This is where the GPU comes in.
+By implementing the raymarching process in a fragment shader
+we can leverage the parallel computing power of the GPU to
+implement a very fast volume renderer!
 
 <!--
 **Todo: mention that the volume represents a continous field,
@@ -180,89 +177,85 @@ get the sample value**
 
 # 2. GPU Implementation with WebGL2
 
-**Basic review of webgl pipeline**
-We'll begin by briefly reviewing the basic OpenGL rendering pipeline,
-then discuss how we can implement the above volume rendering equation
-in this context.
-The simplest OpenGL pipeline in WebGL consists of two shader stages:
-the vertex shader, responsible for transforming input triangle
-vertices into clip space, and the fragment shader, responsible
-for shading each pixel covered by the transformed triangle.
+To run our raymarching work in the fragment shader, we need
+to get the GPU to run the fragment shader for the pixels we want
+to trace rays through.
+However, the OpenGL pipeline works on geometric primitives (Figure 5),
+and does not have a direct method to run fragment processing on
+some region of the screen.
+To work around this, we can render some proxy geometry to schedule the fragment
+processing we want.
+Our approach to rendering the volume will be
+similar to those of [Shader Toy](https://www.shadertoy.com/)
+and [demoscene renderers](https://iquilezles.org/www/material/nvscene2008/nvscene2008.htm),
+which render two full-screen triangles to spawn
+fragment processing, and do the real rendering work
+in the fragment shader.
 
 <figure>
 	<img class="img-fluid"
 		src="/assets/img/webgl-volumes/webgl-triangle-pipeline.svg"/>
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><i>Fig. {{figurecount}}:
-	The WebGL pipeline for a single triangle.
+	The OpenGL pipeline in WebGL consists of two programmable shader stages:
+	the vertex shader, responsible for transforming input triangle
+	vertices into clip space, and the fragment shader, responsible
+	for shading each pixel covered by the transformed triangle.
 	</i></figcaption>
 </figure>
 
-**Talk about idea of two-triangles, dummy geometry to spawn
-fragment processing to run work**
-However, in the case of volume rendering we have a volume,
-not a set of triangles. To get our volume data rendered we
-have to either create some geometric representation of it,
-or follow an approach like [Shader Toy](https://www.shadertoy.com/)
-and [demoscene renderers](https://iquilezles.org/www/material/nvscene2008/nvscene2008.htm)
-where we use some dummy geometry to spawn fragment processing, where
-the actual rendering work is done.
-
-**Now mention how we'll use this idea to do volume rendering**
-Our approach will
-bear more resemblence to that of Shader Toy; however, to save
-on some compute work we'll just rasterize the volume's bounding
-box, instead of two full screen triangles. Rasterizing only
-the bounding box will allow us to restrict the compute work
-to just the pixels where the volume is visible. Then,
-in the fragment shader we perform the volume ray marching
-step described above.
+While rendering two full-screen triangles as in ShaderToy will work, it would run
+an unnecessary amount of fragment processing in the case that the
+volume does not cover the entire screen. This case is actually
+quite common, as users get an overview of the dataset or study
+large-scale features. To restrict the fragment processing work
+to just those pixels touched by the volume, we can rasterize
+the bounding box of the volume grid, and then run the raymarching
+step in the fragment shader. Finally, we don't want to render
+both the front and back faces of the box,
+since we'll end up running the same work twice. Furthermore,
+if we render the front faces we'll run into clipping issues
+when the user zooms in to the volume, as the front faces will
+project behind the camera and be clipped. To allow users to
+zoom fully into the volume, we'll render just the back faces of
+the box. Our resulting rendering pipeline is shown in Figure 6.
 
 <figure>
 	<img class="img-fluid"
 		src="/assets/img/webgl-volumes/webgl-volume-raycast-pipeline.svg"/>
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><i>Fig. {{figurecount}}:
-	Using the WebGL pipeline for raymarching a volume.
+	The WebGL pipeline for raymarching a volume. We rasterize
+	the backfaces of the volume's bounding box to spawn
+	fragment processing work for those pixels touched by the volume.
+	Within the fragment shader we march rays through the volume
+	to render it.
 	</i></figcaption>
 </figure>
 
-**Now: what's the proxy geom we're rendering, why pick a unit cube?
-why the back-faces**
+In this pipeline, the bulk of real rendering work is done in the
+fragment shader; however, we can still use the vertex shader and
+the fixed function interpolation hardware for some useful computation.
+Our vertex shader will transform the volume based on the user's camera
+position, and compute for us the ray direction and eye position
+in the volume space, and pass them to the fragment direction.
+The ray direction computed at each vertex is then interpolated
+across the triangle for us by the fixed function interpolation
+hardware on the GPU, letting us compute the ray directions for
+each fragment a bit cheaper. However, these directions
+may not be normalized when we get them in the fragment
+shader, so we'll still need to normalize them.
 
-To allow users to zoom fully in to the volume, we'll rasterize just
-the back-faces of the box, by setting OpenGL's face culling to cull
-front faces instead of back faces. We can also use the
-vertex shader to compute the ray direction at each vertex
-and let the GPU interpolate it for us, then in the fragment
-shader we can normalize it and begin ray marching.
-To illustrate the first step of our rendering process, the back
-faces of the volume bounding box
-are shown below, shaded by the ray direction.
+We'll render the bounding box as a unit cube  $$[0, 1]$$
+cube, and scale it by the volume axes to support non-uniform sized
+volumes. The eye position is transformed into the unit cube,
+and the ray direction is computed in this space. Ray marching in
+the unit cube space will allow us to simplify our texture sampling
+operations during the ray marching, since we'll already be in the
+$$[0, 1]$$ texture coordinate space for the 3D volume.
 
-<figure>
-	<img class="img-fluid" width="70%" src="https://i.imgur.com/FMWE7UR.png"/>
-	{% assign figurecount = figurecount | plus: 1 %}
-	<figcaption><i>Fig. {{figurecount}}:
-	Volume box back faces, colored by ray direction</i></figcaption>
-</figure>
-
-**Now the vertex shader for rendering our box**
-Here is the vertex shader for rendering our bounding box:
-
-**Now let's implement the raymarching in the fragment shader to
-process each eye ray in parallel**
-and the fragment shader:
-
-Now that we can run the fragment shader for pixels the volume
-projects to and compute the eye
-
-<figure>
-	<img class="img-fluid" width="80%" src="https://i.imgur.com/vtZqe4m.png"/>
-	{% assign figurecount = figurecount | plus: 1 %}
-	<figcaption><i>Fig. {{figurecount}}:
-	Final rendered result, on the Bonsai</i></figcaption>
-</figure>
+The vertex shader we'll use is shown below, the rasterized
+back faces colored by ray direction is shown in Figure 7.
 
 {% highlight glsl %}
 #version 300 es
@@ -275,15 +268,35 @@ out vec3 vray_dir;
 flat out vec3 transformed_eye;
 
 void main(void) {
-	// Need to note that we do this part b/c we draw a unit cube from [0, 1]
-	// and want to scale it to match the volume dims, while translating the
-	// eye params into the [0, 1] space so it's easy to raymarch and sample the texture
+	// Translate the cube to center it at the origin.
 	vec3 volume_translation = vec3(0.5) - volume_scale * 0.5;
+	gl_Position = proj_view * vec4(pos * volume_scale + volume_translation, 1);
+
+	// Compute eye position and ray directions in the unit cube space
 	transformed_eye = (eye_pos - volume_translation) / volume_scale;
 	vray_dir = pos - transformed_eye;
-	gl_Position = proj_view * vec4(pos * volume_scale + volume_translation, 1);
 };
 {% endhighlight %}
+
+<figure>
+	<img class="img-fluid" width="70%" src="https://i.imgur.com/FMWE7UR.png"/>
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><i>Fig. {{figurecount}}:
+	Volume box back faces, colored by ray direction</i></figcaption>
+</figure>
+
+**Now let's implement the raymarching in the fragment shader to
+process each eye ray in parallel**
+and the fragment shader:
+
+Now that we can run the fragment shader for pixels the volume
+projects to and compute the eye
+
+In scientific visualization both the color, $$C(s)$$,
+and opacity, $$\alpha(s)$$, of each sample are set by a
+user-specified transfer function. The transfer function is
+used to hide or accent areas of interest in the data,
+for example to hide noise or background.
 
 {% highlight glsl %}
 #version 300 es
@@ -335,4 +348,12 @@ void main(void) {
 	}
 }
 {% endhighlight %}
+
+
+<figure>
+	<img class="img-fluid" width="80%" src="https://i.imgur.com/vtZqe4m.png"/>
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><i>Fig. {{figurecount}}:
+	Final rendered result, on the Bonsai</i></figcaption>
+</figure>
 
