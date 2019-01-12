@@ -255,7 +255,7 @@ operations during the ray marching, since we'll already be in the
 $$[0, 1]$$ texture coordinate space for the 3D volume.
 
 The vertex shader we'll use is shown below, the rasterized
-back faces colored by ray direction is shown in Figure 7.
+back faces colored by the view ray direction is shown in Figure 7.
 
 {% highlight glsl %}
 #version 300 es
@@ -282,7 +282,7 @@ void main(void) {
 	<img class="img-fluid" width="70%" src="https://i.imgur.com/FMWE7UR.png"/>
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><i>Fig. {{figurecount}}:
-	Volume box back faces, colored by ray direction</i></figcaption>
+	The volume bounding box back faces, colored by ray direction</i></figcaption>
 </figure>
 
 **Now let's implement the raymarching in the fragment shader to
@@ -310,9 +310,10 @@ uniform float dt_scale;
 
 in vec3 vray_dir;
 flat in vec3 transformed_eye;
+
 out vec4 color;
 
-vec2 intersectBox(vec3 orig, vec3 dir) {
+vec2 intersect_box(vec3 orig, vec3 dir) {
 	const vec3 box_min = vec3(0);
 	const vec3 box_max = vec3(1);
 	vec3 inv_dir = 1.0 / dir;
@@ -327,15 +328,14 @@ vec2 intersectBox(vec3 orig, vec3 dir) {
 
 void main(void) {
 	vec3 ray_dir = normalize(vray_dir);
-	vec2 t_hit = intersectBox(transformed_eye, ray_dir);
+	vec2 t_hit = intersect_box(transformed_eye, ray_dir);
 	if (t_hit.x > t_hit.y) {
 		discard;
 	}
 	t_hit.x = max(t_hit.x, 0.0);
 	vec3 dt_vec = 1.0 / (vec3(volume_dims) * abs(ray_dir));
 	float dt = dt_scale * min(dt_vec.x, min(dt_vec.y, dt_vec.z));
-	float offset = wang_hash(int(gl_FragCoord.x + 640.0 * gl_FragCoord.y));
-	vec3 p = transformed_eye + (t_hit.x + offset * dt) * ray_dir;
+	vec3 p = transformed_eye + t_hit.x * ray_dir;
 	for (float t = t_hit.x; t < t_hit.y; t += dt) {
 		float val = texture(volume, p).r;
 		vec4 val_color = vec4(texture(colormap, vec2(val, 0.5)).rgb, val);
@@ -354,6 +354,8 @@ void main(void) {
 	<img class="img-fluid" width="80%" src="https://i.imgur.com/vtZqe4m.png"/>
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><i>Fig. {{figurecount}}:
-	Final rendered result, on the Bonsai</i></figcaption>
+	Final rendered result, on the Bonsai, from the same
+	viewpoint as in Figure 7.
+	</i></figcaption>
 </figure>
 
