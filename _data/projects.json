@@ -122,7 +122,10 @@
 			using WebGL2 and Javascript. The renderer uses an arcball camera which supports
 			mouse or touch input, and dynamically adjusts the sampling rate
 			to maintain a smooth framerate, even on mobile devices. The volumes
-			are downloaded via XMLHttpRequest from Dropbox when selected.
+			are downloaded via XMLHttpRequest from Dropbox when selected. I've also written
+			a [post](https://www.willusher.io/webgl/2019/01/13/volume-rendering-with-webgl)
+			about volume rendering for scientific visualziation, and how I've implemented
+			in WebGL to write this renderer.
 			[Try it out online!](https://www.willusher.io/webgl-volume-raycaster/)"
 	},
 	{
