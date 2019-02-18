@@ -9,6 +9,7 @@
 		"year": 2019,
 		"short_title": "amr-iso",
 		"doi": "10.1109/TVCG.2018.2864850",
+		"presentation_video": "https://www.youtube.com/embed/OX3TIYez0nM",
 		"bibtex": "@article{Wang_AMR_Iso_2019,\n
 			author={F. Wang and I. Wald and Q. Wu and W. Usher and C. R. Johnson},\n
 			journal={{IEEE} {Transactions} on {Visualization} and {Computer} {Graphics}},\n
