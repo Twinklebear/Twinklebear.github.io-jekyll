@@ -124,7 +124,7 @@
 			to maintain a smooth framerate, even on mobile devices. The volumes
 			are downloaded via XMLHttpRequest from Dropbox when selected. I've also written
 			a [post](https://www.willusher.io/webgl/2019/01/13/volume-rendering-with-webgl)
-			about volume rendering for scientific visualziation, and how I've implemented
+			about volume rendering for scientific visualization, and how I've implemented
 			in WebGL to write this renderer.
 			[Try it out online!](https://www.willusher.io/webgl-volume-raycaster/)"
 	},
@@ -155,6 +155,28 @@
 		Built on top of [webgl-util](https://github.com/Twinklebear/webgl-util) for some WebGL utilities,
 		[glMatrix](http://glmatrix.net/) for matrix/vector operations, and
 		[FileSaver.js](https://github.com/eligrey/FileSaver.js/) for saving models."
+	},
+	{
+		"title": "WebGL Neuron Visualizer",
+		"layout": 2,
+		"gh_user": "Twinklebear",
+		"gh_repo": "webgl-neuron",
+		"img": [
+			"https://i.imgur.com/SOBDrRD.png",
+			"https://i.imgur.com/lwlbLCw.png",
+			"https://i.imgur.com/bXMjno0.png"
+		],
+		"description": "A neuron visualization system using WebGL2. The
+		renderer uses my WebGL2 volume renderer to display the RAW volume or imported TIFF
+		stack and renders the imported neuron traces as lines within the volume.
+		It can import single-channel 8bit and 16bit TIFF image stacks, and can
+		import neuron traces in the SWC file format.
+		The neurons are composited within the volume by rendering out the depth buffer
+		and using this to terminate rays early in the volume when they hit the geometry,
+		roughly similar to shadow mapping.
+		A default demo dataset is included which renders a stitched version of the
+		DIADEM NC Layer 1 Axons from the [DIADEM Challenge](http://diademchallenge.org/).
+		[Try it out online!](https://www.willusher.io/webgl-neuron/)"
 	},
 	{
 		"title": "Charm++ Experiments",
