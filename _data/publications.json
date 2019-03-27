@@ -1,5 +1,116 @@
 [
 	{
+		"title": "Scalable Ray Tracing Using the Distributed FrameBuffer",
+		"authors": "Will Usher, Ingo Wald, Jefferson Amstutz, Johannes Günther,
+			Carson Brownlee, and Valerio Pascucci",
+		"venue": "Computer Graphics Forum (Proceedings of EuroVis) (To Appear)",
+		"paper_pdf": "http://sci.utah.edu/~will/papers/dfb.pdf",
+		"teaser": "https://i.imgur.com/xDw1wI1.jpg",
+		"thumb": "https://i.imgur.com/xVd40uT.jpg",
+		"year": 2019,
+		"short_title": "dfb",
+		"supplemental_video": "https://www.youtube.com/embed/F2nahk4GAB0",
+		"bibtex": "@article{usher_scalable_2019,\n
+			title = {{Scalable} {Ray} {Tracing} {Using} the {Distributed} {FrameBuffer}},\n
+			journal = {Computer Graphics Forum (To Appear)},\n
+			author = {Usher, Will and Wald, Ingo and Amstutz, Jefferson and Günther, Johannes and
+				Brownlee, Carson and Pascucci, Valerio},\n
+			year = {2019},\n}",
+		"abstract": "Image- and data-parallel rendering across multiple
+			nodes on high-performance computing systems is widely used in visualization
+			to provide higher frame rates, support large data sets, and
+			render data in situ. Specifically for in situ visualization,
+			reducing bottlenecks incurred by the visualization and compositing is
+			of key concern to reduce the overall simulation runtime.
+			Moreover, prior algorithms have been designed to support either
+			image- or data-parallel rendering and impose restrictions on the
+			data distribution, requiring different implementations for each
+			configuration. In this paper, we introduce the Distributed FrameBuffer,
+			an asynchronous image-processing framework for multi-node rendering.
+			We demonstrate that our approach achieves performance superior to
+			the state of the art for common use cases, while providing the
+			flexibility to support a wide range of parallel rendering algorithms
+			and data distributions. By building on this framework, we extend
+			the open-source ray tracing library OSPRay with a data-distributed API, enabling
+			its use in data-distributed and in situ visualization applications.",
+		"teaser_caption": "Large-scale interactive visualization using the Distributed FrameBuffer.
+			Top left: Image-parallel rendering of two transparent isosurfaces from
+			the Richtmyer-Meshkov (516M triangles), 8FPS with a 2048<sup>2</sup>
+			framebuffer using 16 Stampede2 Intel Xeon Platinum 8160 SKX nodes.
+			Top right: Data-parallel rendering of the Cosmic Web (29B transparent spheres),
+			2FPS at 2048<sup>2</sup> using 128 Theta Intel Xeon Phi Knight's Landing (KNL) nodes.
+			Bottom: Data-parallel rendering of the 951GB DNS volume combined with a transparent
+			isosurface (4.35B triangles), 5FPS at 4096x1024 using 64 Stampede2 Intel Xeon Phi
+			KNL nodes.",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "OSPRay",
+						"link": "https://github.com/ospray/ospray",
+						"icon": "fab fa-github"
+					}
+				]
+			}
+		]
+	},
+	{
+		"title": "Ray Tracing Generalized Tube Primitives: Method and Applications",
+		"authors": "Mengjiao Han, Ingo Wald, Will Usher, Qi Wu, Feng Wang,
+			Valerio Pascucci, Charles D. Hansen, and Chris R. Johnson",
+		"venue": "Computer Graphics Forum (Proceedings of EuroVis) (To Appear)",
+		"paper_pdf": "http://sci.utah.edu/~will/papers/tubes.pdf",
+		"teaser": "https://i.imgur.com/tTv2l2j.jpg",
+		"thumb": "https://i.imgur.com/gsgdwlZ.jpg",
+		"year": 2019,
+		"short_title": "tubes",
+		"supplemental_video": "",
+		"bibtex": "@article{han_ray_2019,\n
+			title = {{Ray} {Tracing} {Generalized} {Tube} {Primitives}: {Method} and {Applications}},\n
+			journal = {Computer Graphics Forum (To Appear)},\n
+			author = {Han, Mengjiao and Wald, Ingo and Usher, Will and Wu, Qi
+				and Wang, Feng and Hansen, Charles and Pasucci, Valerio and Johnson, Chris R.},\n
+			year = {2019},\n}",
+		"abstract": "We present a general high-performance technique for ray tracing
+			generalized tube primitives. Our technique efficiently supports
+			tube primitives with fixed and varying radii, general acyclic graph
+			structures with bifurcations,
+			and correct transparency with interior surface removal.
+			Such tube primitives are widely used in scientific visualization 
+			to represent diffusion tensor imaging tractographies, neuron morphologies,
+			and scalar or vector fields of 3D flow.
+			We implement our approach within the OSPRay ray tracing framework,
+			and evaluate it on a range of interactive visualization use cases
+			of fixed- and varying-radius streamlines, pathlines, complex neuron morphologies,
+			and brain tractographies. Our proposed approach provides interactive,
+			high-quality rendering, with low memory overhead.",
+		"teaser_caption": "Visualizations using our \"generalized tube\" primitives.
+			(a): DTI tractography data, semi-transparent fixed-radius streamlines (218K line segments). 
+			(b): A generated neuron assembly test case, streamlines with varying
+			radii and bifurcations (3.2M l. s.).
+			(c): Aneurysm morphology, semi-transparent streamlines with varying radii
+			and bifurcations (3.9K l. s.)
+			and an opaque center line with fixed radius and bifurcations (3.9K l. s.).
+			(d): A tornado simulation, with radius used to encode the velocity magnitude (3.56M l. s.).
+			(e): Flow past a torus, fixed-radius pathlines (6.5M l. s.).
+			Rendered at: (a) 0.38FPS, (b) 7.2FPS, (c) 0.25FPS, (d) 18.8FPS, with a 2048x2048 framebuffer;
+			(e) 23FPS with a 2048x786 framebuffer. Performance measured on a dual Intel Xeon
+			E5-2640 v4 workstation, with shadows and ambient occlusion.",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "Generalized Tubes Module for OSPRay",
+						"link": "https://github.com/",
+						"icon": "fab fa-github"
+					}
+				]
+			}
+		]
+	},
+	{
 		"title": "CPU Isosurface Ray Tracing of Adaptive Mesh Refinement Data",
 		"authors": "Feng Wang, Ingo Wald, Qi Wu, Will Usher and Chris R. Johnson",
 		"venue": "IEEE Transactions on Visualization and Computer Graphics",

@@ -1,5 +1,9 @@
 [
 	{
+		"date": "2019-03-27",
+		"text": "The pre-prints of our two papers accepted to EuroVis 2019 are now available online!"
+	},
+	{
 		"date": "2018-12-14",
 		"text": "Our paper [*CPU Isosurface Ray Tracing of Adaptive Mesh Refinement Data*](/publications/amr-iso) has been published in [IEEE TVCG](https://ieeexplore.ieee.org/document/8493612)."
 	},
