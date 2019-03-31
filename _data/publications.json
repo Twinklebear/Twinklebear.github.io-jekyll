@@ -3,7 +3,7 @@
 		"title": "Scalable Ray Tracing Using the Distributed FrameBuffer",
 		"authors": "Will Usher, Ingo Wald, Jefferson Amstutz, Johannes Günther,
 			Carson Brownlee, and Valerio Pascucci",
-		"venue": "Computer Graphics Forum (Proceedings of EuroVis) (To Appear)",
+		"venue": "To Appear, Computer Graphics Forum (Proceedings of EuroVis)",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/dfb.pdf",
 		"teaser": "https://i.imgur.com/xDw1wI1.jpg",
 		"thumb": "https://i.imgur.com/xVd40uT.jpg",
@@ -59,13 +59,12 @@
 		"title": "Ray Tracing Generalized Tube Primitives: Method and Applications",
 		"authors": "Mengjiao Han, Ingo Wald, Will Usher, Qi Wu, Feng Wang,
 			Valerio Pascucci, Charles D. Hansen, and Chris R. Johnson",
-		"venue": "Computer Graphics Forum (Proceedings of EuroVis) (To Appear)",
+		"venue": "To Appear, Computer Graphics Forum (Proceedings of EuroVis)",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/tubes.pdf",
 		"teaser": "https://i.imgur.com/tTv2l2j.jpg",
 		"thumb": "https://i.imgur.com/gsgdwlZ.jpg",
 		"year": 2019,
 		"short_title": "tubes",
-		"supplemental_video": "",
 		"bibtex": "@article{han_ray_2019,\n
 			title = {{Ray} {Tracing} {Generalized} {Tube} {Primitives}: {Method} and {Applications}},\n
 			journal = {Computer Graphics Forum (To Appear)},\n
@@ -97,18 +96,6 @@
 			Rendered at: (a) 0.38FPS, (b) 7.2FPS, (c) 0.25FPS, (d) 18.8FPS, with a 2048x2048 framebuffer;
 			(e) 23FPS with a 2048x786 framebuffer. Performance measured on a dual Intel Xeon
 			E5-2640 v4 workstation, with shadows and ambient occlusion.",
-		"downloads": [
-			{
-				"title": "Code",
-				"list": [
-					{
-						"title": "Generalized Tubes Module for OSPRay",
-						"link": "https://github.com/",
-						"icon": "fab fa-github"
-					}
-				]
-			}
-		]
 	},
 	{
 		"title": "CPU Isosurface Ray Tracing of Adaptive Mesh Refinement Data",
