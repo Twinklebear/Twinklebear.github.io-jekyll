@@ -96,6 +96,19 @@
 			Rendered at: (a) 0.38FPS, (b) 7.2FPS, (c) 0.25FPS, (d) 18.8FPS, with a 2048x2048 framebuffer;
 			(e) 23FPS with a 2048x786 framebuffer. Performance measured on a dual Intel Xeon
 			E5-2640 v4 workstation, with shadows and ambient occlusion.",
+		"supplemental_video": "https://www.youtube.com/embed/RB2yC5Io3JA",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "OSPRay Module",
+						"link": "https://github.com/MengjiaoH/ospray-module-tubes",
+						"icon": "fab fa-github"
+					}
+				]
+			}
+		]
 	},
 	{
 		"title": "RTX Beyond Ray Tracing: Exploring the Use of Hardware Ray Tracing
