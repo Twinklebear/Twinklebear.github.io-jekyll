@@ -50,6 +50,16 @@
 						"title": "OSPRay",
 						"link": "https://github.com/ospray/ospray",
 						"icon": "fab fa-github"
+					},
+					{
+						"title": "Distributed Rendering Benchmark App",
+						"link": "https://github.com/Twinklebear/osp-distrib-viewer",
+						"icon": "fab fa-github"
+					},
+					{
+						"title": "IceT Comparison App",
+						"link": "https://github.com/Twinklebear/osp-icet",
+						"icon": "fab fa-github"
 					}
 				]
 			}
