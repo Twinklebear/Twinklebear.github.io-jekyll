@@ -3,19 +3,23 @@
 		"title": "Scalable Ray Tracing Using the Distributed FrameBuffer",
 		"authors": "Will Usher, Ingo Wald, Jefferson Amstutz, Johannes Günther,
 			Carson Brownlee, and Valerio Pascucci",
-		"venue": "To Appear, Computer Graphics Forum (Proceedings of EuroVis)",
+		"venue": "Computer Graphics Forum (Proceedings of EuroVis)",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/dfb.pdf",
 		"teaser": "https://i.imgur.com/xDw1wI1.jpg",
 		"thumb": "https://i.imgur.com/xVd40uT.jpg",
 		"year": 2019,
 		"short_title": "dfb",
 		"supplemental_video": "https://www.youtube.com/embed/F2nahk4GAB0",
+		"doi": "10.1111/cgf.13702",
 		"bibtex": "@article{usher_scalable_2019,\n
-			title = {{Scalable} {Ray} {Tracing} {Using} the {Distributed} {FrameBuffer}},\n
-			journal = {Computer Graphics Forum (To Appear)},\n
-			author = {Usher, Will and Wald, Ingo and Amstutz, Jefferson and Günther, Johannes and
-				Brownlee, Carson and Pascucci, Valerio},\n
-			year = {2019},\n}",
+			journal = {Computer Graphics Forum},\n
+			title = {{Scalable Ray Tracing Using the Distributed FrameBuffer}},\n
+			author = {Usher, Will and Wald, Ingo and Amstutz, Jefferson and
+				Günther, Johannes and Brownlee, Carson and Pascucci, Valerio},\n
+			year = {2019},\n
+			publisher = {The Eurographics Association and John Wiley & Sons Ltd.},\n
+			ISSN = {1467-8659},\n
+			DOI = {10.1111/cgf.13702}\n}",
 		"abstract": "Image- and data-parallel rendering across multiple
 			nodes on high-performance computing systems is widely used in visualization
 			to provide higher frame rates, support large data sets, and
@@ -69,18 +73,23 @@
 		"title": "Ray Tracing Generalized Tube Primitives: Method and Applications",
 		"authors": "Mengjiao Han, Ingo Wald, Will Usher, Qi Wu, Feng Wang,
 			Valerio Pascucci, Charles D. Hansen, and Chris R. Johnson",
-		"venue": "To Appear, Computer Graphics Forum (Proceedings of EuroVis)",
+		"venue": "Computer Graphics Forum (Proceedings of EuroVis)",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/tubes.pdf",
 		"teaser": "https://i.imgur.com/tTv2l2j.jpg",
 		"thumb": "https://i.imgur.com/gsgdwlZ.jpg",
 		"year": 2019,
 		"short_title": "tubes",
+		"doi": "10.1111/cgf.13703",
 		"bibtex": "@article{han_ray_2019,\n
-			title = {{Ray} {Tracing} {Generalized} {Tube} {Primitives}: {Method} and {Applications}},\n
-			journal = {Computer Graphics Forum (To Appear)},\n
-			author = {Han, Mengjiao and Wald, Ingo and Usher, Will and Wu, Qi
-				and Wang, Feng and Hansen, Charles and Pasucci, Valerio and Johnson, Chris R.},\n
-			year = {2019},\n}",
+			journal = {Computer Graphics Forum},\n
+			title = {{Ray Tracing Generalized Tube Primitives: Method and Applications}},\n
+			author = {Han, Mengjiao and Wald, Ingo and Usher, Will and
+				Wu, Qi and Wang, Feng and Pascucci, Valerio and Hansen, Charles D.
+				and Johnson, Chris R.},\n
+			year = {2019},\n
+			publisher = {The Eurographics Association and John Wiley & Sons Ltd.},\n
+			ISSN = {1467-8659},\n
+			DOI = {10.1111/cgf.13703}\n}",
 		"abstract": "We present a general high-performance technique for ray tracing
 			generalized tube primitives. Our technique efficiently supports
 			tube primitives with fixed and varying radii, general acyclic graph
