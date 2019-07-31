@@ -1,11 +1,23 @@
 [
 	{
+		"date": "2019-07-08",
+		"text": "Ingo Wald presented our short paper
+			[*RTX Beyond Ray Tracing: Exploring the Use of Hardware Ray Tracing Cores for Tet-Mesh Point Location*](/publications/rtx-points)
+			at HPG 2019 in Strasbourg."
+	},
+	{
+		"date": "2019-06-06",
+		"text": "I presented our paper [*Scalable Ray Tracing Using the Distributed FrameBuffer*](/publications/dfb),
+			and Mengjiao Han presented our paper [*Ray Tracing Generalized Tube Primitives: Method and Applications*](/publications/tubes)
+			at EuroVis 2019 in Porto."
+	},
+	{
 		"date": "2019-05-23",
-		"text": "The pre-print of our short paper accepted to HPG 2019 is now available online"
+		"text": "The pre-print of our short paper accepted to HPG 2019 is now available online."
 	},
 	{
 		"date": "2019-03-27",
-		"text": "The pre-prints of our two papers accepted to EuroVis 2019 are now available online"
+		"text": "The pre-prints of our two papers accepted to EuroVis 2019 are now available online."
 	},
 	{
 		"date": "2018-12-14",

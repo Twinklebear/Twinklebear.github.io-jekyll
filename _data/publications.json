@@ -175,7 +175,7 @@
 		"authors": "Sidharth Kumar, Steve Petruzza, Will Usher, and Valerio Pascucci",
 		"venue": "International Conference on Parallel Processing (ICPP) (To Appear)",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/icpp19.pdf",
-		"teaser": "https://i.imgur.com/juf5i52.png",
+		"teaser": "/assets/img/icpp-two-phase-io.svg",
 		"thumb": "https://i.imgur.com/GWCom0N.jpg",
 		"year": 2019,
 		"short_title": "icpp19",
