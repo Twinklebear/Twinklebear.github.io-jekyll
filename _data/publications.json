@@ -206,17 +206,20 @@
 	{
 		"title": "Spatially-aware Parallel I/O for Particle Data",
 		"authors": "Sidharth Kumar, Steve Petruzza, Will Usher, and Valerio Pascucci",
-		"venue": "International Conference on Parallel Processing (ICPP) (To Appear)",
+		"venue": "48th International Conference on Parallel Processing (ICPP)",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/icpp19.pdf",
 		"teaser": "/assets/img/icpp-two-phase-io.svg",
 		"thumb": "https://i.imgur.com/GWCom0N.jpg",
 		"year": 2019,
 		"short_title": "icpp19",
+		"doi": "10.1145/3337821.3337875",
 		"bibtex": "@inproceedings{kumar_spatially-aware_2019,\n
 			title = {{Spatially}-aware {Parallel} {I}/{O} for {Particle} {Data}},\n
-			booktitle = {48th International Conference on Parallel Processing (ICPP 2019) (To Appear)},\n
+			booktitle = {Proceedings of the 48th International Conference on Parallel Processing},\n
+			series = {ICPP 2019},
 			author = {Kumar, Sidharth and Petruzza, Steve and Usher, Will and Pascucci, Valerio},\n
-			year = {2019},\n}",
+			year = {2019},\n
+			doi = {10.1145/3337821.3337875}\n}",
 		"abstract": "Particle data are used across a diverse set of large scale simulations,
 			for example, in cosmology, molecular dynamics and combustion. 
 			At scale these applications generate tremendous amounts of data, which is
