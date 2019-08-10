@@ -133,19 +133,21 @@
 		"title": "RTX Beyond Ray Tracing: Exploring the Use of Hardware Ray Tracing
 			Cores for Tet-Mesh Point Location",
 		"authors": "Ingo Wald, Will Usher, Nate Morrical, Laura Lediaev, and Valerio Pascucci",
-		"venue": "To Appear, High Performance Graphics",
+		"venue": "High Performance Graphics Short Papers",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/rtx-points-hpg19.pdf",
 		"teaser": "https://i.imgur.com/clMvtsl.png",
 		"thumb": "https://i.imgur.com/nbHnD45.jpg",
 		"year": 2019,
 		"short_title": "rtx-points",
+		"doi": "10.2312/hpg.20191189",
 		"bibtex": "@inproceedings{wald_rtx_2019,\n
 			title = {{RTX} {Beyond} {Ray} {Tracing:} {Exploring} the {Use} of {Hardware}
 				{Ray} {Tracing} {Cores} for {Tet}-{Mesh} {Point} {Location}},\n
-			booktitle = {Proceedings of the Conference on High-Performance Graphics (HPG)},\n
+			booktitle = {High-Performance Graphics - Short Papers},\n
 			author = {Wald, Ingo and Usher, Will and Morrical, Nate
 				and Lediaev, Laura and Pascucci, Valerio},\n
-			year = {2019},\n}",
+			year = {2019},\n
+			DOI = {10.2312/hpg.20191189}\n}",
 		"abstract": "We explore a first proof-of-concept example of creatively using the
 			Turing generation's hardware ray tracing cores to solve a problem
 			other than classical ray tracing, specifically, point location in
