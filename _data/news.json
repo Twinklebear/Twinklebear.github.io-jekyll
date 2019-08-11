@@ -1,4 +1,9 @@
-[
+[	{
+		"date": "2019-08-08",
+		"text": "I presented our paper
+			[*Spatially-aware Parallel I/O for Particle Data*](/publications/icpp19)
+			at ICPP 2019 in Kyoto."
+	},
 	{
 		"date": "2019-07-08",
 		"text": "Ingo Wald presented our short paper
