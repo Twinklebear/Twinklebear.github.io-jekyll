@@ -20,5 +20,23 @@ title : RSS Feed
 			<pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
 		</item>
 		{% endfor %}
+		{% for pub in site.data.publications %}
+		<item>
+			<title>{{ pub.title | xml_escape }}</title>
+			<description>
+				{% if pub.teaser %}
+				&lt;figure&gt;
+					&lt;img src=&quot;{{pub.teaser}}&quot;/&gt;
+					&lt;figcaption&gt;
+						&lt;i&gt;{{pub.teaser_caption | xml_escape }}&lt;/i&gt;
+					&lt;/figcaption&gt;
+				&lt;/figure&gt;
+				{% endif %}
+				{{ pub.abstract | xml_escape }}
+			</description>
+			<link>https://www.willusher.io/publications/{{ pub.short_title }}</link>
+			<pubDate>{{ pub.exact_date }}</pubDate>
+		</item>
+		{% endfor %}
 	</channel>
 </rss>
