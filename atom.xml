@@ -1,0 +1,45 @@
+---
+layout: null
+title : Atom Feed
+---
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>Will Usher's Blog</title>
+	<link href="{{ site.production_url }}{{ site.JB.atom_path }}" rel="self"/>
+	<link href="{{ site.production_url }}"/>
+	<updated>{{ site.time | date_to_xmlschema }}</updated>
+	<id>{{ site.production_url }}</id>
+	<author>
+		<name>{{ site.author.name | xml_escape }}</name>
+		<email>{{ site.author.email }}</email>
+	</author>
+	{% for post in site.posts %}
+	<entry>
+		<title>{{ post.title | xml_escape }}</title>
+		<link href="{{ site.production_url }}{{ post.url }}"/>
+		<updated>{{ post.date | date_to_xmlschema }}</updated>
+		<id>{{ site.production_url }}{{ post.url }}</id>
+		<content type="html">{{ post.excerpt | xml_escape }}</content>
+	</entry>
+	{% endfor %}
+	{% for pub in site.data.publications %}
+	<entry>
+		<title>{{ pub.title | xml_escape }}</title>
+		<link href="{{ site.production_url }}publications/{{ pub.short_title }}"/>
+		<updated>{{ pub.exact_date | date_to_xmlschema }}</updated>
+		<id>{{ site.production_url }}/publications/{{ pub.short_title }}</id>
+		<content type="html">
+			{% if pub.teaser %}
+			&lt;figure&gt;
+			&lt;img src=&quot;{{pub.teaser}}&quot;/&gt;
+			&lt;figcaption&gt;
+			&lt;i&gt;{{pub.teaser_caption | xml_escape }}&lt;/i&gt;
+			&lt;/figcaption&gt;
+			&lt;/figure&gt;
+			{% endif %}
+			{{ pub.abstract | xml_escape }}
+		</content>
+	</entry>
+	{% endfor %}
+</feed>

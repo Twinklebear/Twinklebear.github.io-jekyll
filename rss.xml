@@ -4,11 +4,12 @@ title : RSS Feed
 ---
 
 <?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
+		<atom:link href="{{ site.production_url }}{{ site.JB.rss_path }}" rel="self" type="application/rss+xml" />
 		<title>Will Usher's Blog</title>
 		<description>Computer Graphics and Programming</description>
-		<link>https://www.willusher.io</link>
+		<link>{{site.production_url}}</link>
 		<lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
 		<pubDate>{{ site.time | date_to_rfc822 }}</pubDate>
 		<ttl>60</ttl>
@@ -16,7 +17,8 @@ title : RSS Feed
 		<item>
 			<title>{{ post.title | xml_escape }}</title>
 			<description>{{ post.excerpt | xml_escape }}</description>
-			<link>https://www.willusher.io/{{ post.url }}</link>
+			<link>{{site.production_url}}{{ post.url }}</link>
+			<guid>{{site.production_url}}{{ post.url }}</guid>
 			<pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
 		</item>
 		{% endfor %}
@@ -34,8 +36,9 @@ title : RSS Feed
 				{% endif %}
 				{{ pub.abstract | xml_escape }}
 			</description>
-			<link>https://www.willusher.io/publications/{{ pub.short_title }}</link>
-			<pubDate>{{ pub.exact_date }}</pubDate>
+			<link>{{site.production_url}}publications/{{ pub.short_title }}</link>
+			<guid>{{site.production_url}}publications/{{ pub.short_title }}</guid>
+			<pubDate>{{ pub.exact_date | date_to_rfc822 }}</pubDate>
 		</item>
 		{% endfor %}
 	</channel>
