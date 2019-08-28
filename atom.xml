@@ -20,7 +20,9 @@ title : Atom Feed
 		<link href="{{ site.production_url }}{{ post.url }}"/>
 		<updated>{{ post.date | date_to_xmlschema }}</updated>
 		<id>{{ site.production_url }}{{ post.url }}</id>
-		<content type="html">{{ post.excerpt | xml_escape }}</content>
+		<content type="html">{{ post.excerpt | xml_escape }}
+			&lt;a href=&quot;{{site.production_url}}{{post.url}}&quot;&gt;Continue Reading&lt;/a&gt;
+		</content>
 	</entry>
 	{% endfor %}
 	{% for pub in site.data.publications %}
@@ -39,6 +41,7 @@ title : Atom Feed
 			&lt;/figure&gt;
 			{% endif %}
 			{{ pub.abstract | xml_escape }}
+			&lt;a href=&quot;{{site.production_url}}/publications/{{pub.short_title}}&quot;&gt;Continue Reading&lt;/a&gt;
 		</content>
 	</entry>
 	{% endfor %}
