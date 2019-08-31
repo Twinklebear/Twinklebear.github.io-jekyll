@@ -1,4 +1,5 @@
 [
+
 	{
 		"title": "tray_rust",
 		"layout": 6,
@@ -54,22 +55,16 @@
 			good use of the CPU's SIMD units."
 	},
 	{
-		"title": "μPacket",
+		"title": "ChameleonRT",
 		"layout": 1,
 		"gh_user": "Twinklebear",
-		"gh_repo": "micro-packet",
-		"thumb": "https://i.imgur.com/Z4qlp42.png",
-		"img": "http://i.imgur.com/WcM6Rcl.png",
-		"description": "μPacket is an extremely simple packet based ray tracer that uses the AVX/AVX2 instruction
-			set to trace eight rays at once through the scene. Currently it only supports spheres and planes
-			with Lambertian BRDFs illuminated by a single point light. Illumination is computed with Whitted ray
-			tracing, although recursion only goes as far as computing shadows since there are no reflective
-			or transmissive materials at the moment.\n\n
-			Ray packets were first introduced by [Wald et al., 2001](http://www.sci.utah.edu/~wald/Publications/2001/CRT/CRT.pdf)
-			and are now widely used in high performance ray tracers like [Embree](http://embree.github.io/) due to
-			the performance gain achieved with good packet (and now stream) tracing techniques.\n\n
-			Current plans for this project are to switch to trace ray streams and add support for a path tracing
-			integrator for higher quality images."
+		"gh_repo": "ChameleonRT",
+		"thumb": "https://imgur.com/k3s9THV.jpg",
+		"img": "https://imgur.com/TpSzXc0.jpg",
+		"description": "ChameleonRT is an example interactive path tracer which runs on multiple
+        CPU and GPU ray tracing backends: Embree, DXR, OptiX, and Vulkan. Each backend uses an
+        identical path tracer which supports the Disney BSDF material model to provide the same
+        rendered result in each."
 	},
 	{
 		"title": "topo-vol",
@@ -127,6 +122,24 @@
 			about volume rendering for scientific visualization, and how I've implemented
 			in WebGL to write this renderer.
 			[Try it out online!](https://www.willusher.io/webgl-volume-raycaster/)"
+	},
+	{
+		"title": "μPacket",
+		"layout": 1,
+		"gh_user": "Twinklebear",
+		"gh_repo": "micro-packet",
+		"thumb": "https://i.imgur.com/Z4qlp42.png",
+		"img": "http://i.imgur.com/WcM6Rcl.png",
+		"description": "μPacket is an extremely simple packet based ray tracer that uses the AVX/AVX2 instruction
+			set to trace eight rays at once through the scene. Currently it only supports spheres and planes
+			with Lambertian BRDFs illuminated by a single point light. Illumination is computed with Whitted ray
+			tracing, although recursion only goes as far as computing shadows since there are no reflective
+			or transmissive materials at the moment.\n\n
+			Ray packets were first introduced by [Wald et al., 2001](http://www.sci.utah.edu/~wald/Publications/2001/CRT/CRT.pdf)
+			and are now widely used in high performance ray tracers like [Embree](http://embree.github.io/) due to
+			the performance gain achieved with good packet (and now stream) tracing techniques.\n\n
+			Current plans for this project are to switch to trace ray streams and add support for a path tracing
+			integrator for higher quality images."
 	},
 	{
 		"title": "WebGL EWA Surface Splatter",
