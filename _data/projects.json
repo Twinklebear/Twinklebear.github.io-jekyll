@@ -56,11 +56,15 @@
 	},
 	{
 		"title": "ChameleonRT",
-		"layout": 1,
+		"layout": 2,
 		"gh_user": "Twinklebear",
 		"gh_repo": "ChameleonRT",
-		"thumb": "https://imgur.com/k3s9THV.jpg",
-		"img": "https://imgur.com/TpSzXc0.jpg",
+		"thumb": "https://i.imgur.com/EGZPkkV.jpg",
+		"img": [
+            "https://i.imgur.com/KA2dqKn.jpg",
+            "https://i.imgur.com/MJ8FRZ1.jpg",
+            "https://i.imgur.com/pV4OFlL.jpg"
+        ],
 		"description": "ChameleonRT is an example interactive path tracer which runs on multiple
         CPU and GPU ray tracing backends: Embree, DXR, OptiX, and Vulkan. Each backend uses an
         identical path tracer which supports the Disney BSDF material model to provide the same
