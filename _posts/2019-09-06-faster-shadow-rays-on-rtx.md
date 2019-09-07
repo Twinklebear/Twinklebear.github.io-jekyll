@@ -114,7 +114,7 @@ void ShadowMiss(inout ShadowHitInfo shadow_hit : SV_RayPayload) {
 
 I ran some small tests in [ChameleonRT](https://github.com/Twinklebear/ChameleonRT) with the DXR backend,
 rendering the Sponza scene from [Morgan McGuire's Computer Graphics Archive](https://casual-effects.com/data/)
-on an RTX 2070 at 1280x720. For these I ran both a full path traced and shaded version, and a version
+on an RTX 2070 at 1280x720 and 2560x1440. For these I ran both a full path traced and shaded version, and a version
 which only traces primary rays and shadow rays at the first hit point. The fully shaded and path traced
 version will give some idea of how this change effects the overall performance of a renderer,
 while the unshaded primary + shadow version will better isolate the impact of the shadow ray change.
@@ -132,16 +132,28 @@ the rays traced per-second and render time per-frame, shown in the table below.
     </thead>
     <tbody>
         <tr>
-        <td scope="col">Sponza</td>
+        <td scope="col">Sponza (720p)</td>
         <td class="text-right" scope="col">371.65 MRay/s (17.06 ms)</td>
         <td class="text-right" scope="col">373.75 MRay/s (17.00 ms)</td>
         <td class="text-right" scope="col">375.67 MRay/s (16.84 ms)</td>
         </tr>
         <tr>
-        <td scope="col">Sponza Unshaded</td>
+        <td scope="col">Sponza Unshaded (720p)</td>
         <td class="text-right" scope="col">378.26 MRay/s (4.93 ms)</td>
         <td class="text-right" scope="col">389.31 MRay/s (4.88 ms)</td>
         <td class="text-right" scope="col">398.92 MRay/s (4.82 ms)</td>
+        </tr>
+        <tr>
+        <td scope="col">Sponza (1440p)</td>
+        <td class="text-right" scope="col">386.35 MRay/s (64.44 ms)</td>
+        <td class="text-right" scope="col">387.23 MRay/s (64.30 ms)</td>
+        <td class="text-right" scope="col">389.21 MRay/s (63.97 ms)</td>
+        </tr>
+        <tr>
+        <td scope="col">Sponza Unshaded (1440p)</td>
+        <td class="text-right" scope="col">1.004 GRay/s (7.24 ms)</td>
+        <td class="text-right" scope="col">1.004 GRay/s (7.24 ms)</td>
+        <td class="text-right" scope="col">1.005 GRay/s (7.23 ms)</td>
         </tr>
     </tbody>
 </table>
@@ -160,6 +172,10 @@ This would be the same as **OGAH** where we additionally specify the skip closes
 
 ### Update 9/7
 
-I've added an unshaded primary + shadow ray only benchmark, thanks [Jacco Bikker](https://twitter.com/j_bikker/status/1170322992267780096)
-for the suggestion!
+I've added an unshaded primary + shadow ray only benchmark, thanks
+[Jacco Bikker](https://twitter.com/j_bikker/status/1170322992267780096) for the suggestion!
+To compare how well these perform at higher resolutions (i.e. more primary rays) I've also
+added an additional set of benchmarks run at 1440p. In the future I'll have to add an offline
+benchmark app which can take some number of samples per-pixel and render at higher resolutions
+than my monitor, which should give better benchmark results overall as well.
 
