@@ -1,4 +1,10 @@
-[	{
+[	
+    {
+		"date": "2019-08-10",
+		"text": "The pre-print of our short paper at IEEE VIS 2019 is now available online
+        [here](publications/rtx-space-skipping)."
+	},
+    {
 		"date": "2019-08-08",
 		"text": "I presented our paper
 			[*Spatially-aware Parallel I/O for Particle Data*](/publications/icpp19)
