@@ -111,6 +111,8 @@
 		"layout": 2,
 		"gh_user": "Twinklebear",
 		"gh_repo": "webgl-volume-raycaster",
+        "webtoy": 1,
+        "toy_url": "/webgl-volume-raycaster/",
 		"img": [
 			"https://i.imgur.com/yLa27hG.png",
 			"https://i.imgur.com/FOUKtV1.png",
@@ -150,6 +152,8 @@
 		"layout": 2,
 		"gh_user": "Twinklebear",
 		"gh_repo": "webgl-ewa-splatter",
+        "webtoy": 1,
+        "toy_url": "/webgl-ewa-splatter/",
 		"img": [
 			"https://i.imgur.com/yqCfPZz.png",
 			"https://i.imgur.com/c6Cj6xa.png",
@@ -178,6 +182,8 @@
 		"layout": 2,
 		"gh_user": "Twinklebear",
 		"gh_repo": "webgl-marching-cubes",
+        "webtoy": 1,
+        "toy_url": "/webgl-marching-cubes/",
 		"img": [
 			"https://i.imgur.com/JW9UZYP.png",
 			"https://i.imgur.com/aRJzV7x.png",
@@ -187,8 +193,8 @@
         algorithm for extracting [isosurfaces](https://en.wikipedia.org/wiki/Isosurface) from 3D volume data.
         An isosurface is a surface which represents points in the 3D data which all have the same value (e.g., pressure, temperature).
         The isosurface extraction code
-        is implemented in Rust and compiled to WebAssembly to accelerate extraction of the surface. Depending on your browser, compared to
-        the pure Javascript version the WebASM version is 10-50x faster!
+        is implemented in Rust and compiled to WebAssembly to accelerate extraction of the surface. Depending on your browser, the
+        WebASM version is 10-50x faster than the pure Javascript one!
         The surface is rendered as a triangle mesh and combined with the
         volume during the volume raycasting step, in a manner roughly similar to shadow mapping.
         [Try it out online!](https://www.willusher.io/webgl-marching-cubes/)"
@@ -198,6 +204,8 @@
 		"layout": 2,
 		"gh_user": "Twinklebear",
 		"gh_repo": "webgl-neuron",
+        "webtoy": 1,
+        "toy_url": "/webgl-neuron/",
 		"img": [
 			"https://i.imgur.com/9vVRCLE.png",
 			"https://i.imgur.com/lwlbLCw.png",
@@ -207,7 +215,8 @@
 		renderer uses my WebGL2 volume renderer to display the RAW volume or imported TIFF
 		stack and renders the imported neuron traces as lines within the volume.
 		It can import single-channel 8bit and 16bit TIFF image stacks, and can
-		import neuron traces in the SWC file format.
+		import neuron traces in the SWC file format. TIFF files are loaded using a build
+        of [libtiff compiled to WebAssembly](https://github.com/Twinklebear/tiff.js).
 		The neurons are composited within the volume by rendering out the depth buffer
 		and using this to terminate rays early in the volume when they hit the geometry,
 		roughly similar to shadow mapping.

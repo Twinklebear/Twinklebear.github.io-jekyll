@@ -1,0 +1,69 @@
+---
+layout: page
+title: Web Toys
+---
+{% include JB/setup %}
+
+<div class="col-12 row pb-2 pt-2 mt-1 bg-light rounded">
+    <div class="col-12">
+        <p class="lead">
+        This page highlights the WebGL/WebAssembly based visualization and rendering
+        toys I've written with a goal of exploring how scivis tools can become
+        as readily available and easily deployable on the web as infovis ones. Although the
+        browser still imposes restrictions on the visualization system's ability to render and
+        work with large data sets or perform expensive computations,
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext">WebGL2</a>
+        and <a href="https://webassembly.org/">WebAssembly</a> help push the browser's abilities
+        beyond what was previously possible. WebGL2 enables the browser to support the core rendering
+        features needed for scivis (3D textures, floating point images, fixed function fragment operations, etc.).
+        WebAssembly allows for recompiling existing scivis libraries to fast, portable byte-code, or
+        compiling new code for the browser without sacrificing performance. Furthermore, WebAssembly can
+        also be executed outside of the browser, or JIT'd to native code, enabling users to easily transition
+        from the browser to a native tool when working with larger data sets or computations which need
+        native code performance or multithreading.
+        Proposed future technologies
+        for the browser can enable even more powerful algorithms, WebGPU could enable data-parallel computation
+        through compute shaders, while shared memory multi-threading would enable multi-threaded CPU execution
+        of both Javascript and WebAssembly. Both technologies would allow tools to tap much of the compute available
+        across a range of platforms.
+        </p>
+        <p class="lead">
+        The toys listed below explore various aspects of these options. The WebGL Volume Raycaster implements
+        a standard volume raycaster using 3D textures in WebGL2. The EWA Surface Splatter implements
+        a splat-based renderer for visualizing point cloud data. The WebGL Marching Cubes example compares
+        the performance of marching cubes implemented in pure Javascript vs. Rust compiled to WebAssembly.
+        The WebGL Neuron Visualizer uses libtiff compiled to WebAssembly to allow loading microscopy data
+        into the browser to be rendered with WebGL.
+        </p>
+	</div>
+</div>
+{% for prj in site.data.projects %}
+{% if prj.webtoy == 1 %}
+	<div class="col-12 row pb-4 mt-4 border-bottom border-secondary"
+	  id="{{prj.title}}">
+		<div class="col-12">
+            <h2><b>{{prj.title}}</b> <a href="{{prj.toy_url}}">(Try it!)</a></h2>
+		</div>
+{% if prj.layout == 2 %}
+		<div class="col-12">
+			{{prj.description | markdownify}}
+			<a href="https://github.com/{{prj.gh_user}}/{{prj.gh_repo}}">
+				<img class="img-fluid" style="display:inline" src="assets/img/gh-cards/{{prj.gh_user}}/{{prj.gh_repo}}.svg">
+			</a>
+		</div>
+		<div class="row mt-0 mt-sm-3 justify-content-center col-12 mx-auto">
+			{% for img in prj.img %}
+			<div class="col-12 mt-2 mt-sm-0 col-sm-4">
+				<img class="img-fluid" src="{{img}}">
+			</div>
+			{% endfor %}
+		</div>
+{% else %}
+		<div class="col-12">
+			<h1 class="bg-danger text-white">Invalid Layout!</h1>
+		</div>
+{% endif %}
+	</div>
+{% endif %}
+{% endfor %}
+
