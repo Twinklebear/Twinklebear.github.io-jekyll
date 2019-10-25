@@ -1,0 +1,162 @@
+---
+layout: post
+title: "The Shader Binding Table Three Ways"
+description: ""
+category: graphics
+tags: [graphics, raytracing]
+published: true
+---
+{% include JB/setup %}
+
+Lead-in: some stuff like the SBT setup and how the different options for
+tweaking how it's indexed can be confusing to work out. The information around
+is a bit partial and most people are left to kind of work out the math or some
+guess work to see what's going on. Here I'll explain each and provide an interactive
+tool for playing with how the SBT is setup and indexed in the shader.
+Also explain difference of a shader vs. the shader record, which is more like
+a closure in that you need a SR for each unique combination of function and SBT parameters.
+
+<!--more-->
+
+# DirectX Ray Tracing
+
+SBT can store pairs of 4byte constants (oe 4byte + pad) and 8 byte descriptors.
+
+{% highlight hlsl %}
+Template<payload_t>
+void TraceRay(RaytracingAccelerationStructure AccelerationStructure,
+              uint RayFlags,
+              uint InstanceInclusionMask,
+              uint RayContributionToHitGroupIndex,
+              uint MultiplierForGeometryContributionToHitGroupIndex,
+              uint MissShaderIndex,
+              RayDesc Ray,
+              inout payload_t Payload);
+{% endhighlight %}
+
+{% highlight c++ %}
+typedef struct D3D12_RAYTRACING_INSTANCE_DESC {
+  FLOAT                     Transform[3];
+  UINT                      InstanceID : 24;
+  UINT                      InstanceMask : 8;
+  UINT                      InstanceContributionToHitGroupIndex : 24;
+  UINT                      Flags : 8;
+  D3D12_GPU_VIRTUAL_ADDRESS AccelerationStructure;
+} D3D12_RAYTRACING_INSTANCE_DESC;
+{% endhighlight %}
+
+Shader handle size `D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES` (32), shader record
+stride alignment `D3D12_RAYTRACING_SHADER_TABLE_BYTE_ALIGNMENT` (64). Interesting
+to note here as well, the max size of the stride is 4096 bytes.
+
+Can also talk about how the ray payload is sent here too in trace ray.
+
+# Vulkan Ray Tracing
+
+The most restricted of them, SBT can only store 4byte constants. 
+
+{% highlight glsl %}
+void traceNV(accelerationStructureNV acceleration_structure,
+              uint ray_flags,
+              uint instance_inclusion_mask,
+              uint ray_contribution_to_hit_group_index, (sbt_record_offset)
+              uint multiplier_for_geometry_contribution_to_hit_group_index, (sbt_record_stride)
+              uint miss_shader_index,
+              vec3 ray_origin
+              float t_min
+              vec3 ray_dir,
+              float t_max,
+              uint payload_index);
+{% endhighlight %}
+
+{% highlight c++ %}
+struct GeometryInstance {
+    float transform[12];
+    uint32_t instance_custom_index : 24;
+    uint32_t mask : 8;
+    uint32_t instance_offset : 24;
+    uint32_t flags : 8;
+    uint64_t acceleration_structure_handle;
+};
+{% endhighlight %}
+
+Alignment requirements queried at runtime. Can use what the vals are on my desktop
+for shaderGroupHandleSize and shaderGroupBaseAlignment
+
+Can also talk here about how the ray payload is specified in GLSL/Vulkan
+
+# OptiX
+
+The most flexible of them, just write bytes and get a pointer to this data
+on the GPU side. Only requirement is the alignment restriction
+
+{% highlight cuda %}
+void optixTrace(OptixTraversableHandle handle,
+    float3 rayOrigin,
+    float3 rayDirection,
+    float tmin,
+    float tmax,
+    float rayTime,
+    OptixVisibilityMask visibilityMask,
+    unsigned int rayFlags,
+    unsigned int SBToffset,
+    unsigned int SBTstride,
+    unsigned int missSBTIndex
+    // up to 8 32-bit values to be passed through registers
+    // unsigned int &p0-p7
+)
+{% endhighlight %}
+
+{% highlight c++ %}
+struct OptixInstance {
+    float transform[12];
+    unsigned int instanceId;
+    unsigned int sbtOffset;
+    unsigned int visibilityMask;
+    unsigned int flags;
+    OptixTraversableHandle traversableHandle;
+    unsigned int pad[2];
+};
+{% endhighlight %}
+
+Shader handle size `OPTIX_SBT_RECORD_HEADER_SIZE` (32), shader record stride
+alignment requirement is `OPTIX_SBT_RECORD_ALIGNMENT` (16).
+
+Here can also discuss how the ray payload is set, and the trick for packing
+a pointer to a stack var as the payload.
+
+# Interactive SBT Builder
+
+Here I'm thinking to put some D3 interactive example where you can build your
+own SBT and see how the different instance, geometry and trace ray parameters
+effect what entries in the SBT are accessed.
+
+Things this should support:
+
+- multiple geom per-instance
+- adding/removing miss groups
+- adding/removing hit groups
+- changing the parameters for the different shader records
+- changing the API backend
+- changing the trace ray parameters to see which hit groups are accessed for specific
+      instances and geometries
+- see which hit group is called for a specific geometry given the current indexing params
+- see which miss group is called for a specific geom (easier)
+- maybe also include that it is possible to have multiple ray-gen shaders but the APIs
+      just take the one to use for the current launch/dispatch as the param. You don't specify
+      some table with stride.
+- also make clear that the different shader records can be stored in different buffers
+
+The interactive graphic style I'd like to be similar to that used in RT Gems, but with
+the ability to switch API. Note that switching the API will potentially lead to making
+invalid SBT entries because the data that can be set differs and how they should be
+aligned. Maybe it would be better to be able to view all 3 at once, or just reset the
+data when the API is switched.
+
+# Extra: An SBT for Embree
+
+We can do the same thing with Embree since the whole code is in our control for
+how calls get dispatched. So if we want a consistent API for ray tracing we can
+actually implement an SBT for Embree as well. We could implement one that works
+just like OptiX to prove an easy example.
+
