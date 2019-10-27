@@ -21,8 +21,10 @@ a closure in that you need a SR for each unique combination of function and SBT 
 # DirectX Ray Tracing
 
 SBT can store pairs of 4byte constants (oe 4byte + pad) and 8 byte descriptors.
+This appears as any other shader parameters and have to be mapped to the corresponding
+registers/spaces etc. by specifying a local root signature for the shaders.
 
-{% highlight hlsl %}
+{% highlight glsl %}
 Template<payload_t>
 void TraceRay(RaytracingAccelerationStructure AccelerationStructure,
               uint RayFlags,
@@ -53,7 +55,8 @@ Can also talk about how the ray payload is sent here too in trace ray.
 
 # Vulkan Ray Tracing
 
-The most restricted of them, SBT can only store 4byte constants. 
+The most restricted of them, SBT can only store 4byte constants, this data appears
+as a buffer in the shader.
 
 {% highlight glsl %}
 void traceNV(accelerationStructureNV acceleration_structure,
@@ -67,6 +70,12 @@ void traceNV(accelerationStructureNV acceleration_structure,
               vec3 ray_dir,
               float t_max,
               uint payload_index);
+{% endhighlight %}
+
+{% highlight glsl %}
+layout(shaderRecordNV) buffer SBT {
+    // data
+};
 {% endhighlight %}
 
 {% highlight c++ %}
@@ -88,9 +97,11 @@ Can also talk here about how the ray payload is specified in GLSL/Vulkan
 # OptiX
 
 The most flexible of them, just write bytes and get a pointer to this data
-on the GPU side. Only requirement is the alignment restriction
+on the GPU side. Only requirement is the alignment restriction.
+The SBT data is fetched as a raw ptr to the SBT data component via
+`optixGetSbtDataPointer()`.
 
-{% highlight cuda %}
+{% highlight c %}
 void optixTrace(OptixTraversableHandle handle,
     float3 rayOrigin,
     float3 rayDirection,
@@ -153,10 +164,23 @@ invalid SBT entries because the data that can be set differs and how they should
 aligned. Maybe it would be better to be able to view all 3 at once, or just reset the
 data when the API is switched.
 
+<div class="col-12">
+<svg width="100%" width="800" height="300" id="sbtWidget">
+</svg>
+</div>
+
+This instance widget will have all the instances here, each with a list of geometries
+represented as triangles
+<svg class="col-12" id="instanceWidget">
+</svg>
+
 # Extra: An SBT for Embree
 
 We can do the same thing with Embree since the whole code is in our control for
 how calls get dispatched. So if we want a consistent API for ray tracing we can
 actually implement an SBT for Embree as well. We could implement one that works
 just like OptiX to prove an easy example.
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="/assets/sbt.js"></script>
 
