@@ -165,7 +165,8 @@ aligned. Maybe it would be better to be able to view all 3 at once, or just rese
 data when the API is switched.
 
 <div class="col-12">
-<svg width="100%" width="800" height="300" id="sbtWidget">
+<svg width="100%" width="800" height="380" id="sbtWidget">
+<text class="currentAPI"></text>
 </svg>
 </div>
 
