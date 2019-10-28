@@ -165,9 +165,44 @@ aligned. Maybe it would be better to be able to view all 3 at once, or just rese
 data when the API is switched.
 
 <div class="col-12">
-<svg width="100%" width="800" height="380" id="sbtWidget">
-<text class="currentAPI"></text>
-</svg>
+    <svg width="100%" width="800" height="380" id="sbtWidget">
+    </svg>
+    <div class="col-12 row mb-2">
+        <div class="col-12 mb-3">
+            API: <select id="selectAPI" onchange="selectAPI()">
+            <option selected="selected">DXR</option>
+            <option>Vulkan</option>
+            <option>OptiX</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <input type="text" class="form-control" id="shaderRecordName" placeholder="Shader record name">
+        </div>
+        <div class="col-6">
+            <button id="addHitGroup" type="button" class="btn btn-primary" onclick="addShaderRecord('hitgroup')">Add Hit Group</button>
+            <button id="addMissShader" type="button" class="btn btn-primary" onclick="addShaderRecord('miss')">Add Miss Shader</button>
+        </div>
+        <div class="col-12" id="dxrParamsUI">
+            <p class="mt-2 mb-1">Shader Record Parameters:</p>
+            <button id="addConstant" type="button" class="btn btn-primary" onclick="addConstantParam()">Add 4byte Constant</button>
+            <button id="addGPUHandle" type="button" class="btn btn-primary" onclick="addGPUHandleParam()">Add GPU Handle</button>
+        </div>
+        <div class="col-12" id="vulkanParamsUI">
+            <p class="mt-2 mb-1">Shader Record Parameters:</p>
+            <button id="addConstant" type="button" class="btn btn-primary" onclick="addConstantParam()">Add 4byte Constant</button>
+        </div>
+        <div class="col-12 row" id="optixParamsUI">
+            <div class="col-12">
+                <p class="mt-2 mb-1">Shader Record Parameters:</p>
+            </div>
+            <div class="col-6 mb-2">
+                <input type="number" class="form-control" id="structParamSize" placeholder="Struct size (bytes)">
+            </div>
+            <div class="col-6">
+                <button id="addStruct" type="button" class="btn btn-primary" onclick="addStructParam()">Add/Set Struct</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 This instance widget will have all the instances here, each with a list of geometries
