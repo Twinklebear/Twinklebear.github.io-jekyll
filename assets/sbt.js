@@ -265,7 +265,13 @@ ShaderTable.prototype.render = function(widget, xScale) {
 
     raygenSelection.exit().remove();
 
+    // Determine the starting offset stride for the hit groups
     var offset = alignTo(this.raygen.size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT);
+    var hgStride = 0;
+    for (var i = 0; i < this.hitGroups.length; ++i) {
+        hgStride = Math.max(hgStride, alignTo(this.hitGroups[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
+    }
+
     var hgSelection = widget.selectAll('.hitgroup').data(this.hitGroups);
     hgSelection.enter()
         .append('rect')
@@ -286,10 +292,9 @@ ShaderTable.prototype.render = function(widget, xScale) {
             selectedShaderRecord = d;
             d.render(widget);
         })
-        .attr('x', function(d) {
-            var pos = offset;
-            d.setBaseOffset(offset);
-            offset = alignTo(offset + d.size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT);
+        .attr('x', function(d, i) {
+            var pos = hgStride * i + offset;
+            d.setBaseOffset(pos);
             return xScale(pos);
         })
         .attr('width', function(d) {
@@ -297,6 +302,13 @@ ShaderTable.prototype.render = function(widget, xScale) {
         });
 
     hgSelection.exit().remove();
+
+    // Compute offset and stride for the miss shaders
+    offset += hgStride * this.hitGroups.length;
+    var missStride = 0;
+    for (var i = 0; i < this.missShaders.length; ++i) {
+        missStride = Math.max(missStride, alignTo(this.missShaders[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
+    }
 
     var missSelection = widget.selectAll('.miss').data(this.missShaders);
     missSelection.enter()
@@ -318,10 +330,9 @@ ShaderTable.prototype.render = function(widget, xScale) {
             selectedShaderRecord = d;
             d.render(widget);
         })
-        .attr('x', function(d) {
-            var pos = offset;
-            d.setBaseOffset(offset);
-            offset = alignTo(offset + d.size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT);
+        .attr('x', function(d, i) {
+            var pos = missStride * i + offset;
+            d.setBaseOffset(pos);
             return xScale(pos);
         })
         .attr('width', function(d) {

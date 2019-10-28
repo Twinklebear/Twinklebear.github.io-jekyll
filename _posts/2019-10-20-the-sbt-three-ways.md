@@ -144,12 +144,13 @@ effect what entries in the SBT are accessed.
 
 Things this should support:
 
-- need to account for the single stride param for each SBT group, right now
-      it only does the alignment part.
+- <s>need to account for the single stride param for each SBT group, right now
+      it only does the alignment part.</s>
 - adding/removing miss groups
 - adding/removing hit groups
-- changing the parameters for the different shader records
+- changing the parameters for the different shader records (add/remove)
 - <s>changing the API backend</s>
+- view the dispatch rays desc with the stride/offset/etc. values
 - multiple geom per-instance
 - changing the trace ray parameters to see which hit groups are accessed for specific
       instances and geometries
