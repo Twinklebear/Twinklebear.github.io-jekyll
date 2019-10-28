@@ -144,6 +144,8 @@ effect what entries in the SBT are accessed.
 
 Things this should support:
 
+- need to account for the single stride param for each SBT group, right now
+      it only does the alignment part.
 - adding/removing miss groups
 - adding/removing hit groups
 - changing the parameters for the different shader records
