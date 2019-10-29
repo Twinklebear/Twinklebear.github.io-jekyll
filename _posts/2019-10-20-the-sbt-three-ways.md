@@ -146,9 +146,9 @@ Things this should support:
 
 - <s>need to account for the single stride param for each SBT group, right now
       it only does the alignment part.</s>
-- adding/removing miss groups
-- adding/removing hit groups
-- changing the parameters for the different shader records (add/remove)
+- <s>adding/removing miss groups</s>
+- <s>adding/removing hit groups</s>
+- <s>changing the parameters for the different shader records (add/remove)</s>
 - <s>changing the API backend</s>
 - view the dispatch rays desc with the stride/offset/etc. values
 - multiple geom per-instance

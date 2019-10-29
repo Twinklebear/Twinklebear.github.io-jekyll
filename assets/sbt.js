@@ -103,6 +103,44 @@ ShaderRecord.prototype.size = function() {
     return currentAPI.SHADER_IDENTIFIER_SIZE + size;
 }
 
+ShaderRecord.prototype.removeParam = function(i) { 
+    if (this.params[i].type == ParamType.FOUR_BYTE_CONSTANT_PAD) {
+        return;
+    }
+    var toErase = 1;
+
+    // If the param was a padded 4byte constant, the padding is also no longer needed
+    if (i != this.params.length - 1 && this.params[i].type == ParamType.FOUR_BYTE_CONSTANT
+        && this.params[i + 1].type == ParamType.FOUR_BYTE_CONSTANT_PAD) {
+        toErase = 2;
+    }
+
+    this.params.splice(i, toErase);
+
+    // For DXR: make sure no single 4byte constant entries are left in the SBT,
+    // since they must come in pairs or with a 4byte padding
+    if (currentAPI == API['DXR']) {
+        // Remove and re-create any required 4byte padding to update the record
+        for (var j = 0; j < this.params.length;) {
+            if (this.params[j].type == ParamType.FOUR_BYTE_CONSTANT_PAD) {
+                this.params.splice(j, 1);
+            } else {
+                ++j;
+            }
+        }
+        // Now re-insert 4byte constant padding as necessary
+        for (var j = 0; j < this.params.length; ++j) {
+            if (this.params[j].type == ParamType.FOUR_BYTE_CONSTANT) {
+                if (j == this.params.length - 1 || this.params[j + 1].type != ParamType.FOUR_BYTE_CONSTANT) {
+                    this.params.splice(j + 1, 0, new ShaderParam(ParamType.FOUR_BYTE_CONSTANT_PAD));
+                }
+                // We either have or just made a pair, so skip the pair
+                ++j;
+            }
+        }
+    }
+}
+
 ShaderRecord.prototype.render = function(parentWidget) {
     var self = this;
     optixStructSizeInput.value = '';
@@ -180,6 +218,10 @@ ShaderRecord.prototype.render = function(parentWidget) {
             var pos = offset;
             offset += d.size;
             return scale(pos);
+        })
+        .on('dblclick', function(d, i) {
+            self.removeParam(i);
+            self.render(parentWidget);
         });
     selection.exit().remove();
 
@@ -211,6 +253,10 @@ ShaderRecord.prototype.render = function(parentWidget) {
                 return 'GPU Handle';
             }
             return 'Unknown??';
+        })
+        .on('dblclick', function(d, i) {
+            self.removeParam(i);
+            self.render(parentWidget);
         });
     selection.exit().remove();
 
@@ -292,6 +338,17 @@ ShaderTable.prototype.render = function(widget, xScale) {
             selectedShaderRecord = d;
             d.render(widget);
         })
+        .on('dblclick', function(d, i) {
+            if (self.hitGroups.length == 1) {
+                return;
+            }
+            if (selectedShaderRecord == d) {
+                selectedShaderRecord = self.hitGroups[i - 1]
+            }
+            self.hitGroups.splice(i, 1);
+            self.render(widget, xScale);
+            selectedShaderRecord.render(widget);
+        })
         .attr('x', function(d, i) {
             var pos = hgStride * i + offset;
             d.setBaseOffset(pos);
@@ -329,6 +386,17 @@ ShaderTable.prototype.render = function(widget, xScale) {
         .on('click', function(d, i) {
             selectedShaderRecord = d;
             d.render(widget);
+        })
+        .on('dblclick', function(d, i) {
+            if (self.missShaders.length == 1) {
+                return;
+            }
+            if (selectedShaderRecord == d) {
+                selectedShaderRecord = self.missShaders[i - 1]
+            }
+            self.missShaders.splice(i, 1);
+            self.render(widget, xScale);
+            selectedShaderRecord.render(widget);
         })
         .attr('x', function(d, i) {
             var pos = missStride * i + offset;
