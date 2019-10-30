@@ -177,6 +177,9 @@ data when the API is switched.
             <option>Vulkan</option>
             <option>OptiX</option>
             </select>
+            Raygen Size: <span id='raygenSize'></span>,
+            HitGroup Stride: <span id='hitGroupStride'></span>,
+            Miss Shader Stride: <span id='missStride'></span>
         </div>
         <div class="col-6">
             <input type="text" class="form-control" id="shaderRecordName" placeholder="Shader record name">

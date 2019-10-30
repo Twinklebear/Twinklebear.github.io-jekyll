@@ -25,9 +25,17 @@ var currentAPI = API['DXR'];
 var shaderTable = null;
 var selectedShaderRecord = null;
 
-var optixStructSizeInput = null;
 var sbtWidget = null;
-var sbtWidgetScale = d3.scaleLinear([0, 320], [10, 790]);
+var sbtWidgetScale = d3.scaleLinear([0, 32], [0, 78]);
+
+var shaderRecordWidget = null;
+var shaderRecordZoom = null;
+var shaderRecordZoomRect = null;
+
+var optixStructSizeInput = null;
+var raygenSizeUI = null;
+var hitgroupStrideUI = null;
+var missShaderStrideUI = null;
 
 var alignTo = function(val, align) {
     return Math.floor((val + align - 1) / align) * align;
@@ -139,14 +147,16 @@ ShaderRecord.prototype.removeParam = function(i) {
             }
         }
     }
+
+    updateSBTViews();
 }
 
-ShaderRecord.prototype.render = function(parentWidget) {
+ShaderRecord.prototype.render = function() {
     var self = this;
     optixStructSizeInput.value = '';
 
-    parentWidget.select('.shaderRecordDetail').remove();
-    var widget = parentWidget.append('g')
+    shaderRecordWidget.select('.shaderRecordDetail').remove();
+    var widget = shaderRecordWidget.append('g')
         .attr('class', 'shaderRecordDetail')
         .attr('transform', 'translate(32, 140)');
 
@@ -221,7 +231,7 @@ ShaderRecord.prototype.render = function(parentWidget) {
         })
         .on('dblclick', function(d, i) {
             self.removeParam(i);
-            self.render(parentWidget);
+            updateSBTViews();
         });
     selection.exit().remove();
 
@@ -256,7 +266,7 @@ ShaderRecord.prototype.render = function(parentWidget) {
         })
         .on('dblclick', function(d, i) {
             self.removeParam(i);
-            self.render(parentWidget);
+            updateSBTViews();
         });
     selection.exit().remove();
 
@@ -282,15 +292,34 @@ var ShaderTable = function() {
     selectedShaderRecord = this.raygen;
 }
 
-ShaderTable.prototype.render = function(widget, xScale) {
+ShaderTable.prototype.size = function() {
+    var raygenSize = alignTo(this.raygen.size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT);
+    raygenSizeUI.innerHTML = raygenSize + 'b';
+
+    var hgStride = 0;
+    for (var i = 0; i < this.hitGroups.length; ++i) {
+        hgStride = Math.max(hgStride, alignTo(this.hitGroups[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
+    }
+    hitgroupStrideUI.innerHTML = hgStride + 'b';
+
+    var missStride = 0;
+    for (var i = 0; i < this.missShaders.length; ++i) {
+        missStride = Math.max(missStride, alignTo(this.missShaders[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
+    }
+    missShaderStrideUI.innerHTML = missStride + 'b';
+
+    return raygenSize + hgStride * this.hitGroups.length + missStride * this.missShaders.length;
+}
+
+ShaderTable.prototype.render = function() {
     var self = this;
 
     // Draw the raygen program
-    var raygenSelection = widget.selectAll('.raygen').data([this.raygen]);
+    var raygenSelection = sbtWidget.selectAll('.raygen').data([this.raygen]);
     raygenSelection.enter()
         .append('rect')
         .attr('class', 'raygen')
-        .attr('x', xScale(0))
+        .attr('x', 0)
         .attr('y', 30)
         .attr('height', 64)
         .attr('stroke-width', 2)
@@ -305,9 +334,9 @@ ShaderTable.prototype.render = function(widget, xScale) {
         })
         .on('click', function(d) {
             selectedShaderRecord = d;
-            d.render(widget);
+            d.render();
         })
-        .attr('width', xScale(this.raygen.size()) - xScale(0));
+        .attr('width', sbtWidgetScale(this.raygen.size()));
 
     raygenSelection.exit().remove();
 
@@ -318,7 +347,7 @@ ShaderTable.prototype.render = function(widget, xScale) {
         hgStride = Math.max(hgStride, alignTo(this.hitGroups[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
     }
 
-    var hgSelection = widget.selectAll('.hitgroup').data(this.hitGroups);
+    var hgSelection = sbtWidget.selectAll('.hitgroup').data(this.hitGroups);
     hgSelection.enter()
         .append('rect')
         .attr('class', 'hitgroup')
@@ -336,26 +365,33 @@ ShaderTable.prototype.render = function(widget, xScale) {
         .merge(hgSelection)
         .on('click', function(d, i) {
             selectedShaderRecord = d;
-            d.render(widget);
+            d.render();
         })
         .on('dblclick', function(d, i) {
             if (self.hitGroups.length == 1) {
                 return;
             }
-            if (selectedShaderRecord == d) {
-                selectedShaderRecord = self.hitGroups[i - 1]
-            }
             self.hitGroups.splice(i, 1);
-            self.render(widget, xScale);
-            selectedShaderRecord.render(widget);
+
+            if (selectedShaderRecord == d) {
+                if (i < self.hitGroups.length) {
+                    selectedShaderRecord = self.hitGroups[i]
+                } else {
+                    selectedShaderRecord = self.hitGroups[self.hitGroups.length - 1];
+                }
+            }
+
+            // Reset the zoom for the shader record
+            shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
+            updateSBTViews();
         })
         .attr('x', function(d, i) {
             var pos = hgStride * i + offset;
             d.setBaseOffset(pos);
-            return xScale(pos);
+            return sbtWidgetScale(pos);
         })
         .attr('width', function(d) {
-            return xScale(d.size()) - xScale(0);
+            return sbtWidgetScale(d.size());
         });
 
     hgSelection.exit().remove();
@@ -367,7 +403,7 @@ ShaderTable.prototype.render = function(widget, xScale) {
         missStride = Math.max(missStride, alignTo(this.missShaders[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
     }
 
-    var missSelection = widget.selectAll('.miss').data(this.missShaders);
+    var missSelection = sbtWidget.selectAll('.miss').data(this.missShaders);
     missSelection.enter()
         .append('rect')
         .attr('class', 'miss')
@@ -385,26 +421,33 @@ ShaderTable.prototype.render = function(widget, xScale) {
         .merge(missSelection)
         .on('click', function(d, i) {
             selectedShaderRecord = d;
-            d.render(widget);
+            d.render();
         })
         .on('dblclick', function(d, i) {
             if (self.missShaders.length == 1) {
                 return;
             }
-            if (selectedShaderRecord == d) {
-                selectedShaderRecord = self.missShaders[i - 1]
-            }
             self.missShaders.splice(i, 1);
-            self.render(widget, xScale);
-            selectedShaderRecord.render(widget);
+
+            if (selectedShaderRecord == d) {
+                if (i < self.missShaders.length) {
+                    selectedShaderRecord = self.missShaders[i]
+                } else {
+                    selectedShaderRecord = self.missShaders[self.missShaders.length - 1];
+                }
+            }
+
+            // Reset the zoom for the shader record
+            shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
+            updateSBTViews();
         })
         .attr('x', function(d, i) {
             var pos = missStride * i + offset;
             d.setBaseOffset(pos);
-            return xScale(pos);
+            return sbtWidgetScale(pos);
         })
         .attr('width', function(d) {
-            return xScale(d.size()) - xScale(0);
+            return sbtWidgetScale(d.size());
         });
 
     missSelection.exit().remove();
@@ -412,17 +455,47 @@ ShaderTable.prototype.render = function(widget, xScale) {
 
 window.onload = function() {
     optixStructSizeInput = document.getElementById('structParamSize');
+    raygenSizeUI = document.getElementById('raygenSize');
+    hitgroupStrideUI = document.getElementById('hitGroupStride');
+    missShaderStrideUI = document.getElementById('missStride');
 
     // TODO: Something to handle variable size viewports,
     // need to get the w/h of the view
-    sbtWidget = d3.select('#sbtWidget');
+    var svg = d3.select('#sbtWidget');
+    sbtWidget = svg.append('g')
+        .attr('transform', 'translate(10, 0)');
 
-    var tickValues = [];
-    for (var i = 0; i < 320; ++i) {
-        tickValues.push(32 * i);
-    }
-    var byteAxis = d3.axisBottom(sbtWidgetScale).tickValues(tickValues);
-    sbtWidget.append('g').attr('transform', 'translate(0, 94)').call(byteAxis);
+    sbtWidget.append('g')
+        .attr('class', 'sbtWidgetAxis')
+        .attr('transform', 'translate(0, 94)');
+
+    var sbtScrollRect = svg.append('rect')
+        .attr('y', '94')
+        .attr('width', '800')
+        .attr('height', '22')
+        .attr('fill', 'white')
+        .attr('opacity', '0');
+
+    var zoom = d3.zoom()
+        .on('zoom', function() { 
+            sbtWidget.attr('transform', 'translate(' + d3.event.transform.x + ', 0)');
+        });
+    sbtScrollRect.call(zoom)
+        .on('wheel.zoom', null)
+
+    shaderRecordWidget = svg.append('g');
+    shaderRecordZoomRect = svg.append('rect')
+        .attr('y', '328')
+        .attr('width', '800')
+        .attr('height', '22')
+        .attr('fill', 'white')
+        .attr('opacity', '0');
+
+    shaderRecordZoom = d3.zoom()
+        .on('zoom', function() { 
+            shaderRecordWidget.attr('transform', 'translate(' + d3.event.transform.x + ', 0)');
+        });
+    shaderRecordZoomRect.call(shaderRecordZoom).on('wheel.zoom', null);
 
     selectAPI()
 }
@@ -446,8 +519,24 @@ var selectAPI = function() {
     }
 
     shaderTable = new ShaderTable();
-    shaderTable.render(sbtWidget, sbtWidgetScale);
-    selectedShaderRecord.render(sbtWidget);
+    updateSBTViews();
+}
+
+var updateSBTViews = function() {
+    var sbtSize = shaderTable.size();
+
+    var axisLen = Math.ceil(sbtSize / 32.0);
+    sbtWidgetScale = d3.scaleLinear([0, 32 * axisLen], [0, 78 * axisLen]);
+
+    var tickValues = [];
+    for (var i = 0; i < axisLen + 1; ++i) {
+        tickValues.push(32 * i);
+    }
+
+    var byteAxis = d3.axisBottom(sbtWidgetScale).tickValues(tickValues);
+    sbtWidget.select('.sbtWidgetAxis').call(byteAxis);
+    shaderTable.render();
+    selectedShaderRecord.render();
 }
 
 var addShaderRecord = function(defaultName) {
@@ -462,23 +551,21 @@ var addShaderRecord = function(defaultName) {
     } else {
         shaderTable.missShaders.push(selectedShaderRecord);
     }
-    shaderTable.render(sbtWidget, sbtWidgetScale);
-    selectedShaderRecord.render(sbtWidget);
+
+    updateSBTViews();
     nameInput.value = '';
 }
 
 var addConstantParam = function() {
     selectedShaderRecord.addParam(new ShaderParam(ParamType.FOUR_BYTE_CONSTANT));
 
-    shaderTable.render(sbtWidget, sbtWidgetScale);
-    selectedShaderRecord.render(sbtWidget);
+    updateSBTViews();
 }
 
 var addGPUHandleParam = function() {
     selectedShaderRecord.addParam(new ShaderParam(ParamType.GPU_HANDLE));
 
-    shaderTable.render(sbtWidget, sbtWidgetScale);
-    selectedShaderRecord.render(sbtWidget);
+    updateSBTViews();
 }
 
 var addStructParam = function() {
@@ -488,7 +575,6 @@ var addStructParam = function() {
     }
     selectedShaderRecord.addParam(new ShaderParam(ParamType.STRUCT, parseInt(optixStructSizeInput.value)));
 
-    shaderTable.render(sbtWidget, sbtWidgetScale);
-    selectedShaderRecord.render(sbtWidget);
+    updateSBTViews();
 }
 
