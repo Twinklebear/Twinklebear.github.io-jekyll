@@ -37,6 +37,8 @@ var raygenSizeUI = null;
 var hitgroupStrideUI = null;
 var missShaderStrideUI = null;
 
+var instanceWidget = null;
+
 var alignTo = function(val, align) {
     return Math.floor((val + align - 1) / align) * align;
 }
@@ -165,7 +167,10 @@ ShaderRecord.prototype.render = function() {
         .append('text')
         .attr('class', 'shaderRecordTitle')
         .merge(selection)
-        .text(function(d) { return 'Shader Record: ' + d.name + ' @ ' + self.baseOffset; });
+        .text(function(d) {
+            return 'Shader Record: ' + d.name + ' at ' + self.baseOffset +
+                ", Size: " + d.size() + "b";
+        });
     selection.exit().remove();
 
     var scale = d3.scaleLinear([0, this.size()], [0, this.size() * 6]);
@@ -474,7 +479,13 @@ window.onload = function() {
         .attr('width', '800')
         .attr('height', '22')
         .attr('fill', 'white')
-        .attr('opacity', '0');
+        .attr('opacity', '0')
+        .on('mouseover', function(d) {
+            d3.select(this).style('cursor', 'w-resize');
+        })
+        .on('mouseout', function(d) {
+            d3.select(this).style('cursor', 'default');
+        });
 
     var zoom = d3.zoom()
         .on('zoom', function() { 
@@ -489,7 +500,13 @@ window.onload = function() {
         .attr('width', '800')
         .attr('height', '22')
         .attr('fill', 'white')
-        .attr('opacity', '0');
+        .attr('opacity', '0')
+        .on('mouseover', function(d) {
+            d3.select(this).style('cursor', 'w-resize');
+        })
+        .on('mouseout', function(d) {
+            d3.select(this).style('cursor', 'default');
+        });
 
     shaderRecordZoom = d3.zoom()
         .on('zoom', function() { 
@@ -498,6 +515,49 @@ window.onload = function() {
     shaderRecordZoomRect.call(shaderRecordZoom).on('wheel.zoom', null);
 
     selectAPI()
+
+
+    var triangle = d3.create('svg:polygon')
+        .attr('points', '50 15, 100 100, 0 100')
+        .attr('class', 'triangle')
+        .attr('stroke', 'gray')
+        .attr('stroke-width', 2)
+        .attr('fill', 'lightblue');
+
+    var blasIcon = d3.create('svg:g')
+        .attr('class', 'blas');
+    blasIcon.append('rect')
+        .attr('width', 100)
+        .attr('height', 100)
+        .attr('fill', 'white')
+        .attr('stroke-width', 2)
+        .attr('stroke', 'black');
+    blasIcon.append('rect')
+        .attr('width', 35)
+        .attr('height', 100)
+        .attr('fill', 'none')
+        .attr('stroke-width', 2)
+        .attr('stroke', 'blue');
+    blasIcon.append('rect')
+        .attr('x', 20)
+        .attr('y', 20)
+        .attr('width', 80)
+        .attr('height', 50)
+        .attr('fill', 'none')
+        .attr('stroke-width', 2)
+        .attr('stroke', 'green');
+
+    console.log(blasIcon.node());
+
+    instanceWidget = d3.select('#instanceWidget');
+    instanceWidget
+        .append('g')
+        .attr('transform', 'translate(100, 100)')
+        .append(function() { return triangle.node(); });
+    instanceWidget
+        .append('g')
+        .attr('transform', 'translate(10, 10)')
+        .append(function() { return blasIcon.node(); });
 }
 
 var selectAPI = function() {

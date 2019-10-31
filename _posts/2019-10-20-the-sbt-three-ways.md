@@ -155,7 +155,7 @@ Things this should support:
 - changing the trace ray parameters to see which hit groups are accessed for specific
       instances and geometries
 - see which hit group is called for a specific geometry given the current indexing params
-- see which miss group is called for a specific geom (easier)
+- see which miss group is called for a specific trace call
 - maybe also include that it is possible to have multiple ray-gen shaders but the APIs
       just take the one to use for the current launch/dispatch as the param. You don't specify
       some table with stride.
@@ -213,7 +213,7 @@ data when the API is switched.
 
 This instance widget will have all the instances here, each with a list of geometries
 represented as triangles
-<svg class="col-12" id="instanceWidget">
+<svg width="800" height="400" class="col-12" id="instanceWidget">
 </svg>
 
 # Extra: An SBT for Embree
