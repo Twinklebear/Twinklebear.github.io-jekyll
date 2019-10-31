@@ -160,6 +160,7 @@ Things this should support:
 - maybe also include that it is possible to have multiple ray-gen shaders but the APIs
     just take the one to use for the current launch/dispatch as the param. You don't specify
     some table with stride.
+- also show and talk about the instance mask and how this can be used
 - also make clear that the different shader records can be stored in different buffers
 
 The interactive graphic style I'd like to be similar to that used in RT Gems, but with
