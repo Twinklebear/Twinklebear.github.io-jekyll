@@ -37,10 +37,53 @@ var raygenSizeUI = null;
 var hitgroupStrideUI = null;
 var missShaderStrideUI = null;
 
+// Each instance is just a count of how many geometries it has,
+// for D3 nesting we make this just an array like [0, 1, 2]
+var instances = [];
 var instanceWidget = null;
+var triangleIcon = null;
+var blasIcon = null;
 
 var alignTo = function(val, align) {
     return Math.floor((val + align - 1) / align) * align;
+}
+
+var makeTriangle = function() {
+    return d3.create('svg:polygon')
+        .attr('points', '25 7.5, 50 50, 0 50')
+        .attr('class', 'triangle')
+        .attr('stroke', 'gray')
+        .attr('stroke-width', 2)
+        .attr('fill', 'red')
+        .node();
+}
+
+var makeBLASIcon = function() {
+    var n = d3.create('svg:g')
+        .attr('class', 'blas');
+    n.append('rect')
+        .attr('width', 100)
+        .attr('height', 100)
+        .attr('fill', 'white')
+        .attr('stroke-width', 2)
+        .attr('stroke', 'black');
+    n.append('rect')
+        .attr('width', 35)
+        .attr('height', 100)
+        .attr('fill', 'lightblue')
+        .attr('fill-opacity', 0.5)
+        .attr('stroke-width', 2)
+        .attr('stroke', 'blue');
+    n.append('rect')
+        .attr('x', 20)
+        .attr('y', 20)
+        .attr('width', 80)
+        .attr('height', 50)
+        .attr('fill', 'lightgreen')
+        .attr('fill-opacity', 0.5)
+        .attr('stroke-width', 2)
+        .attr('stroke', 'green');
+    return n.node();
 }
 
 var ShaderParam = function(paramType, paramSize) {
@@ -516,48 +559,26 @@ window.onload = function() {
 
     selectAPI()
 
-
-    var triangle = d3.create('svg:polygon')
-        .attr('points', '50 15, 100 100, 0 100')
-        .attr('class', 'triangle')
-        .attr('stroke', 'gray')
-        .attr('stroke-width', 2)
-        .attr('fill', 'lightblue');
-
-    var blasIcon = d3.create('svg:g')
-        .attr('class', 'blas');
-    blasIcon.append('rect')
-        .attr('width', 100)
-        .attr('height', 100)
-        .attr('fill', 'white')
-        .attr('stroke-width', 2)
-        .attr('stroke', 'black');
-    blasIcon.append('rect')
-        .attr('width', 35)
-        .attr('height', 100)
-        .attr('fill', 'none')
-        .attr('stroke-width', 2)
-        .attr('stroke', 'blue');
-    blasIcon.append('rect')
-        .attr('x', 20)
-        .attr('y', 20)
-        .attr('width', 80)
-        .attr('height', 50)
-        .attr('fill', 'none')
-        .attr('stroke-width', 2)
-        .attr('stroke', 'green');
-
-    console.log(blasIcon.node());
+    // Some test data for the instances
+    instances = [0, 1, 2];//[[0, 1], [0]]
 
     instanceWidget = d3.select('#instanceWidget');
     instanceWidget
+        .selectAll('.blas')
+        .data(instances)
+        .enter()
+        .append(function() { return makeBLASIcon(); })
+        .attr('transform', function(d, i) {
+            return 'translate(8, ' + (i * 116 + 8) + ')';
+        })
+    /*
+        .data(function(d, i) { console.log(d); return d; })
         .append('g')
-        .attr('transform', 'translate(100, 100)')
-        .append(function() { return triangle.node(); });
-    instanceWidget
-        .append('g')
-        .attr('transform', 'translate(10, 10)')
-        .append(function() { return blasIcon.node(); });
+        .attr('transform', function(d, i) {
+            return 'translate(' + (100 + i * 75) + ', 0)';
+        })
+        .append(function() { return triangleIcon.node(); });
+        */
 }
 
 var selectAPI = function() {
