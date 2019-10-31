@@ -151,14 +151,15 @@ Things this should support:
 - <s>changing the parameters for the different shader records (add/remove)</s>
 - <s>changing the API backend</s>
 - view the dispatch rays desc with the stride/offset/etc. values
-- multiple geom per-instance
+- multiple geom per-instance, see what the instance contribution should be for different
+    ray types in the scene
 - changing the trace ray parameters to see which hit groups are accessed for specific
-      instances and geometries
+    instances and geometries
 - see which hit group is called for a specific geometry given the current indexing params
 - see which miss group is called for a specific trace call
 - maybe also include that it is possible to have multiple ray-gen shaders but the APIs
-      just take the one to use for the current launch/dispatch as the param. You don't specify
-      some table with stride.
+    just take the one to use for the current launch/dispatch as the param. You don't specify
+    some table with stride.
 - also make clear that the different shader records can be stored in different buffers
 
 The interactive graphic style I'd like to be similar to that used in RT Gems, but with
