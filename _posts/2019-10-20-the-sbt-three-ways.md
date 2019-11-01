@@ -217,6 +217,26 @@ This instance widget will have all the instances here, each with a list of geome
 represented as triangles
 <svg width="800" height="400" class="col-12" id="instanceWidget">
 </svg>
+<div class="col-12 row mb-2">
+    <div class="col-4">
+        <label for="geometryCount">Geometries</label>
+        <input type="number" min="1" class="form-control" id="geometryCount" placeholder="1">
+    </div>
+    <div class="col-4">
+        <label for="instanceSbtOffset">SBT Offset</label>
+        <input type="number" min="0" class="form-control" id="instanceSbtOffset" placeholder="0">
+    </div>
+    <div class="col-4">
+        <label for="instanceMask">Mask</label>
+        <input type="text" pattern="[a-fA-F\d]" class="form-control" id="instanceMask" placeholder="ff">
+    </div>
+</div>
+
+Craft your trace call:
+<figure class="highlight code mt-1 mb-2">
+<span id="traceFcnName">optixTrace(scene,</span>
+
+</figure>
 
 # Extra: An SBT for Embree
 

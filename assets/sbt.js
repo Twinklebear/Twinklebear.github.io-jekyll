@@ -48,19 +48,26 @@ var alignTo = function(val, align) {
     return Math.floor((val + align - 1) / align) * align;
 }
 
-var makeTriangle = function() {
+var makeTriangle = function(fillColor) {
     return d3.create('svg:polygon')
         .attr('points', '25 7.5, 50 50, 0 50')
         .attr('class', 'triangle')
         .attr('stroke', 'gray')
         .attr('stroke-width', 2)
-        .attr('fill', 'red')
+        .attr('fill', fillColor)
         .node();
 }
 
 var makeBLASIcon = function() {
     var n = d3.create('svg:g')
         .attr('class', 'blas');
+    n.append('rect')
+        .attr('class', 'highlight')
+        .attr('width', 116)
+        .attr('height', 108)
+        .attr('x', -8)
+        .attr('y', -4)
+        .attr('fill', 'yellow');
     n.append('rect')
         .attr('width', 100)
         .attr('height', 100)
@@ -530,12 +537,11 @@ window.onload = function() {
             d3.select(this).style('cursor', 'default');
         });
 
-    var zoom = d3.zoom()
+    sbtScrollRect.call(d3.zoom()
         .on('zoom', function() { 
             sbtWidget.attr('transform', 'translate(' + d3.event.transform.x + ', 0)');
-        });
-    sbtScrollRect.call(zoom)
-        .on('wheel.zoom', null)
+        }))
+        .on('wheel.zoom', null);
 
     shaderRecordWidget = svg.append('g');
     shaderRecordZoomRect = svg.append('rect')
@@ -560,10 +566,21 @@ window.onload = function() {
     selectAPI()
 
     // Some test data for the instances
-    instances = [0, 1, 2];//[[0, 1], [0]]
+    instances = [[0, 1], [0], [0, 1, 2]];
 
     instanceWidget = d3.select('#instanceWidget');
-    instanceWidget
+    var instanceScrollRect = instanceWidget.append('rect')
+        .attr('width', 800)
+        .attr('height', 400)
+        .attr('fill', 'white');
+
+    var instanceContainer = instanceWidget.append('g');
+    instanceWidget.call(d3.zoom().on('zoom', function() {
+        instanceContainer.attr('transform', d3.event.transform);
+        }))
+        .on('wheel.zoom', null);
+
+    instanceContainer
         .selectAll('.blas')
         .data(instances)
         .enter()
@@ -571,14 +588,16 @@ window.onload = function() {
         .attr('transform', function(d, i) {
             return 'translate(8, ' + (i * 116 + 8) + ')';
         })
-    /*
-        .data(function(d, i) { console.log(d); return d; })
-        .append('g')
+        .selectAll('.triangle')
+        .data(function(d, i) { return d; })
+        .enter()
+        .append(function() { return makeTriangle('red'); })
         .attr('transform', function(d, i) {
-            return 'translate(' + (100 + i * 75) + ', 0)';
-        })
-        .append(function() { return triangleIcon.node(); });
-        */
+            return 'translate(' + (116 + i * 75) + ', 14)';
+        });
+    instanceContainer.selectAll('.highlight')
+        .data(instances)
+        .attr('width', function(d) { return 116 + d.length * 75 + 8; });
 }
 
 var selectAPI = function() {
