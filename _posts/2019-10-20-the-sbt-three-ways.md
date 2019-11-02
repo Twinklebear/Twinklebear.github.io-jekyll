@@ -220,7 +220,8 @@ represented as triangles
 <div class="col-12 row mb-2">
     <div class="col-4">
         <label for="geometryCount">Geometries</label>
-        <input type="number" min="1" class="form-control" id="geometryCount" placeholder="1">
+        <input type="number" min="1" class="form-control" id="geometryCount" placeholder="1"
+               oninput="updateGeometryCount()">
     </div>
     <div class="col-4">
         <label for="instanceSbtOffset">SBT Offset</label>
@@ -228,7 +229,7 @@ represented as triangles
     </div>
     <div class="col-4">
         <label for="instanceMask">Mask</label>
-        <input type="text" pattern="[a-fA-F\d]" class="form-control" id="instanceMask" placeholder="ff">
+        <input type="text" class="form-control" id="instanceMask" placeholder="ff">
     </div>
 </div>
 

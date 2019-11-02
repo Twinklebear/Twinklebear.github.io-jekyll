@@ -36,13 +36,16 @@ var optixStructSizeInput = null;
 var raygenSizeUI = null;
 var hitgroupStrideUI = null;
 var missShaderStrideUI = null;
+var instanceGeometryCountUI = null;
+var sbtOffsetUI = null;
+var instanceMaskUI = null;
 
 // Each instance is just a count of how many geometries it has,
 // for D3 nesting we make this just an array like [0, 1, 2]
-var instances = [];
+var instances = [[0], [0, 1]];
 var instanceWidget = null;
-var triangleIcon = null;
-var blasIcon = null;
+var instanceContainer = null;
+var selectedInstance = 0;
 
 var alignTo = function(val, align) {
     return Math.floor((val + align - 1) / align) * align;
@@ -61,13 +64,6 @@ var makeTriangle = function(fillColor) {
 var makeBLASIcon = function() {
     var n = d3.create('svg:g')
         .attr('class', 'blas');
-    n.append('rect')
-        .attr('class', 'highlight')
-        .attr('width', 116)
-        .attr('height', 108)
-        .attr('x', -8)
-        .attr('y', -4)
-        .attr('fill', 'yellow');
     n.append('rect')
         .attr('width', 100)
         .attr('height', 100)
@@ -91,6 +87,16 @@ var makeBLASIcon = function() {
         .attr('stroke-width', 2)
         .attr('stroke', 'green');
     return n.node();
+}
+
+var baseSBTOffset = function(inst) {
+    // Compute the base SBT offset recommended for the instance,
+    // not including additional stride due to multiple ray types
+    var offset = 0;
+    for (var i = 0; i < inst; ++i) {
+        offset += instances[i].length;
+    }
+    return offset;
 }
 
 var ShaderParam = function(paramType, paramSize) {
@@ -513,6 +519,9 @@ window.onload = function() {
     raygenSizeUI = document.getElementById('raygenSize');
     hitgroupStrideUI = document.getElementById('hitGroupStride');
     missShaderStrideUI = document.getElementById('missStride');
+    instanceGeometryCountUI = document.getElementById('geometryCount');
+    sbtOffsetUI = document.getElementById('instanceSbtOffset');
+    instanceMaskUI = document.getElementById('instanceMask');
 
     // TODO: Something to handle variable size viewports,
     // need to get the w/h of the view
@@ -563,41 +572,21 @@ window.onload = function() {
         });
     shaderRecordZoomRect.call(shaderRecordZoom).on('wheel.zoom', null);
 
-    selectAPI()
-
-    // Some test data for the instances
-    instances = [[0, 1], [0], [0, 1, 2]];
-
     instanceWidget = d3.select('#instanceWidget');
     var instanceScrollRect = instanceWidget.append('rect')
         .attr('width', 800)
         .attr('height', 400)
         .attr('fill', 'white');
+    instanceContainer = instanceWidget.append('g');
 
-    var instanceContainer = instanceWidget.append('g');
-    instanceWidget.call(d3.zoom().on('zoom', function() {
-        instanceContainer.attr('transform', d3.event.transform);
+    instanceScrollRect.call(d3.zoom().on('zoom', function() {
+            instanceContainer.attr('transform', d3.event.transform);
         }))
-        .on('wheel.zoom', null);
+        .on('wheel.zoom', null)
+        .on('dblclick.zoom', null);
 
-    instanceContainer
-        .selectAll('.blas')
-        .data(instances)
-        .enter()
-        .append(function() { return makeBLASIcon(); })
-        .attr('transform', function(d, i) {
-            return 'translate(8, ' + (i * 116 + 8) + ')';
-        })
-        .selectAll('.triangle')
-        .data(function(d, i) { return d; })
-        .enter()
-        .append(function() { return makeTriangle('red'); })
-        .attr('transform', function(d, i) {
-            return 'translate(' + (116 + i * 75) + ', 14)';
-        });
-    instanceContainer.selectAll('.highlight')
-        .data(instances)
-        .attr('width', function(d) { return 116 + d.length * 75 + 8; });
+    selectAPI()
+    updateInstanceView();
 }
 
 var selectAPI = function() {
@@ -639,6 +628,60 @@ var updateSBTViews = function() {
     selectedShaderRecord.render();
 }
 
+var updateInstanceView = function() {
+    instanceGeometryCountUI.value = instances[selectedInstance].length;
+    sbtOffsetUI.value = baseSBTOffset(selectedInstance);
+    instanceMaskUI.value = 'ff';
+
+    var highlight = instanceContainer.selectAll('.highlight')
+        .data([selectedInstance]);
+    highlight.enter()
+        .append('rect')
+        .attr('class', 'highlight')
+        .merge(highlight)
+        .attr('x', 4)
+        .attr('y', function() { return 4 + selectedInstance * 116; })
+        .attr('width', function() { return 116 + instances[selectedInstance].length * 75 + 8; })
+        .attr('height', 108)
+        .attr('fill', 'yellow');
+
+    highlight.exit().remove();
+
+    var blasSelection = instanceContainer
+        .selectAll('.blas')
+        .data(instances);
+
+    var allBlas = blasSelection.enter()
+        .append(function() { return makeBLASIcon(); })
+        .attr('transform', function(d, i) {
+            return 'translate(8, ' + (i * 116 + 8) + ')';
+        })
+        .merge(blasSelection)
+        .on('click', function(d, i) {
+            selectedInstance = i;
+            updateInstanceView();
+        })
+        .on('mouseover', function(d) {
+            d3.select(this).style('cursor', 'pointer');
+        })
+        .on('mouseout', function(d) {
+            d3.select(this).style('cursor', 'default');
+        });
+
+    var triangleSelection = allBlas.selectAll('.triangle')
+        .data(function(d) { return d; });
+
+    triangleSelection.enter()
+        .append(function() { return makeTriangle('red'); })
+        .merge(triangleSelection)
+        .attr('transform', function(d, j) {
+            return 'translate(' + (116 + j * 75) + ', 14)';
+        });
+
+    triangleSelection.exit().remove();
+    blasSelection.exit().remove();
+}
+
 var addShaderRecord = function(defaultName) {
     var nameInput = document.getElementById('shaderRecordName');
     if (nameInput.value == '') {
@@ -676,5 +719,10 @@ var addStructParam = function() {
     selectedShaderRecord.addParam(new ShaderParam(ParamType.STRUCT, parseInt(optixStructSizeInput.value)));
 
     updateSBTViews();
+}
+
+var updateGeometryCount = function() {
+    instances[selectedInstance] = new Array(parseInt(instanceGeometryCountUI.value));
+    updateInstanceView();
 }
 
