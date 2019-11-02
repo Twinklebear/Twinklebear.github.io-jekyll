@@ -231,6 +231,9 @@ represented as triangles
         <label for="instanceMask">Mask</label>
         <input type="text" class="form-control" id="instanceMask" placeholder="ff">
     </div>
+    <div class="col-6 mt-2">
+        <button id="addInstance" type="button" class="btn btn-primary" onclick="addInstance()">Add Instance</button>
+    </div>
 </div>
 
 Craft your trace call:

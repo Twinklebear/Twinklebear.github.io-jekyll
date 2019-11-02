@@ -661,6 +661,20 @@ var updateInstanceView = function() {
             selectedInstance = i;
             updateInstanceView();
         })
+        .on('dblclick', function(d, i) {
+            if (instances.length == 1) {
+                return;
+            }
+            instances.splice(i, 1);
+
+            if (selectedInstance > 0) {
+                if (selectedInstance >= instances.length) {
+                    selectedInstance = instances.length - 1;
+                }
+            }
+
+            updateInstanceView();
+        })
         .on('mouseover', function(d) {
             d3.select(this).style('cursor', 'pointer');
         })
@@ -723,6 +737,11 @@ var addStructParam = function() {
 
 var updateGeometryCount = function() {
     instances[selectedInstance] = new Array(parseInt(instanceGeometryCountUI.value));
+    updateInstanceView();
+}
+
+var addInstance = function() {
+    instances.push([0]);
     updateInstanceView();
 }
 
