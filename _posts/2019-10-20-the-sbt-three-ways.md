@@ -237,10 +237,53 @@ represented as triangles
 </div>
 
 Craft your trace call:
-<figure class="highlight code mt-1 mb-2">
-<span id="traceFcnName">optixTrace(scene,</span>
-
-</figure>
+<div id="dxrTrace" class="col-12">
+{% highlight glsl %}
+Template<payload_t>
+void TraceRay(RaytracingAccelerationStructure accelerationStructure,
+    uint rayFlags,
+    uint instanceInclusionMask,
+    uint rayContributionToHitGroupIndex,
+    uint multiplierForGeometryContributionToHitGroupIndex,
+    uint missShaderIndex,
+    RayDesc ray,
+    inout payload_t payload);
+{% endhighlight %}
+</div>
+<div id="vulkanTrace" class="col-12">
+{% highlight glsl %}
+void traceNV(accelerationStructureNV accelerationStructure,
+    uint rayFlags,
+    uint instanceInclusionMask,
+    uint rayContributionToHitGroupIndex, (sbt_record_offset)
+    uint multiplierForGeometryContributionToHitGroupIndex, (sbt_record_stride)
+    uint missShaderIndex,
+    vec3 rayOrigin
+    float tmin
+    vec3 rayDirection,
+    float tmax,
+    uint payloadIndex);
+{% endhighlight %}
+</div>
+<div id="vulkanTrace" class="col-12">
+{% highlight c %}
+void optixTrace(OptixTraversableHandle accelerationStructure,
+    float3 rayOrigin,
+    float3 rayDirection,
+    float tmin,
+    float tmax,
+    float rayTime,
+    OptixVisibilityMask visibilityMask,
+    unsigned int rayFlags,
+    unsigned int SBToffset,
+    unsigned int SBTstride,
+    unsigned int missSBTIndex
+    // up to 8 32-bit values to be passed through registers
+    // unsigned int &p0-p7
+    unsigned int &p0-p7
+)
+{% endhighlight %}
+</div>
 
 # Extra: An SBT for Embree
 

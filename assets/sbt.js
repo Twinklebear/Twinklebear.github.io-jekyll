@@ -688,8 +688,14 @@ var updateInstanceView = function() {
     triangleSelection.enter()
         .append(function() { return makeTriangle('red'); })
         .merge(triangleSelection)
-        .attr('transform', function(d, j) {
-            return 'translate(' + (116 + j * 75) + ', 14)';
+        .attr('transform', function(d, i) {
+            return 'translate(' + (116 + i * 75) + ', 14)';
+        })
+        .on('click', function(d, i) {
+            // TODO: need a triangle and instance struct so we can map
+            // back to which triangle in which instance this click is on
+            // and find the right hitgroup
+            console.log(d);
         });
 
     triangleSelection.exit().remove();
