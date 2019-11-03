@@ -916,6 +916,27 @@ var updateInstanceView = function() {
 
     triangleSelection.exit().remove();
     blasSelection.exit().remove();
+
+    var inactiveInstances = [];
+    for (var i = 0; i < instances.length; ++i) {
+        if (!(instances[i].mask & traceParams.rayInstanceMask)) {
+            inactiveInstances.push(i);
+        }
+    }
+
+    var inactiveHighlight = instanceContainer.selectAll('.instanceMaskedOut')
+        .data(inactiveInstances);
+    inactiveHighlight.enter()
+        .append('rect')
+        .attr('class', 'instanceMaskedOut')
+        .merge(inactiveHighlight)
+        .attr('x', 4)
+        .attr('y', function(d) { return 4 + d * 116; })
+        .attr('width', function(d) { return 116 + instances[d].numGeometries() * 75 + 8; })
+        .attr('height', 108)
+        .attr('fill', 'gray')
+        .attr('opacity', 0.5);
+    inactiveHighlight.exit().remove();
 }
 
 var addShaderRecord = function(defaultName) {
