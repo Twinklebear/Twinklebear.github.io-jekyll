@@ -42,7 +42,7 @@ var instanceMaskUI = null;
 
 // Each instance is just a count of how many geometries it has,
 // for D3 nesting we make this just an array like [0, 1, 2]
-var instances = [[0], [0, 1]];
+var instances = [];
 var instanceWidget = null;
 var instanceContainer = null;
 var selectedInstance = 0;
@@ -94,7 +94,7 @@ var baseSBTOffset = function(inst) {
     // not including additional stride due to multiple ray types
     var offset = 0;
     for (var i = 0; i < inst; ++i) {
-        offset += instances[i].length;
+        offset += instances[i].numGeometries();
     }
     return offset;
 }
@@ -514,6 +514,26 @@ ShaderTable.prototype.render = function() {
     missSelection.exit().remove();
 }
 
+var Geometry = function(instance) {
+    this.instance = instance;
+}
+
+var Instance = function() {
+    this.geometries = [new Geometry(this)];
+    this.mask = 0xff;
+    this.sbtOffset = 0;
+}
+
+Instance.prototype.setNumGeometries = function(n) {
+    var self = this;
+    this.geometries = Array.apply(null, {length: n})
+        .map(Function.call, function() { return new Geometry(self); });
+}
+
+Instance.prototype.numGeometries = function() {
+    return this.geometries.length;
+}
+
 window.onload = function() {
     optixStructSizeInput = document.getElementById('structParamSize');
     raygenSizeUI = document.getElementById('raygenSize');
@@ -585,6 +605,8 @@ window.onload = function() {
         .on('wheel.zoom', null)
         .on('dblclick.zoom', null);
 
+    instances = [new Instance()];
+
     selectAPI()
     updateInstanceView();
 }
@@ -629,7 +651,7 @@ var updateSBTViews = function() {
 }
 
 var updateInstanceView = function() {
-    instanceGeometryCountUI.value = instances[selectedInstance].length;
+    instanceGeometryCountUI.value = instances[selectedInstance].numGeometries();
     sbtOffsetUI.value = baseSBTOffset(selectedInstance);
     instanceMaskUI.value = 'ff';
 
@@ -641,7 +663,7 @@ var updateInstanceView = function() {
         .merge(highlight)
         .attr('x', 4)
         .attr('y', function() { return 4 + selectedInstance * 116; })
-        .attr('width', function() { return 116 + instances[selectedInstance].length * 75 + 8; })
+        .attr('width', function() { return 116 + instances[selectedInstance].numGeometries() * 75 + 8; })
         .attr('height', 108)
         .attr('fill', 'yellow');
 
@@ -683,7 +705,7 @@ var updateInstanceView = function() {
         });
 
     var triangleSelection = allBlas.selectAll('.triangle')
-        .data(function(d) { return d; });
+        .data(function(d) { return d.geometries; });
 
     triangleSelection.enter()
         .append(function() { return makeTriangle('red'); })
@@ -742,12 +764,12 @@ var addStructParam = function() {
 }
 
 var updateGeometryCount = function() {
-    instances[selectedInstance] = new Array(parseInt(instanceGeometryCountUI.value));
+    instances[selectedInstance].setNumGeometries(parseInt(instanceGeometryCountUI.value));
     updateInstanceView();
 }
 
 var addInstance = function() {
-    instances.push([0]);
+    instances.push(new Instance());
     updateInstanceView();
 }
 
