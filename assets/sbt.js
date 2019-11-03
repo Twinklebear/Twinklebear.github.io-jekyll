@@ -59,13 +59,13 @@ var alignTo = function(val, align) {
     return Math.floor((val + align - 1) / align) * align;
 }
 
-var makeTriangle = function(fillColor) {
+var makeTriangle = function() {
     return d3.create('svg:polygon')
         .attr('points', '25 7.5, 50 50, 0 50')
         .attr('class', 'triangle')
         .attr('stroke', 'gray')
         .attr('stroke-width', 2)
-        .attr('fill', fillColor)
+        .attr('fill', 'black')
         .node();
 }
 
@@ -216,7 +216,7 @@ ShaderRecord.prototype.removeParam = function(i) {
         }
     }
 
-    updateSBTViews();
+    updateViews();
 }
 
 ShaderRecord.prototype.render = function() {
@@ -302,7 +302,7 @@ ShaderRecord.prototype.render = function() {
         })
         .on('dblclick', function(d, i) {
             self.removeParam(i);
-            updateSBTViews();
+            updateViews();
         });
     selection.exit().remove();
 
@@ -337,7 +337,7 @@ ShaderRecord.prototype.render = function() {
         })
         .on('dblclick', function(d, i) {
             self.removeParam(i);
-            updateSBTViews();
+            updateViews();
         });
     selection.exit().remove();
 
@@ -456,6 +456,8 @@ ShaderTable.prototype.render = function() {
         });
     rgTextSelection.exit().remove();
 
+    var instanceHgRange = instances[selectedInstance].hitGroupRange();
+
     var hgSelection = sbtWidget.selectAll('.hitgroup').data(this.hitGroups);
     hgSelection.enter()
         .append('rect')
@@ -464,7 +466,6 @@ ShaderTable.prototype.render = function() {
         .attr('height', 64)
         .attr('stroke-width', 2)
         .attr('stroke', 'black')
-        .attr('fill', 'blue')
         .on('mouseover', function(d) {
             d3.select(this).style('cursor', 'pointer');
         })
@@ -472,6 +473,12 @@ ShaderTable.prototype.render = function() {
             d3.select(this).style('cursor', 'default');
         })
         .merge(hgSelection)
+        .attr('fill', function(d, i) {
+            if (i >= instanceHgRange[0] && i <= instanceHgRange[1]) {
+                return 'lightblue';
+            }
+            return 'blue'
+        })
         .on('click', function(d, i) {
             selectedShaderRecord = d;
             d.render();
@@ -492,7 +499,7 @@ ShaderTable.prototype.render = function() {
 
             // Reset the zoom for the shader record
             shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
-            updateSBTViews();
+            updateViews();
         })
         .attr('x', function(d, i) {
             var pos = self.hgStride * i + self.hgOffset;
@@ -545,7 +552,7 @@ ShaderTable.prototype.render = function() {
 
             // Reset the zoom for the shader record
             shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
-            updateSBTViews();
+            updateViews();
         });
     hgTextSelection.exit().remove();
 
@@ -557,7 +564,6 @@ ShaderTable.prototype.render = function() {
         .attr('height', 64)
         .attr('stroke-width', 2)
         .attr('stroke', 'black')
-        .attr('fill', 'red')
         .on('mouseover', function(d) {
             d3.select(this).style('cursor', 'pointer');
         })
@@ -565,6 +571,12 @@ ShaderTable.prototype.render = function() {
             d3.select(this).style('cursor', 'default');
         })
         .merge(missSelection)
+        .attr('fill', function(d, i) {
+            if (i == traceParams.missShaderIndex) {
+                return 'salmon';
+            }
+            return 'red';
+        })
         .on('click', function(d, i) {
             selectedShaderRecord = d;
             d.render();
@@ -585,7 +597,7 @@ ShaderTable.prototype.render = function() {
 
             // Reset the zoom for the shader record
             shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
-            updateSBTViews();
+            updateViews();
         })
         .attr('x', function(d, i) {
             var pos = self.missStride * i + self.missOffset;
@@ -637,7 +649,7 @@ ShaderTable.prototype.render = function() {
 
             // Reset the zoom for the shader record
             shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
-            updateSBTViews();
+            updateViews();
         });
     missTextSelection.exit().remove();
 }
@@ -664,6 +676,11 @@ Instance.prototype.numGeometries = function() {
 
 Instance.prototype.hitgroupForGeometry = function(geomIdx) {
     return traceParams.raySBTOffset + traceParams.raySBTStride * geomIdx + this.sbtOffset;
+}
+
+Instance.prototype.hitGroupRange = function() {
+    return [traceParams.raySBTOffset + this.sbtOffset,
+        traceParams.raySBTOffset + traceParams.raySBTStride * (this.geometries.length - 1) + this.sbtOffset];
 }
 
 window.onload = function() {
@@ -741,7 +758,6 @@ window.onload = function() {
     shaderTable = new ShaderTable();
     instances = [new Instance()];
     selectAPI()
-    updateInstanceView();
 }
 
 var selectAPI = function() {
@@ -769,10 +785,10 @@ var selectAPI = function() {
     }
 
     shaderTable.clearParams();
-    updateSBTViews();
+    updateViews();
 }
 
-var updateSBTViews = function() {
+var updateViews = function() {
     var sbtSize = shaderTable.size();
 
     var axisLen = Math.ceil(sbtSize / 32.0);
@@ -787,6 +803,26 @@ var updateSBTViews = function() {
     sbtWidget.select('.sbtWidgetAxis').call(byteAxis);
     shaderTable.render();
     selectedShaderRecord.render();
+
+    updateInstanceView();
+
+    var alertDisplay = document.getElementById('missOutOfBounds');
+    alertDisplay.setAttribute('style', 'display:none')
+    if (traceParams.missShaderIndex >= shaderTable.missShaders.length) {
+        alertDisplay.innerHTML = 'Miss accesses out of bounds miss shader ' +
+            traceParams.missShaderIndex + ' @ ' + (traceParams.missShaderIndex * shaderTable.missStride) + 'b'
+        alertDisplay.setAttribute('style', 'display:block')
+    }
+
+    alertDisplay = document.getElementById('hgOutOfBounds');
+    var hgRange = instances[selectedInstance].hitGroupRange();
+    alertDisplay.setAttribute('style', 'display:none')
+    if (hgRange[1] >= shaderTable.hitGroups.length) {
+        alertDisplay.innerHTML = 'Instance\'s geometry accesses out of bounds hit groups. ' +
+            'Instance uses hit groups ' + hgRange[0] + ' to ' + hgRange[1] +
+            ', but only ' + shaderTable.hitGroups.length + ' exist.';
+        alertDisplay.setAttribute('style', 'display:block')
+    }
 }
 
 var updateInstanceView = function() {
@@ -825,7 +861,7 @@ var updateInstanceView = function() {
         .merge(blasSelection)
         .on('click', function(d, i) {
             selectedInstance = i;
-            updateInstanceView();
+            updateViews();
         })
         .on('dblclick', function(d, i) {
             if (instances.length == 1) {
@@ -839,7 +875,7 @@ var updateInstanceView = function() {
                 }
             }
 
-            updateInstanceView();
+            updateViews();
         })
         .on('mouseover', function(d) {
             d3.select(this).style('cursor', 'pointer');
@@ -852,8 +888,15 @@ var updateInstanceView = function() {
         .data(function(d) { return d.geometries; });
 
     triangleSelection.enter()
-        .append(function() { return makeTriangle('red'); })
+        .append(function() { return makeTriangle(); })
         .merge(triangleSelection)
+        .attr('fill', function(d, i) {
+            var hg = d.instance.hitgroupForGeometry(i);
+            if (hg < shaderTable.hitGroups.length) {
+                return 'white';
+            }
+            return 'red';
+        })
         .attr('transform', function(d, i) {
             return 'translate(' + (116 + i * 75) + ', 14)';
         })
@@ -863,7 +906,7 @@ var updateInstanceView = function() {
             if (hg < shaderTable.hitGroups.length) {
                 selectedShaderRecord = shaderTable.hitGroups[hg];
                 alertDisplay.setAttribute('style', 'display:none')
-                updateSBTViews();
+                updateViews();
             } else {
                 alertDisplay.innerHTML = 'Geometry accesses out of bounds hit group ' +
                     hg + ' @ ' + (hg * shaderTable.hgStride) + 'b';
@@ -888,20 +931,20 @@ var addShaderRecord = function(defaultName) {
         shaderTable.missShaders.push(selectedShaderRecord);
     }
 
-    updateSBTViews();
+    updateViews();
     nameInput.value = '';
 }
 
 var addConstantParam = function() {
     selectedShaderRecord.addParam(new ShaderParam(ParamType.FOUR_BYTE_CONSTANT));
 
-    updateSBTViews();
+    updateViews();
 }
 
 var addGPUHandleParam = function() {
     selectedShaderRecord.addParam(new ShaderParam(ParamType.GPU_HANDLE));
 
-    updateSBTViews();
+    updateViews();
 }
 
 var addStructParam = function() {
@@ -911,7 +954,7 @@ var addStructParam = function() {
         selectedShaderRecord.addParam(new ShaderParam(ParamType.STRUCT, parseInt(optixStructSizeInput.value)));
     }
 
-    updateSBTViews();
+    updateViews();
 }
 
 var updateInstance = function() {
@@ -931,18 +974,18 @@ var updateInstance = function() {
     instances[selectedInstance].mask = val;
     document.getElementById('instanceMask').value = val.toString(16);
 
-    updateInstanceView();
+    updateViews();
 }
 
 var setInstanceSBTOffset = function() {
     instances[selectedInstance].userSBTOffset = false;
     instances[selectedInstance].sbtOffset = baseSBTOffset(selectedInstance);
-    updateInstanceView();
+    updateViews();
 }
 
 var addInstance = function() {
     instances.push(new Instance());
-    updateInstanceView();
+    updateViews();
 }
 
 var updateTraceCall = function() {
@@ -965,19 +1008,13 @@ var updateTraceCall = function() {
     d3.selectAll('#missShaderIndexVal').html(traceParams.missShaderIndex);
     d3.selectAll('#instanceMaskVal').html('0x' + traceParams.rayInstanceMask.toString(16));
 
-    updateInstanceView();
+    updateViews();
 }
 
 var showMissShader = function() {
-    var alertDisplay = document.getElementById('missOutOfBounds');
     if (traceParams.missShaderIndex < shaderTable.missShaders.length) {
         selectedShaderRecord = shaderTable.missShaders[traceParams.missShaderIndex];
-        alertDisplay.setAttribute('style', 'display:none')
-        updateSBTViews();
-    } else {
-        alertDisplay.innerHTML = 'Miss accesses out of bounds miss shader ' +
-            traceParams.missShaderIndex + ' @ ' + (traceParams.missShaderIndex * shaderTable.missStride) + 'b'
-        alertDisplay.setAttribute('style', 'display:block')
     }
+    updateViews();
 }
 

@@ -185,7 +185,7 @@ data when the API is switched.
             <ul>
             <li>Raygen Size: <span id='raygenSize'></span></li>
             <li>HitGroup offset: <span id='hitGroupOffset'></span>, stride: <span id='hitGroupStride'></span></li>
-            <li>Mis Shader offset: <span id='missOffset'></span>, stride: <span id='missStride'></span></li>
+            <li>Miss Shader offset: <span id='missOffset'></span>, stride: <span id='missStride'></span></li>
             </ul>
         </div>
         <div class="col-6">
