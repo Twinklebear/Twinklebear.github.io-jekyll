@@ -279,16 +279,16 @@ ShaderRecord.prototype.render = function() {
         .attr('fill', function(d) {
             if (d.type == ParamType.STRUCT) {
                 optixStructSizeInput.value = d.size;
-                return 'yellow';
+                return '#fdc086';
             }
             if (d.type == ParamType.FOUR_BYTE_CONSTANT) {
-                return 'lightblue'
+                return '#ffff99'
             }
             if (d.type == ParamType.FOUR_BYTE_CONSTANT_PAD) {
                 return 'lightgray'
             }
             if (d.type == ParamType.GPU_HANDLE) {
-                return 'lightgreen';
+                return '#7fc97f';
             }
             return 'gray';
         })
@@ -458,6 +458,38 @@ ShaderTable.prototype.render = function() {
 
     var instanceHgRange = instances[selectedInstance].hitGroupRange();
 
+    var clickHitGroup = function(d, i) {
+        selectedShaderRecord = d;
+        d.render();
+        // If there's an instance that uses this hit group, select it as well
+        for (var j = 0; j < instances.length; ++j) {
+            var hgRange = instances[j].hitGroupRange();
+            if (i >= hgRange[0] && i <= hgRange[1]) {
+                selectedInstance = j;
+                updateViews();
+            }
+        }
+    };
+
+    var dblclickHitGroup = function(d, i) {
+        if (self.hitGroups.length == 1) {
+            return;
+        }
+        self.hitGroups.splice(i, 1);
+
+        if (selectedShaderRecord == d) {
+            if (i < self.hitGroups.length) {
+                selectedShaderRecord = self.hitGroups[i]
+            } else {
+                selectedShaderRecord = self.hitGroups[self.hitGroups.length - 1];
+            }
+        }
+
+        // Reset the zoom for the shader record
+        shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
+        updateViews();
+    }
+
     var hgSelection = sbtWidget.selectAll('.hitgroup').data(this.hitGroups);
     hgSelection.enter()
         .append('rect')
@@ -475,32 +507,12 @@ ShaderTable.prototype.render = function() {
         .merge(hgSelection)
         .attr('fill', function(d, i) {
             if (i >= instanceHgRange[0] && i <= instanceHgRange[1]) {
-                return 'lightblue';
+                return '#9ecae1';
             }
-            return 'blue'
+            return '#3182bd'
         })
-        .on('click', function(d, i) {
-            selectedShaderRecord = d;
-            d.render();
-        })
-        .on('dblclick', function(d, i) {
-            if (self.hitGroups.length == 1) {
-                return;
-            }
-            self.hitGroups.splice(i, 1);
-
-            if (selectedShaderRecord == d) {
-                if (i < self.hitGroups.length) {
-                    selectedShaderRecord = self.hitGroups[i]
-                } else {
-                    selectedShaderRecord = self.hitGroups[self.hitGroups.length - 1];
-                }
-            }
-
-            // Reset the zoom for the shader record
-            shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
-            updateViews();
-        })
+        .on('click', clickHitGroup)
+        .on('dblclick', dblclickHitGroup)
         .attr('x', function(d, i) {
             var pos = self.hgStride * i + self.hgOffset;
             d.setBaseOffset(pos);
@@ -531,30 +543,36 @@ ShaderTable.prototype.render = function() {
         .on('mouseout', function(d) {
             d3.select(this).style('cursor', 'default');
         })
-        .merge(hgSelection)
-        .on('click', function(d, i) {
-            selectedShaderRecord = d;
-            d.render();
-        })
-        .on('dblclick', function(d, i) {
-            if (self.hitGroups.length == 1) {
-                return;
-            }
-            self.hitGroups.splice(i, 1);
-
-            if (selectedShaderRecord == d) {
-                if (i < self.hitGroups.length) {
-                    selectedShaderRecord = self.hitGroups[i]
-                } else {
-                    selectedShaderRecord = self.hitGroups[self.hitGroups.length - 1];
-                }
-            }
-
-            // Reset the zoom for the shader record
-            shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
-            updateViews();
-        });
+        .merge(hgTextSelection)
+        .on('click', clickHitGroup)
+        .on('dblclick', dblclickHitGroup);
     hgTextSelection.exit().remove();
+
+    var clickMissShader = function(d, i) {
+        selectedShaderRecord = d;
+        d.render();
+        document.getElementById('missShaderIndex').value = i;
+        updateTraceCall();
+        updateViews();
+    };
+    var dblClickMissShader = function(d, i) {
+        if (self.missShaders.length == 1) {
+            return;
+        }
+        self.missShaders.splice(i, 1);
+
+        if (selectedShaderRecord == d) {
+            if (i < self.missShaders.length) {
+                selectedShaderRecord = self.missShaders[i]
+            } else {
+                selectedShaderRecord = self.missShaders[self.missShaders.length - 1];
+            }
+        }
+
+        // Reset the zoom for the shader record
+        shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
+        updateViews();
+    }
 
     var missSelection = sbtWidget.selectAll('.miss').data(this.missShaders);
     missSelection.enter()
@@ -573,32 +591,12 @@ ShaderTable.prototype.render = function() {
         .merge(missSelection)
         .attr('fill', function(d, i) {
             if (i == traceParams.missShaderIndex) {
-                return 'salmon';
+                return '#bcbddc';
             }
-            return 'red';
+            return '#756bb1';
         })
-        .on('click', function(d, i) {
-            selectedShaderRecord = d;
-            d.render();
-        })
-        .on('dblclick', function(d, i) {
-            if (self.missShaders.length == 1) {
-                return;
-            }
-            self.missShaders.splice(i, 1);
-
-            if (selectedShaderRecord == d) {
-                if (i < self.missShaders.length) {
-                    selectedShaderRecord = self.missShaders[i]
-                } else {
-                    selectedShaderRecord = self.missShaders[self.missShaders.length - 1];
-                }
-            }
-
-            // Reset the zoom for the shader record
-            shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
-            updateViews();
-        })
+        .on('click', clickMissShader)
+        .on('dblclick', dblClickMissShader)
         .attr('x', function(d, i) {
             var pos = self.missStride * i + self.missOffset;
             d.setBaseOffset(pos);
@@ -629,28 +627,8 @@ ShaderTable.prototype.render = function() {
         .on('mouseout', function(d) {
             d3.select(this).style('cursor', 'default');
         })
-        .on('click', function(d, i) {
-            selectedShaderRecord = d;
-            d.render();
-        })
-        .on('dblclick', function(d, i) {
-            if (self.missShaders.length == 1) {
-                return;
-            }
-            self.missShaders.splice(i, 1);
-
-            if (selectedShaderRecord == d) {
-                if (i < self.missShaders.length) {
-                    selectedShaderRecord = self.missShaders[i]
-                } else {
-                    selectedShaderRecord = self.missShaders[self.missShaders.length - 1];
-                }
-            }
-
-            // Reset the zoom for the shader record
-            shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
-            updateViews();
-        });
+        .on('click', clickMissShader)
+        .on('dblclick', dblClickMissShader);
     missTextSelection.exit().remove();
 }
 
@@ -809,8 +787,9 @@ var updateViews = function() {
     var alertDisplay = document.getElementById('missOutOfBounds');
     alertDisplay.setAttribute('style', 'display:none')
     if (traceParams.missShaderIndex >= shaderTable.missShaders.length) {
-        alertDisplay.innerHTML = 'Miss accesses out of bounds miss shader ' +
-            traceParams.missShaderIndex + ' @ ' + (traceParams.missShaderIndex * shaderTable.missStride) + 'b'
+        alertDisplay.innerHTML = 'Miss accesses out of bounds miss shader index ' +
+            traceParams.missShaderIndex + ' @ ' +
+            (traceParams.missShaderIndex * shaderTable.missStride + shaderTable.missOffset) + 'b'
         alertDisplay.setAttribute('style', 'display:block')
     }
 
@@ -818,9 +797,12 @@ var updateViews = function() {
     var hgRange = instances[selectedInstance].hitGroupRange();
     alertDisplay.setAttribute('style', 'display:none')
     if (hgRange[1] >= shaderTable.hitGroups.length) {
-        alertDisplay.innerHTML = 'Instance\'s geometry accesses out of bounds hit groups. ' +
+        alertDisplay.innerHTML = 'The instance\'s geometry accesses out of bounds hit groups. ' +
             'Instance uses hit groups ' + hgRange[0] + ' to ' + hgRange[1] +
-            ', but only ' + shaderTable.hitGroups.length + ' exist.';
+            ' (' + (hgRange[0] * shaderTable.hgStride + shaderTable.hgOffset) + 'b to ' +
+            (hgRange[1] * shaderTable.hgStride + shaderTable.hgOffset) + 'b)' +
+            ', but valid range is only 0 to ' + (shaderTable.hitGroups.length - 1) +
+            ' (' + ((shaderTable.hitGroups.length - 1) * shaderTable.hgStride + shaderTable.hgOffset) + 'b).';
         alertDisplay.setAttribute('style', 'display:block')
     }
 }
@@ -845,7 +827,7 @@ var updateInstanceView = function() {
         .attr('y', function() { return 4 + selectedInstance * 116; })
         .attr('width', function() { return 116 + instances[selectedInstance].numGeometries() * 75 + 8; })
         .attr('height', 108)
-        .attr('fill', 'yellow');
+        .attr('fill', '#9ecae1');
 
     highlight.exit().remove();
 
@@ -990,9 +972,10 @@ var updateInstance = function() {
     var val = 0;
     if (instMaskInput.value != undefined && instMaskInput.value != '') {
         val = parseInt(instMaskInput.value, 16);
-        val = Math.min(255, Math.max(0, val));
+        val = Math.min(255, Math.max(1, val));
     }
     instances[selectedInstance].mask = val;
+    instMaskInput.value = val;
     document.getElementById('instanceMask').value = val.toString(16);
 
     updateViews();

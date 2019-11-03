@@ -210,10 +210,8 @@ data when the API is switched.
             </div>
             <div class="col-12 row">
                 <div class="col-6 mb-2">
-                    <input type="number" class="form-control" id="structParamSize" min="0" placeholder="Struct size (bytes)">
-                </div>
-                <div class="col-4">
-                    <button id="addStruct" type="button" class="btn btn-primary" onclick="addStructParam()">Add/Set Struct</button>
+                    <input type="number" class="form-control" id="structParamSize" min="0" placeholder="Struct size (bytes)"
+                           oninput="addStructParam()">
                 </div>
             </div>
         </div>
@@ -225,8 +223,6 @@ represented as triangles
 <svg width="800" height="400" class="col-12" id="instanceWidget">
 </svg>
 <div class="col-12 row mb-2">
-    <div class="col-12 alert alert-danger" role="alert" id="hgOutOfBounds" style="display:none">
-    </div>
     <div class="col-4">
         <label for="geometryCount">Geometries</label>
         <input type="number" min="1" class="form-control" id="geometryCount" value="1"
@@ -249,6 +245,7 @@ represented as triangles
         <button id="setTypicalSBTOffset" type="button" class="btn btn-primary" onclick="setInstanceSBTOffset()">
         Set Recommended Offset</button>
     </div>
+    <div class="col-12 alert alert-danger mt-2" role="alert" id="hgOutOfBounds" style="display:none"></div>
 </div>
 
 Craft your trace call:
