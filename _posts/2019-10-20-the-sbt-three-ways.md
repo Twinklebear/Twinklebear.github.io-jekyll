@@ -173,15 +173,20 @@ data when the API is switched.
     <svg width="100%" width="800" height="380" id="sbtWidget">
     </svg>
     <div class="col-12 row mb-2">
-        <div class="col-12 mb-3">
+        <div class="col-6 mb-3">
             API: <select id="selectAPI" onchange="selectAPI()">
             <option selected="selected">DXR</option>
             <option>Vulkan</option>
             <option>OptiX</option>
             </select>
-            Raygen Size: <span id='raygenSize'></span>,
-            HitGroup Stride: <span id='hitGroupStride'></span>,
-            Miss Shader Stride: <span id='missStride'></span>
+        </div>
+        <div class="col-6">
+            Dispatch/Launch Config:
+            <ul>
+            <li>Raygen Size: <span id='raygenSize'></span></li>
+            <li>HitGroup offset: <span id='hitGroupOffset'></span>, stride: <span id='hitGroupStride'></span></li>
+            <li>Mis Shader offset: <span id='missOffset'></span>, stride: <span id='missStride'></span></li>
+            </ul>
         </div>
         <div class="col-6">
             <input type="text" class="form-control" id="shaderRecordName" placeholder="Shader record name">
@@ -220,6 +225,8 @@ represented as triangles
 <svg width="800" height="400" class="col-12" id="instanceWidget">
 </svg>
 <div class="col-12 row mb-2">
+    <div class="col-12 alert alert-danger" role="alert" id="hgOutOfBounds" style="display:none">
+    </div>
     <div class="col-4">
         <label for="geometryCount">Geometries</label>
         <input type="number" min="1" class="form-control" id="geometryCount" value="1"
@@ -321,6 +328,8 @@ optixTrace(accelerationStructure,
     <div class="col-4 mt-4">
         <button id="showMissShader" type="button" class="btn btn-primary" onclick="showMissShader()">
         Show Miss Shader</button>
+    </div>
+    <div class="col-12 mt-2 alert alert-danger" role="alert" id="missOutOfBounds" style="display:none">
     </div>
 </div>
 

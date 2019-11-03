@@ -33,9 +33,6 @@ var shaderRecordZoom = null;
 var shaderRecordZoomRect = null;
 
 var optixStructSizeInput = null;
-var raygenSizeUI = null;
-var hitgroupStrideUI = null;
-var missShaderStrideUI = null;
 var instanceGeometryCountUI = null;
 var sbtOffsetUI = null;
 var instanceMaskUI = null;
@@ -384,21 +381,24 @@ ShaderTable.prototype.clearParams = function() {
 
 ShaderTable.prototype.size = function() {
     var raygenSize = alignTo(this.raygen.size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT);
-    raygenSizeUI.innerHTML = raygenSize + 'b';
+    document.getElementById('raygenSize').innerHTML = raygenSize + 'b';
 
     this.hgOffset = raygenSize;
     this.hgStride = 0;
     for (var i = 0; i < this.hitGroups.length; ++i) {
         this.hgStride = Math.max(this.hgStride, alignTo(this.hitGroups[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
     }
-    hitgroupStrideUI.innerHTML = this.hgStride + 'b';
+
+    document.getElementById('hitGroupStride').innerHTML = this.hgStride + 'b';
+    document.getElementById('hitGroupOffset').innerHTML = this.hgOffset + 'b';
 
     this.missOffset = this.hgOffset + this.hgStride * this.hitGroups.length;
     this.missStride = 0;
     for (var i = 0; i < this.missShaders.length; ++i) {
         this.missStride = Math.max(this.missStride, alignTo(this.missShaders[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
     }
-    missShaderStrideUI.innerHTML = this.missStride + 'b';
+    document.getElementById('missStride').innerHTML = this.missStride + 'b';
+    document.getElementById('missOffset').innerHTML = this.missOffset + 'b';
 
     return raygenSize + this.hgStride * this.hitGroups.length + this.missStride * this.missShaders.length;
 }
@@ -668,9 +668,6 @@ Instance.prototype.hitgroupForGeometry = function(geomIdx) {
 
 window.onload = function() {
     optixStructSizeInput = document.getElementById('structParamSize');
-    raygenSizeUI = document.getElementById('raygenSize');
-    hitgroupStrideUI = document.getElementById('hitGroupStride');
-    missShaderStrideUI = document.getElementById('missStride');
     instanceGeometryCountUI = document.getElementById('geometryCount');
     sbtOffsetUI = document.getElementById('instanceSbtOffset');
     instanceMaskUI = document.getElementById('instanceMask');
@@ -861,13 +858,16 @@ var updateInstanceView = function() {
             return 'translate(' + (116 + i * 75) + ', 14)';
         })
         .on('click', function(d, i) {
+            var alertDisplay = document.getElementById('hgOutOfBounds');
             var hg = d.instance.hitgroupForGeometry(i);
             if (hg < shaderTable.hitGroups.length) {
                 selectedShaderRecord = shaderTable.hitGroups[hg];
+                alertDisplay.setAttribute('style', 'display:none')
                 updateSBTViews();
             } else {
-                alert('Geometry accesses out of bounds hit group ' + hg + ' @ ' +
-                      (hg * shaderTable.hgStride) + 'b');
+                alertDisplay.innerHTML = 'Geometry accesses out of bounds hit group ' +
+                    hg + ' @ ' + (hg * shaderTable.hgStride) + 'b';
+                alertDisplay.setAttribute('style', 'display:block')
             }
         });
 
@@ -969,12 +969,15 @@ var updateTraceCall = function() {
 }
 
 var showMissShader = function() {
+    var alertDisplay = document.getElementById('missOutOfBounds');
     if (traceParams.missShaderIndex < shaderTable.missShaders.length) {
         selectedShaderRecord = shaderTable.missShaders[traceParams.missShaderIndex];
+        alertDisplay.setAttribute('style', 'display:none')
         updateSBTViews();
     } else {
-        alert('Miss accesses out of bounds miss shader ' + traceParams.missShaderIndex + ' @ ' +
-            (traceParams.missShaderIndex * shaderTable.missStride) + 'b');
+        alertDisplay.innerHTML = 'Miss accesses out of bounds miss shader ' +
+            traceParams.missShaderIndex + ' @ ' + (traceParams.missShaderIndex * shaderTable.missStride) + 'b'
+        alertDisplay.setAttribute('style', 'display:block')
     }
 }
 
