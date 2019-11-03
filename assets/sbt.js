@@ -363,7 +363,10 @@ var ShaderTable = function() {
     this.hitGroups = [sampleHG];
     this.missShaders = [sampleMiss];
 
+    this.hgOffset = 0;
     this.hgStride = 0;
+
+    this.missOffset = 0;
     this.missStride = 0;
 
     selectedShaderRecord = this.raygen;
@@ -383,12 +386,14 @@ ShaderTable.prototype.size = function() {
     var raygenSize = alignTo(this.raygen.size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT);
     raygenSizeUI.innerHTML = raygenSize + 'b';
 
+    this.hgOffset = raygenSize;
     this.hgStride = 0;
     for (var i = 0; i < this.hitGroups.length; ++i) {
         this.hgStride = Math.max(this.hgStride, alignTo(this.hitGroups[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
     }
     hitgroupStrideUI.innerHTML = this.hgStride + 'b';
 
+    this.missOffset = this.hgOffset + this.hgStride * this.hitGroups.length;
     this.missStride = 0;
     for (var i = 0; i < this.missShaders.length; ++i) {
         this.missStride = Math.max(this.missStride, alignTo(this.missShaders[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
@@ -400,6 +405,8 @@ ShaderTable.prototype.size = function() {
 
 ShaderTable.prototype.render = function() {
     var self = this;
+    // Update strides and offsets
+    this.size();
 
     // Draw the raygen program
     var raygenSelection = sbtWidget.selectAll('.raygen').data([this.raygen]);
@@ -427,12 +434,27 @@ ShaderTable.prototype.render = function() {
 
     raygenSelection.exit().remove();
 
-    // Determine the starting offset stride for the hit groups
-    var offset = alignTo(this.raygen.size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT);
-    this.hgStride = 0;
-    for (var i = 0; i < this.hitGroups.length; ++i) {
-        this.hgStride = Math.max(this.hgStride, alignTo(this.hitGroups[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
-    }
+    var rgTextSelection = sbtWidget.selectAll('.rgText').data([this.raygen]);
+    rgTextSelection.enter()
+        .append('text')
+        .attr('class', 'rgText')
+        .attr('y', 62)
+        .attr('dominant-baseline', 'middle')
+        .attr('text-anchor', 'middle')
+        .text('RG')
+        .merge(rgTextSelection)
+        .attr('x', sbtWidgetScale(this.raygen.size() / 2.0))
+        .on('mouseover', function(d) {
+            d3.select(this).style('cursor', 'pointer');
+        })
+        .on('mouseout', function(d) {
+            d3.select(this).style('cursor', 'default');
+        })
+        .on('click', function(d) {
+            selectedShaderRecord = d;
+            d.render();
+        });
+    rgTextSelection.exit().remove();
 
     var hgSelection = sbtWidget.selectAll('.hitgroup').data(this.hitGroups);
     hgSelection.enter()
@@ -473,7 +495,7 @@ ShaderTable.prototype.render = function() {
             updateSBTViews();
         })
         .attr('x', function(d, i) {
-            var pos = self.hgStride * i + offset;
+            var pos = self.hgStride * i + self.hgOffset;
             d.setBaseOffset(pos);
             return sbtWidgetScale(pos);
         })
@@ -483,12 +505,49 @@ ShaderTable.prototype.render = function() {
 
     hgSelection.exit().remove();
 
-    // Compute offset and stride for the miss shaders
-    offset += this.hgStride * this.hitGroups.length;
-    this.missStride = 0;
-    for (var i = 0; i < this.missShaders.length; ++i) {
-        this.missStride = Math.max(this.missStride, alignTo(this.missShaders[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
-    }
+    var hgTextSelection = sbtWidget.selectAll('.hgText').data(this.hitGroups)
+    hgTextSelection.enter()
+        .append('text')
+        .attr('class', 'hgText')
+        .attr('y', 62)
+        .attr('dominant-baseline', 'middle')
+        .attr('text-anchor', 'middle')
+        .text('HG')
+        .merge(hgTextSelection)
+        .attr('x', function(d, i) {
+            var pos = self.hgStride * i + self.hgOffset;
+            return sbtWidgetScale(pos + d.size() / 2.0);
+        })
+        .on('mouseover', function(d) {
+            d3.select(this).style('cursor', 'pointer');
+        })
+        .on('mouseout', function(d) {
+            d3.select(this).style('cursor', 'default');
+        })
+        .merge(hgSelection)
+        .on('click', function(d, i) {
+            selectedShaderRecord = d;
+            d.render();
+        })
+        .on('dblclick', function(d, i) {
+            if (self.hitGroups.length == 1) {
+                return;
+            }
+            self.hitGroups.splice(i, 1);
+
+            if (selectedShaderRecord == d) {
+                if (i < self.hitGroups.length) {
+                    selectedShaderRecord = self.hitGroups[i]
+                } else {
+                    selectedShaderRecord = self.hitGroups[self.hitGroups.length - 1];
+                }
+            }
+
+            // Reset the zoom for the shader record
+            shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
+            updateSBTViews();
+        });
+    hgTextSelection.exit().remove();
 
     var missSelection = sbtWidget.selectAll('.miss').data(this.missShaders);
     missSelection.enter()
@@ -529,7 +588,7 @@ ShaderTable.prototype.render = function() {
             updateSBTViews();
         })
         .attr('x', function(d, i) {
-            var pos = self.missStride * i + offset;
+            var pos = self.missStride * i + self.missOffset;
             d.setBaseOffset(pos);
             return sbtWidgetScale(pos);
         })
@@ -538,6 +597,49 @@ ShaderTable.prototype.render = function() {
         });
 
     missSelection.exit().remove();
+
+    var missTextSelection = sbtWidget.selectAll('.missText').data(this.missShaders)
+    missTextSelection.enter()
+        .append('text')
+        .attr('class', 'missText')
+        .attr('y', 62)
+        .attr('dominant-baseline', 'middle')
+        .attr('text-anchor', 'middle')
+        .text('Miss')
+        .merge(missTextSelection)
+        .attr('x', function(d, i) {
+            var pos = self.missStride * i + self.missOffset;
+            return sbtWidgetScale(pos + d.size() / 2.0);
+        })
+        .on('mouseover', function(d) {
+            d3.select(this).style('cursor', 'pointer');
+        })
+        .on('mouseout', function(d) {
+            d3.select(this).style('cursor', 'default');
+        })
+        .on('click', function(d, i) {
+            selectedShaderRecord = d;
+            d.render();
+        })
+        .on('dblclick', function(d, i) {
+            if (self.missShaders.length == 1) {
+                return;
+            }
+            self.missShaders.splice(i, 1);
+
+            if (selectedShaderRecord == d) {
+                if (i < self.missShaders.length) {
+                    selectedShaderRecord = self.missShaders[i]
+                } else {
+                    selectedShaderRecord = self.missShaders[self.missShaders.length - 1];
+                }
+            }
+
+            // Reset the zoom for the shader record
+            shaderRecordZoomRect.call(shaderRecordZoom.transform, d3.zoomIdentity);
+            updateSBTViews();
+        });
+    missTextSelection.exit().remove();
 }
 
 var Geometry = function(instance) {
@@ -864,5 +966,15 @@ var updateTraceCall = function() {
     d3.selectAll('#instanceMaskVal').html('0x' + traceParams.rayInstanceMask.toString(16));
 
     updateInstanceView();
+}
+
+var showMissShader = function() {
+    if (traceParams.missShaderIndex < shaderTable.missShaders.length) {
+        selectedShaderRecord = shaderTable.missShaders[traceParams.missShaderIndex];
+        updateSBTViews();
+    } else {
+        alert('Miss accesses out of bounds miss shader ' + traceParams.missShaderIndex + ' @ ' +
+            (traceParams.missShaderIndex * shaderTable.missStride) + 'b');
+    }
 }
 

@@ -240,7 +240,7 @@ represented as triangles
     </div>
     <div class="col-4 mt-2">
         <button id="setTypicalSBTOffset" type="button" class="btn btn-primary" onclick="setInstanceSBTOffset()">
-        Sent Recommended Offset</button>
+        Set Recommended Offset</button>
     </div>
 </div>
 
@@ -317,6 +317,10 @@ optixTrace(accelerationStructure,
         <label for="rayInstanceMask">Instance Visibility Mask</label>
         <input type="text" class="form-control" id="rayInstanceMask" value="ff"
                oninput="updateTraceCall();">
+    </div>
+    <div class="col-4 mt-4">
+        <button id="showMissShader" type="button" class="btn btn-primary" onclick="showMissShader()">
+        Show Miss Shader</button>
     </div>
 </div>
 
