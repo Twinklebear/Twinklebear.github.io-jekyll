@@ -222,19 +222,25 @@ represented as triangles
 <div class="col-12 row mb-2">
     <div class="col-4">
         <label for="geometryCount">Geometries</label>
-        <input type="number" min="1" class="form-control" id="geometryCount" placeholder="1"
-               oninput="updateGeometryCount()">
+        <input type="number" min="1" class="form-control" id="geometryCount" value="1"
+               oninput="updateInstance()">
     </div>
     <div class="col-4">
         <label for="instanceSbtOffset">SBT Offset</label>
-        <input type="number" min="0" class="form-control" id="instanceSbtOffset" placeholder="0">
+        <input type="number" min="0" class="form-control" id="instanceSbtOffset" value="0"
+               oninput="updateInstance()">
     </div>
     <div class="col-4">
         <label for="instanceMask">Mask</label>
-        <input type="text" class="form-control" id="instanceMask" placeholder="ff">
+        <input type="text" class="form-control" id="instanceMask" value="ff"
+               oninput="updateInstance()">
     </div>
-    <div class="col-6 mt-2">
+    <div class="col-4 mt-2">
         <button id="addInstance" type="button" class="btn btn-primary" onclick="addInstance()">Add Instance</button>
+    </div>
+    <div class="col-4 mt-2">
+        <button id="setTypicalSBTOffset" type="button" class="btn btn-primary" onclick="setInstanceSBTOffset()">
+        Sent Recommended Offset</button>
     </div>
 </div>
 

@@ -107,7 +107,7 @@ var baseSBTOffset = function(inst) {
     for (var i = 0; i < inst; ++i) {
         offset += instances[i].numGeometries();
     }
-    return offset;
+    return offset * traceParams.raySBTStride;
 }
 
 var ShaderParam = function(paramType, paramSize) {
@@ -127,6 +127,8 @@ var ShaderRecord = function(name) {
     this.params = [];
     this.name = name;
     this.baseOffset = 0;
+    // True if the user modified this instance's SBT offset, in which case we won't auto-change it
+    this.userSBTOffset = false;
 }
 
 ShaderRecord.prototype.addParam = function(param) {
@@ -361,26 +363,39 @@ var ShaderTable = function() {
     this.hitGroups = [sampleHG];
     this.missShaders = [sampleMiss];
 
+    this.hgStride = 0;
+    this.missStride = 0;
+
     selectedShaderRecord = this.raygen;
+}
+
+ShaderTable.prototype.clearParams = function() {
+    this.raygen.params = [];
+    for (var i = 0; i < this.hitGroups.length; ++i) {
+        this.hitGroups[i].params = [];
+    }
+    for (var i = 0; i < this.missShaders.length; ++i) {
+        this.missShaders[i].params = [];
+    }
 }
 
 ShaderTable.prototype.size = function() {
     var raygenSize = alignTo(this.raygen.size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT);
     raygenSizeUI.innerHTML = raygenSize + 'b';
 
-    var hgStride = 0;
+    this.hgStride = 0;
     for (var i = 0; i < this.hitGroups.length; ++i) {
-        hgStride = Math.max(hgStride, alignTo(this.hitGroups[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
+        this.hgStride = Math.max(this.hgStride, alignTo(this.hitGroups[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
     }
-    hitgroupStrideUI.innerHTML = hgStride + 'b';
+    hitgroupStrideUI.innerHTML = this.hgStride + 'b';
 
-    var missStride = 0;
+    this.missStride = 0;
     for (var i = 0; i < this.missShaders.length; ++i) {
-        missStride = Math.max(missStride, alignTo(this.missShaders[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
+        this.missStride = Math.max(this.missStride, alignTo(this.missShaders[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
     }
-    missShaderStrideUI.innerHTML = missStride + 'b';
+    missShaderStrideUI.innerHTML = this.missStride + 'b';
 
-    return raygenSize + hgStride * this.hitGroups.length + missStride * this.missShaders.length;
+    return raygenSize + this.hgStride * this.hitGroups.length + this.missStride * this.missShaders.length;
 }
 
 ShaderTable.prototype.render = function() {
@@ -414,9 +429,9 @@ ShaderTable.prototype.render = function() {
 
     // Determine the starting offset stride for the hit groups
     var offset = alignTo(this.raygen.size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT);
-    var hgStride = 0;
+    this.hgStride = 0;
     for (var i = 0; i < this.hitGroups.length; ++i) {
-        hgStride = Math.max(hgStride, alignTo(this.hitGroups[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
+        this.hgStride = Math.max(this.hgStride, alignTo(this.hitGroups[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
     }
 
     var hgSelection = sbtWidget.selectAll('.hitgroup').data(this.hitGroups);
@@ -458,7 +473,7 @@ ShaderTable.prototype.render = function() {
             updateSBTViews();
         })
         .attr('x', function(d, i) {
-            var pos = hgStride * i + offset;
+            var pos = self.hgStride * i + offset;
             d.setBaseOffset(pos);
             return sbtWidgetScale(pos);
         })
@@ -469,10 +484,10 @@ ShaderTable.prototype.render = function() {
     hgSelection.exit().remove();
 
     // Compute offset and stride for the miss shaders
-    offset += hgStride * this.hitGroups.length;
-    var missStride = 0;
+    offset += this.hgStride * this.hitGroups.length;
+    this.missStride = 0;
     for (var i = 0; i < this.missShaders.length; ++i) {
-        missStride = Math.max(missStride, alignTo(this.missShaders[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
+        this.missStride = Math.max(this.missStride, alignTo(this.missShaders[i].size(), currentAPI.SHADER_TABLE_BYTE_ALIGNMENT)); 
     }
 
     var missSelection = sbtWidget.selectAll('.miss').data(this.missShaders);
@@ -514,7 +529,7 @@ ShaderTable.prototype.render = function() {
             updateSBTViews();
         })
         .attr('x', function(d, i) {
-            var pos = missStride * i + offset;
+            var pos = self.missStride * i + offset;
             d.setBaseOffset(pos);
             return sbtWidgetScale(pos);
         })
@@ -543,6 +558,10 @@ Instance.prototype.setNumGeometries = function(n) {
 
 Instance.prototype.numGeometries = function() {
     return this.geometries.length;
+}
+
+Instance.prototype.hitgroupForGeometry = function(geomIdx) {
+    return traceParams.raySBTOffset + traceParams.raySBTStride * geomIdx + this.sbtOffset;
 }
 
 window.onload = function() {
@@ -620,8 +639,8 @@ window.onload = function() {
         .on('wheel.zoom', null)
         .on('dblclick.zoom', null);
 
+    shaderTable = new ShaderTable();
     instances = [new Instance()];
-
     selectAPI()
     updateInstanceView();
 }
@@ -650,7 +669,7 @@ var selectAPI = function() {
         }
     }
 
-    shaderTable = new ShaderTable();
+    shaderTable.clearParams();
     updateSBTViews();
 }
 
@@ -672,9 +691,14 @@ var updateSBTViews = function() {
 }
 
 var updateInstanceView = function() {
+    for (var i = 0; i < instances.length; ++i) {
+        if (!instances[i].userSBTOffset) {
+            instances[i].sbtOffset = baseSBTOffset(i);
+        }
+    }
     instanceGeometryCountUI.value = instances[selectedInstance].numGeometries();
-    sbtOffsetUI.value = baseSBTOffset(selectedInstance);
-    instanceMaskUI.value = 'ff';
+    sbtOffsetUI.value = instances[selectedInstance].sbtOffset;
+    instanceMaskUI.value = instances[selectedInstance].mask.toString(16);
 
     var highlight = instanceContainer.selectAll('.highlight')
         .data([selectedInstance]);
@@ -735,10 +759,14 @@ var updateInstanceView = function() {
             return 'translate(' + (116 + i * 75) + ', 14)';
         })
         .on('click', function(d, i) {
-            // TODO: need a triangle and instance struct so we can map
-            // back to which triangle in which instance this click is on
-            // and find the right hitgroup
-            console.log(d);
+            var hg = d.instance.hitgroupForGeometry(i);
+            if (hg < shaderTable.hitGroups.length) {
+                selectedShaderRecord = shaderTable.hitGroups[hg];
+                updateSBTViews();
+            } else {
+                alert('Geometry accesses out of bounds hit group ' + hg + ' @ ' +
+                      (hg * shaderTable.hgStride) + 'b');
+            }
         });
 
     triangleSelection.exit().remove();
@@ -784,8 +812,29 @@ var addStructParam = function() {
     updateSBTViews();
 }
 
-var updateGeometryCount = function() {
+var updateInstance = function() {
     instances[selectedInstance].setNumGeometries(parseInt(instanceGeometryCountUI.value));
+    var userSBTOffset = parseInt(sbtOffsetUI.value);
+    if (userSBTOffset != instances[selectedInstance].sbtOffset) {
+        instances[selectedInstance].sbtOffset = userSBTOffset;
+        instances[selectedInstance].userSBTOffset = true;
+    }
+
+    var instMaskInput = document.getElementById('instanceMask');
+    var val = 0;
+    if (instMaskInput.value != undefined && instMaskInput.value != '') {
+        val = parseInt(instMaskInput.value, 16);
+        val = Math.min(255, Math.max(0, val));
+    }
+    instances[selectedInstance].mask = val;
+    document.getElementById('instanceMask').value = val.toString(16);
+
+    updateInstanceView();
+}
+
+var setInstanceSBTOffset = function() {
+    instances[selectedInstance].userSBTOffset = false;
+    instances[selectedInstance].sbtOffset = baseSBTOffset(selectedInstance);
     updateInstanceView();
 }
 
@@ -799,19 +848,21 @@ var updateTraceCall = function() {
     traceParams.raySBTStride = parseInt(document.getElementById('raySBTStride').value);
     traceParams.missShaderIndex = parseInt(document.getElementById('missShaderIndex').value);
 
-    // TODO: use same input handling for the instance masks
     var instMaskInput = document.getElementById('rayInstanceMask');
+    var val = 0;
     if (instMaskInput.value != undefined && instMaskInput.value != '') {
-        traceParams.rayInstanceMask = parseInt(instMaskInput.value, 16);
-        traceParams.rayInstanceMask = Math.min(255, Math.max(0, traceParams.rayInstanceMask));
-    } else {
-        traceParams.rayInstanceMask = 0;
+        val = parseInt(instMaskInput.value, 16);
+        val = Math.min(255, Math.max(0, val));
     }
+    traceParams.rayInstanceMask = val;
+
     document.getElementById('rayInstanceMask').value = traceParams.rayInstanceMask.toString(16);
 
     d3.selectAll('#raySBTOffsetVal').html(traceParams.raySBTOffset);
     d3.selectAll('#raySBTStrideVal').html(traceParams.raySBTStride);
     d3.selectAll('#missShaderIndexVal').html(traceParams.missShaderIndex);
     d3.selectAll('#instanceMaskVal').html('0x' + traceParams.rayInstanceMask.toString(16));
+
+    updateInstanceView();
 }
 
