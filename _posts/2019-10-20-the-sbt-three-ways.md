@@ -238,51 +238,55 @@ represented as triangles
 
 Craft your trace call:
 <div id="dxrTrace" class="col-12">
-{% highlight glsl %}
-Template<payload_t>
-void TraceRay(RaytracingAccelerationStructure accelerationStructure,
-    uint rayFlags,
-    uint instanceInclusionMask,
-    uint rayContributionToHitGroupIndex,
-    uint multiplierForGeometryContributionToHitGroupIndex,
-    uint missShaderIndex,
-    RayDesc ray,
-    inout payload_t payload);
-{% endhighlight %}
+<figure class="highlight">
+<pre>
+TraceRay(accelerationStructure,
+    rayFlags,
+    <span class="mh" id="instanceMaskVal">0xff</span>, <span class="c1">// Instance mask</span>
+    <span class="mh" id="raySBTOffsetVal">0</span>, <span class="c1">// Ray SBT offset</span>
+    <span class="mh" id="raySBTStrideVal">1</span>, <span class="c1">// Ray SBT stride</span>
+    <span class="mh" id="missShaderIndex">0</span>, <span class="c1">// Miss shader index</span>
+    ray,
+    payload);
+</pre>
+</figure>
 </div>
+
 <div id="vulkanTrace" class="col-12">
-{% highlight glsl %}
-void traceNV(accelerationStructureNV accelerationStructure,
-    uint rayFlags,
-    uint instanceInclusionMask,
-    uint rayContributionToHitGroupIndex, (sbt_record_offset)
-    uint multiplierForGeometryContributionToHitGroupIndex, (sbt_record_stride)
-    uint missShaderIndex,
-    vec3 rayOrigin
-    float tmin
-    vec3 rayDirection,
-    float tmax,
-    uint payloadIndex);
-{% endhighlight %}
+<figure class="highlight">
+<pre>
+traceNV(accelerationStructure,
+    rayFlags,
+    <span class="mh" id="instanceMaskVal">0xff</span>, <span class="c1">// Instance mask</span>
+    <span class="mh" id="raySBTOffsetVal">0</span>, <span class="c1">// Ray SBT offset</span>
+    <span class="mh" id="raySBTStrideVal">1</span>, <span class="c1">// Ray SBT stride</span>
+    <span class="mh" id="missShaderIndex">0</span>, <span class="c1">// Miss shader index</span>
+    rayOrigin
+    tmin
+    rayDirection,
+    tmax,
+    payloadIndex);
+</pre>
+</figure>
 </div>
-<div id="vulkanTrace" class="col-12">
-{% highlight c %}
-void optixTrace(OptixTraversableHandle accelerationStructure,
-    float3 rayOrigin,
-    float3 rayDirection,
-    float tmin,
-    float tmax,
-    float rayTime,
-    OptixVisibilityMask visibilityMask,
-    unsigned int rayFlags,
-    unsigned int SBToffset,
-    unsigned int SBTstride,
-    unsigned int missSBTIndex
-    // up to 8 32-bit values to be passed through registers
-    // unsigned int &p0-p7
-    unsigned int &p0-p7
-)
-{% endhighlight %}
+
+<div id="cudaTrace" class="col-12">
+<figure class="highlight">
+<pre>
+optixTrace(accelerationStructure,
+    rayOrigin,
+    rayDirection,
+    tmin,
+    tmax,
+    rayTime,
+    <span class="mh" id="instanceMaskVal">0xff</span>, <span class="c1">// Instance mask</span>
+    rayFlags,
+    <span class="mh" id="raySBTOffsetVal">0</span>, <span class="c1">// Ray SBT offset</span>
+    <span class="mh" id="raySBTStrideVal">1</span>, <span class="c1">// Ray SBT stride</span>
+    <span class="mh" id="missShaderIndex">0</span>, <span class="c1">// Miss shader index</span>
+    ... <span class="c1">// up to 8 32-bit values passed by reference through registers</span>);
+</pre>
+</figure>
 </div>
 
 # Extra: An SBT for Embree
