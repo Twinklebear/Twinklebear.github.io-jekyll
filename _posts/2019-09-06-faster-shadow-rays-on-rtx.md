@@ -85,7 +85,7 @@ TraceRay(scene,
     | RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH
     | RAY_FLAG_SKIP_CLOSEST_HIT_SHADER,
     0xff,
-    OCCLUSION_RAY_TYPE,
+    PRIMARY_RAY_TYPE, // Note: HG never called
     NUM_RAY_TYPES,
     OCCLUSION_RAY_TYPE,
     shadow_ray,
