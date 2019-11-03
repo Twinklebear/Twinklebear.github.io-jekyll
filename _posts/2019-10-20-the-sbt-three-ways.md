@@ -203,11 +203,13 @@ data when the API is switched.
             <div class="col-12">
                 <p class="mt-2 mb-1">Shader Record Parameters:</p>
             </div>
-            <div class="col-6 mb-2">
-                <input type="number" class="form-control" id="structParamSize" placeholder="Struct size (bytes)">
-            </div>
-            <div class="col-6">
-                <button id="addStruct" type="button" class="btn btn-primary" onclick="addStructParam()">Add/Set Struct</button>
+            <div class="col-12 row">
+                <div class="col-6 mb-2">
+                    <input type="number" class="form-control" id="structParamSize" min="0" placeholder="Struct size (bytes)">
+                </div>
+                <div class="col-4">
+                    <button id="addStruct" type="button" class="btn btn-primary" onclick="addStructParam()">Add/Set Struct</button>
+                </div>
             </div>
         </div>
     </div>
@@ -245,7 +247,7 @@ TraceRay(accelerationStructure,
     <span class="mh" id="instanceMaskVal">0xff</span>, <span class="c1">// Instance mask</span>
     <span class="mh" id="raySBTOffsetVal">0</span>, <span class="c1">// Ray SBT offset</span>
     <span class="mh" id="raySBTStrideVal">1</span>, <span class="c1">// Ray SBT stride</span>
-    <span class="mh" id="missShaderIndex">0</span>, <span class="c1">// Miss shader index</span>
+    <span class="mh" id="missShaderIndexVal">0</span>, <span class="c1">// Miss shader index</span>
     ray,
     payload);
 </pre>
@@ -260,7 +262,7 @@ traceNV(accelerationStructure,
     <span class="mh" id="instanceMaskVal">0xff</span>, <span class="c1">// Instance mask</span>
     <span class="mh" id="raySBTOffsetVal">0</span>, <span class="c1">// Ray SBT offset</span>
     <span class="mh" id="raySBTStrideVal">1</span>, <span class="c1">// Ray SBT stride</span>
-    <span class="mh" id="missShaderIndex">0</span>, <span class="c1">// Miss shader index</span>
+    <span class="mh" id="missShaderIndexVal">0</span>, <span class="c1">// Miss shader index</span>
     rayOrigin
     tmin
     rayDirection,
@@ -270,7 +272,7 @@ traceNV(accelerationStructure,
 </figure>
 </div>
 
-<div id="cudaTrace" class="col-12">
+<div id="optixTrace" class="col-12">
 <figure class="highlight">
 <pre>
 optixTrace(accelerationStructure,
@@ -283,10 +285,33 @@ optixTrace(accelerationStructure,
     rayFlags,
     <span class="mh" id="raySBTOffsetVal">0</span>, <span class="c1">// Ray SBT offset</span>
     <span class="mh" id="raySBTStrideVal">1</span>, <span class="c1">// Ray SBT stride</span>
-    <span class="mh" id="missShaderIndex">0</span>, <span class="c1">// Miss shader index</span>
+    <span class="mh" id="missShaderIndexVal">0</span>, <span class="c1">// Miss shader index</span>
     ... <span class="c1">// up to 8 32-bit values passed by reference through registers</span>);
 </pre>
 </figure>
+</div>
+
+<div class="col-12 row mb-2 mt-1">
+    <div class="col-4">
+        <label for="raySBTOffset">Ray SBT Offset</label>
+        <input type="number" min="0" class="form-control" id="raySBTOffset" value="0"
+               oninput="updateTraceCall();">
+    </div>
+    <div class="col-4">
+        <label for="raySBTStride">Ray SBT Stride</label>
+        <input type="number" min="0" class="form-control" id="raySBTStride" value="1"
+               oninput="updateTraceCall();">
+    </div>
+    <div class="col-4">
+        <label for="missShaderIndex">Miss Shader Index</label>
+        <input type="number" min="0" class="form-control" id="missShaderIndex" value="0"
+               oninput="updateTraceCall();">
+    </div>
+    <div class="col-4">
+        <label for="rayInstanceMask">Instance Visibility Mask</label>
+        <input type="text" class="form-control" id="rayInstanceMask" value="ff"
+               oninput="updateTraceCall();">
+    </div>
 </div>
 
 # Extra: An SBT for Embree

@@ -40,6 +40,17 @@ var instanceGeometryCountUI = null;
 var sbtOffsetUI = null;
 var instanceMaskUI = null;
 
+var dxrUI = null;
+var vulkanUI = null;
+var optixUI = null;
+
+var traceParams = {
+    raySBTOffset: 0,
+    raySBTStride: 1,
+    missShaderIndex: 0,
+    rayInstanceMask: 0xff,
+};
+
 // Each instance is just a count of how many geometries it has,
 // for D3 nesting we make this just an array like [0, 1, 2]
 var instances = [];
@@ -543,6 +554,10 @@ window.onload = function() {
     sbtOffsetUI = document.getElementById('instanceSbtOffset');
     instanceMaskUI = document.getElementById('instanceMask');
 
+    dxrUI = [document.getElementById('dxrParamsUI'), document.getElementById('dxrTrace')];
+    vulkanUI = [document.getElementById('vulkanParamsUI'), document.getElementById('vulkanTrace')];
+    optixUI = [document.getElementById('optixParamsUI'), document.getElementById('optixTrace')];
+
     // TODO: Something to handle variable size viewports,
     // need to get the w/h of the view
     var svg = d3.select('#sbtWidget');
@@ -616,17 +631,23 @@ var selectAPI = function() {
     currentAPI = API[apiName];
 
     if (apiName == 'DXR') {
-        document.getElementById('dxrParamsUI').setAttribute('style', 'display:block');
-        document.getElementById('vulkanParamsUI').setAttribute('style', 'display:none');
-        document.getElementById('optixParamsUI').setAttribute('style', 'display:none');
+        for (var i = 0; i < 2; ++i) {
+            dxrUI[i].setAttribute('style', 'display:block');
+            vulkanUI[i].setAttribute('style', 'display:none');
+            optixUI[i].setAttribute('style', 'display:none');
+        }
     } else if (apiName == 'Vulkan') {
-        document.getElementById('dxrParamsUI').setAttribute('style', 'display:none');
-        document.getElementById('vulkanParamsUI').setAttribute('style', 'display:block');
-        document.getElementById('optixParamsUI').setAttribute('style', 'display:none');
+        for (var i = 0; i < 2; ++i) {
+            dxrUI[i].setAttribute('style', 'display:none');
+            vulkanUI[i].setAttribute('style', 'display:block');
+            optixUI[i].setAttribute('style', 'display:none');
+        }
     } else {
-        document.getElementById('dxrParamsUI').setAttribute('style', 'display:none');
-        document.getElementById('vulkanParamsUI').setAttribute('style', 'display:none');
-        document.getElementById('optixParamsUI').setAttribute('style', 'display:block');
+        for (var i = 0; i < 2; ++i) {
+            dxrUI[i].setAttribute('style', 'display:none');
+            vulkanUI[i].setAttribute('style', 'display:none');
+            optixUI[i].setAttribute('style', 'display:block');
+        }
     }
 
     shaderTable = new ShaderTable();
@@ -754,11 +775,11 @@ var addGPUHandleParam = function() {
 }
 
 var addStructParam = function() {
-    if (optixStructSizeInput.value == '') {
-        alert('Struct size cannot be empty');
-        return;
+    if (optixStructSizeInput.value == '' || optixStructSizeInput.value == 0) {
+        selectedShaderRecord.params = [];
+    } else {
+        selectedShaderRecord.addParam(new ShaderParam(ParamType.STRUCT, parseInt(optixStructSizeInput.value)));
     }
-    selectedShaderRecord.addParam(new ShaderParam(ParamType.STRUCT, parseInt(optixStructSizeInput.value)));
 
     updateSBTViews();
 }
@@ -771,5 +792,26 @@ var updateGeometryCount = function() {
 var addInstance = function() {
     instances.push(new Instance());
     updateInstanceView();
+}
+
+var updateTraceCall = function() {
+    traceParams.raySBTOffset = parseInt(document.getElementById('raySBTOffset').value);
+    traceParams.raySBTStride = parseInt(document.getElementById('raySBTStride').value);
+    traceParams.missShaderIndex = parseInt(document.getElementById('missShaderIndex').value);
+
+    // TODO: use same input handling for the instance masks
+    var instMaskInput = document.getElementById('rayInstanceMask');
+    if (instMaskInput.value != undefined && instMaskInput.value != '') {
+        traceParams.rayInstanceMask = parseInt(instMaskInput.value, 16);
+        traceParams.rayInstanceMask = Math.min(255, Math.max(0, traceParams.rayInstanceMask));
+    } else {
+        traceParams.rayInstanceMask = 0;
+    }
+    document.getElementById('rayInstanceMask').value = traceParams.rayInstanceMask.toString(16);
+
+    d3.selectAll('#raySBTOffsetVal').html(traceParams.raySBTOffset);
+    d3.selectAll('#raySBTStrideVal').html(traceParams.raySBTStride);
+    d3.selectAll('#missShaderIndexVal').html(traceParams.missShaderIndex);
+    d3.selectAll('#instanceMaskVal').html('0x' + traceParams.rayInstanceMask.toString(16));
 }
 
