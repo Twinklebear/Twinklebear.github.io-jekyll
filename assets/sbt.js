@@ -418,17 +418,22 @@ ShaderTable.prototype.render = function() {
         .attr('height', 64)
         .attr('stroke-width', 2)
         .attr('stroke', 'black')
-        .attr('fill', 'white')
-        .merge(raygenSelection)
         .on('mouseover', function(d) {
             d3.select(this).style('cursor', 'pointer');
         })
         .on('mouseout', function(d) {
             d3.select(this).style('cursor', 'default');
         })
+        .merge(raygenSelection)
+        .attr('fill', function(d, i) {
+            if (selectedShaderRecord == d) {
+                return '#e6550d';
+            }
+            return 'white';
+        })
         .on('click', function(d) {
             selectedShaderRecord = d;
-            d.render();
+            updateViews();
         })
         .attr('width', sbtWidgetScale(this.raygen.size()));
 
@@ -452,7 +457,7 @@ ShaderTable.prototype.render = function() {
         })
         .on('click', function(d) {
             selectedShaderRecord = d;
-            d.render();
+            updateViews();
         });
     rgTextSelection.exit().remove();
 
@@ -460,15 +465,14 @@ ShaderTable.prototype.render = function() {
 
     var clickHitGroup = function(d, i) {
         selectedShaderRecord = d;
-        d.render();
         // If there's an instance that uses this hit group, select it as well
         for (var j = 0; j < instances.length; ++j) {
             var hgRange = instances[j].hitGroupRange();
             if (i >= hgRange[0] && i <= hgRange[1]) {
                 selectedInstance = j;
-                updateViews();
             }
         }
+        updateViews();
     };
 
     var dblclickHitGroup = function(d, i) {
@@ -506,6 +510,9 @@ ShaderTable.prototype.render = function() {
         })
         .merge(hgSelection)
         .attr('fill', function(d, i) {
+            if (selectedShaderRecord == d) {
+                return '#e6550d';
+            }
             if (i >= instanceHgRange[0] && i <= instanceHgRange[1]) {
                 return '#9ecae1';
             }
@@ -543,14 +550,12 @@ ShaderTable.prototype.render = function() {
         .on('mouseout', function(d) {
             d3.select(this).style('cursor', 'default');
         })
-        .merge(hgTextSelection)
         .on('click', clickHitGroup)
         .on('dblclick', dblclickHitGroup);
     hgTextSelection.exit().remove();
 
     var clickMissShader = function(d, i) {
         selectedShaderRecord = d;
-        d.render();
         document.getElementById('missShaderIndex').value = i;
         updateTraceCall();
         updateViews();
@@ -590,6 +595,9 @@ ShaderTable.prototype.render = function() {
         })
         .merge(missSelection)
         .attr('fill', function(d, i) {
+            if (selectedShaderRecord == d) {
+                return '#e6550d';
+            }
             if (i == traceParams.missShaderIndex) {
                 return '#bcbddc';
             }
@@ -657,8 +665,9 @@ Instance.prototype.hitgroupForGeometry = function(geomIdx) {
 }
 
 Instance.prototype.hitGroupRange = function() {
-    return [traceParams.raySBTOffset + this.sbtOffset,
-        traceParams.raySBTOffset + traceParams.raySBTStride * (this.geometries.length - 1) + this.sbtOffset];
+    var h = [this.sbtOffset, traceParams.raySBTStride * this.geometries.length + this.sbtOffset - 1];
+    h[1] = Math.max(h[1], 0);
+    return h;
 }
 
 window.onload = function() {
