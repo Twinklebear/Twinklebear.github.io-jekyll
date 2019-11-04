@@ -665,7 +665,8 @@ Instance.prototype.hitgroupForGeometry = function(geomIdx) {
 }
 
 Instance.prototype.hitGroupRange = function() {
-    var h = [this.sbtOffset, traceParams.raySBTStride * this.geometries.length + this.sbtOffset - 1];
+    var h = [traceParams.raySBTOffset + this.sbtOffset,
+        traceParams.raySBTOffset + traceParams.raySBTStride * this.geometries.length + this.sbtOffset - 1];
     h[1] = Math.max(h[1], 0);
     return h;
 }
