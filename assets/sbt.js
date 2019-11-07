@@ -26,6 +26,8 @@ var shaderTable = null;
 var selectedShaderRecord = null;
 
 var sbtWidget = null;
+var sbtWidgetZoom = null;
+var sbtScrollRect = null;
 var sbtWidgetScale = d3.scaleLinear([0, 32], [0, 78]);
 
 var shaderRecordWidget = null;
@@ -690,7 +692,7 @@ window.onload = function() {
         .attr('class', 'sbtWidgetAxis')
         .attr('transform', 'translate(0, 94)');
 
-    var sbtScrollRect = svg.append('rect')
+    sbtScrollRect = svg.append('rect')
         .attr('y', '94')
         .attr('width', '800')
         .attr('height', '22')
@@ -703,10 +705,11 @@ window.onload = function() {
             d3.select(this).style('cursor', 'default');
         });
 
-    sbtScrollRect.call(d3.zoom()
+    sbtWidgetZoom = d3.zoom()
         .on('zoom', function() { 
             sbtWidget.attr('transform', 'translate(' + d3.event.transform.x + ', 0)');
-        }))
+        });
+    sbtScrollRect.call(sbtWidgetZoom)
         .on('wheel.zoom', null);
 
     shaderRecordWidget = svg.append('g');
@@ -816,6 +819,16 @@ var updateViews = function() {
     }
 }
 
+var zoomToShaderRecord = function() {
+    // TODO: If the record is already visible, maybe don't pan to it
+    var x = -sbtWidgetScale(selectedShaderRecord.baseOffset) + sbtWidgetScale(selectedShaderRecord.size()) / 2.0;
+    sbtScrollRect.transition()
+        .duration(200)
+        .ease(d3.easeLinear)
+        .call(sbtWidgetZoom.transform,
+            d3.zoomIdentity.translate(x, 0));
+}
+
 var updateInstanceView = function() {
     for (var i = 0; i < instances.length; ++i) {
         if (!instances[i].userSBTOffset) {
@@ -896,6 +909,7 @@ var updateInstanceView = function() {
             var hg = d.instance.hitgroupForGeometry(i);
             if (hg < shaderTable.hitGroups.length) {
                 selectedShaderRecord = shaderTable.hitGroups[hg];
+                zoomToShaderRecord();
                 alertDisplay.setAttribute('style', 'display:none')
                 updateViews();
             } else {
@@ -1027,6 +1041,7 @@ var updateTraceCall = function() {
 var showMissShader = function() {
     if (traceParams.missShaderIndex < shaderTable.missShaders.length) {
         selectedShaderRecord = shaderTable.missShaders[traceParams.missShaderIndex];
+        zoomToShaderRecord();
     }
     updateViews();
 }
