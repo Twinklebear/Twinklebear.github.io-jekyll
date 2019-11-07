@@ -62,11 +62,11 @@ var alignTo = function(val, align) {
 }
 
 var makeTriangle = function() {
-    return d3.create('svg:polygon')
-        .attr('points', '25 7.5, 50 50, 0 50')
+    return d3.create('svg:path')
         .attr('class', 'triangle')
+        .attr('d', 'M22.5,1.7c-3.8,2.5-7.5,4.8-10.6,8c-0.1,0-0.1-0.1-0.2-0.1c0.1-0.5,0.1-1,0.3-1.4c0.5-1.1,0.6-2.3,0.3-3.5 c-0.2-0.9-0.8-1.6-1.7-2c-1.1-0.4-2.1,0-3.1,0.5C7,3.5,6.7,3.9,6.5,4.5C6,6.1,6.2,7.8,6.2,9.5c0,0.1,0,0.1,0,0.2 C6.4,10,6.2,10,6,10.1c-1.1,0.3-2.3,0.6-3.4,1c-1.1,0.4-1.8,1.3-1.6,2.6c0,0.3,0,0.6,0.1,1c0.1,0.6,0.1,1.2,0.2,1.8 c0.1,0.9-0.5,1.6-0.8,2.4c-0.5,1.1-0.4,2.3-0.3,3.4c0.1,1.2,1,1.9,1.9,2.5c0.8,0.5,0.8,0.7,0.5,1.6C2.2,27.2,2,28.1,1.8,29 c-0.1,0.4-0.1,0.8,0,1.3c0.1,0.8,0.3,1.5,0.5,2.3c0.1,0.5,0.3,0.9,0.5,1.4c0.2,0.4,0.5,0.9,0.7,1.3c0.5,1.1,5.3,5.8,6.9,6.2 c0.5,0.1,1.1,0.3,1.6,0.5c0.2,0.1,0.3,0.2,0.4,0.4c0.2,1.1-0.4,2.1-1.4,2.5c-0.8,0.3-1.5,0.8-2.2,1.2c-0.2,0.1-0.1,1.6,0.2,2.3 C9,48.4,9,48.7,9.1,48.9c0.2,0.1,4.1,0.4,4.8,0.4c0.9,0.1,20.1,0.2,22-0.5c0.6-0.2,1.2-0.6,1.8-1.1c0.6-0.5,1.1-0.9,1.8-1 c1.2-0.1,2.3-0.1,3.5-0.2c0.3,0,0.7-0.2,1-0.2c0.3,0,1.5-0.5,1.7-0.8c0.2-0.2,2.9-2,3.3-2.8c0.8-1.4,1.2-2.8,0.8-4.4 c-0.2-0.6-0.5-1.1-1.1-1.4c-0.8-0.5-1.6-0.6-2.5-0.4c-0.7,0.1-0.9-0.1-0.9-0.7c-0.1-0.6-0.1-1.2-0.1-1.7c-0.1-1.4-0.2-2.8-0.4-4.2 c-0.4-2.4-1.6-4.4-3.1-6.3c-3.3-4.1-7.3-6.4-12.7-5.5c-2.2,0.4-4.3,0.9-6.5,1.5c-0.8,0.2-1.6,0.2-2.4-0.1c-0.9-0.3-1.8-0.5-2.7-0.7 c-0.6-0.1-1.1-0.4-1.4-0.9c-0.7-0.9-1-1.8-1.2-2.9c-0.1-0.5,0.1-0.8,0.5-1.1c2.4-1.5,4.9-2.8,7.5-3.8c1.6-0.6,3.1-1.4,4.3-2.7 c0.3-0.3,0.5-0.8,0.6-1.2c0.3-2,0-3.8-1.7-5.2c-0.8-0.6-1.4-0.7-2.2-0.3C23.6,0.9,22.9,1.4,22.5,1.7z')
         .attr('stroke', 'gray')
-        .attr('stroke-width', 2)
+        .attr('stroke-width', 1)
         .attr('fill', 'black')
         .node();
 }
@@ -847,7 +847,7 @@ var updateInstanceView = function() {
         .merge(highlight)
         .attr('x', 4)
         .attr('y', function() { return 4 + selectedInstance * 116; })
-        .attr('width', function() { return 116 + instances[selectedInstance].numGeometries() * 75 + 8; })
+        .attr('width', function() { return 116 + instances[selectedInstance].numGeometries() * 80 + 8; })
         .attr('height', 108)
         .attr('fill', '#9ecae1');
 
@@ -902,7 +902,7 @@ var updateInstanceView = function() {
             return 'red';
         })
         .attr('transform', function(d, i) {
-            return 'translate(' + (116 + i * 75) + ', 14)';
+            return 'translate(' + (116 + i * 80) + ', 10) scale(1.5)';
         })
         .on('click', function(d, i) {
             var alertDisplay = document.getElementById('hgOutOfBounds');
@@ -937,7 +937,7 @@ var updateInstanceView = function() {
         .merge(inactiveHighlight)
         .attr('x', 4)
         .attr('y', function(d) { return 4 + d * 116; })
-        .attr('width', function(d) { return 116 + instances[d].numGeometries() * 75 + 8; })
+        .attr('width', function(d) { return 116 + instances[d].numGeometries() * 80 + 8; })
         .attr('height', 108)
         .attr('fill', 'gray')
         .attr('opacity', 0.5);
