@@ -8,19 +8,52 @@ published: true
 ---
 {% include JB/setup %}
 
-Lead-in: some stuff like the SBT setup and how the different options for
+DirectX Ray Tracing, Vulkan's NV Ray Tracing extension, and OptiX 7 (or collectively, the RTX APIs)
+build on the same execution model for running user code to trace
+and process rays. The user creates a shader binding table (SBT), which consists of a set
+of shader function handles and embedded parameters for these functions. The shaders in the table
+are executed depending on whether or not a geometry was hit by a ray, and which geometry was hit.
+When a geometry is hit a set of parameters specified on both the host and
+device side of the application combine to determine which shader is executed.
+The RTX APIs provide a great deal of flexibility in how the SBT can be set up and
+indexed into during rendering, leaving a number of options open to applications.
+However, with incorrect SBT access leading
+to crashes and difficult bugs, sparse examples or documentation, and
+subtle differences in naming and SBT setup between the APIs, properly setting up
+and accessing the SBT is an especially thorny part of the RTX APIs for new users.
+
+In this post we'll look at the similarities and differences of each ray tracing API's shader
+binding table to gain a fundamental understanding of the execution model. I'll then
+present an interactive tool for constructing the SBT, building a scene which uses it,
+and executing trace calls on the scene to see which hit groups and miss shaders are called.
+Finally, we'll look at how this model can be brought back to the CPU using Embree,
+to potentially build a unified low-level API for ray tracing.
+
+*Lead-in: some stuff like the SBT setup and how the different options for
 tweaking how it's indexed can be confusing to work out. The information around
 is a bit partial and most people are left to kind of work out the math or some
 guess work to see what's going on. Here I'll explain each and provide an interactive
 tool for playing with how the SBT is setup and indexed in the shader.
 Also explain difference of a shader vs. the shader record, which is more like
-a closure in that you need a SR for each unique combination of function and SBT parameters.
+a closure in that you need a SR for each unique combination of function and SBT parameters.*
 
 <!--more-->
 
+# The What and Why of the Shader Binding Table
+
+When using a rasterizer we can batch objects by the shader they use, and thus
+always know the specific single shader which must be called to render our set of objects.
+A fundamental difference between rasterization and ray tracing is that in a ray tracer we don't know
+which object a ray will hit when we trace it, and thus need the entire scene available
+in memory (or some proxy of it) to process the ray. This means our ray tracer needs the geometry for
+each object and a function to call which can process intersections with that object. Instead
+of one shader we need all the possible shaders which might be called, and a way
+to associate them with geometry in the scene. Each of the RTX APIs does implements this through
+the Shader Binding Table.
+
 # DirectX Ray Tracing
 
-SBT can store pairs of 4byte constants (oe 4byte + pad) and 8 byte descriptors.
+SBT can store pairs of 4byte constants (or 4byte + pad) and 8 byte descriptors.
 This appears as any other shader parameters and have to be mapped to the corresponding
 registers/spaces etc. by specifying a local root signature for the shaders.
 
@@ -38,11 +71,11 @@ void TraceRay(RaytracingAccelerationStructure AccelerationStructure,
 
 {% highlight c++ %}
 typedef struct D3D12_RAYTRACING_INSTANCE_DESC {
-  FLOAT                     Transform[3];
-  UINT                      InstanceID : 24;
-  UINT                      InstanceMask : 8;
-  UINT                      InstanceContributionToHitGroupIndex : 24;
-  UINT                      Flags : 8;
+  FLOAT Transform[3];
+  UINT InstanceID : 24;
+  UINT InstanceMask : 8;
+  UINT InstanceContributionToHitGroupIndex : 24;
+  UINT Flags : 8;
   D3D12_GPU_VIRTUAL_ADDRESS AccelerationStructure;
 } D3D12_RAYTRACING_INSTANCE_DESC;
 {% endhighlight %}
@@ -60,16 +93,16 @@ as a buffer in the shader.
 
 {% highlight glsl %}
 void traceNV(accelerationStructureNV acceleration_structure,
-              uint ray_flags,
-              uint instance_inclusion_mask,
-              uint ray_contribution_to_hit_group_index, (sbt_record_offset)
-              uint multiplier_for_geometry_contribution_to_hit_group_index, (sbt_record_stride)
-              uint miss_shader_index,
-              vec3 ray_origin
-              float t_min
-              vec3 ray_dir,
-              float t_max,
-              uint payload_index);
+             uint ray_flags,
+             uint instance_inclusion_mask,
+             uint ray_contribution_to_hit_group_index, (sbt_record_offset)
+             uint multiplier_for_geometry_contribution_to_hit_group_index, (sbt_record_stride)
+             uint miss_shader_index,
+             vec3 ray_origin
+             float t_min
+             vec3 ray_dir,
+             float t_max,
+             uint payload_index);
 {% endhighlight %}
 
 {% highlight glsl %}
@@ -158,9 +191,6 @@ Things this should support:
 - <s>see which hit group is called for a specific geometry given the current indexing params</s>
 - <s>see which miss group is called for a specific trace call</s>
 - <s>also show and talk about the instance mask and how this can be used</s>
-- maybe also include that it is possible to have multiple ray-gen shaders but the APIs
-    just take the one to use for the current launch/dispatch as the param. You don't specify
-    some table with stride.
 - also make clear that the different shader records can be stored in different buffers
 
 The interactive graphic style I'd like to be similar to that used in RT Gems, but with
