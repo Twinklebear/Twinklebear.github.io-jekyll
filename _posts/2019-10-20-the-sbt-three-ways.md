@@ -46,6 +46,8 @@ a closure in that you need a SR for each unique combination of function and SBT 
 To motivate why need the shader binding table, it's important to see how ray tracing
 differs from rasterization.
 
+*brief refresher, link to dxr tutors, other tutorials and book for more*
+
 <figure>
 	<!--<img class="img-fluid" src="https://i.imgur.com/YqdyKCj.png"/>-->
 	{% assign figurecount = figurecount | plus: 1 %}
