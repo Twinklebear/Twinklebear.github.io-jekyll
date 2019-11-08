@@ -8,7 +8,9 @@ published: true
 ---
 {% include JB/setup %}
 
-DirectX Ray Tracing, Vulkan's NV Ray Tracing extension, and OptiX 7 (or collectively, the RTX APIs)
+{% assign figurecount = 0 %}
+
+DirectX Ray Tracing, Vulkan's NV Ray Tracing extension, and OptiX (or collectively, the RTX APIs)
 build on the same execution model for running user code to trace
 and process rays. The user creates a shader binding table (SBT), which consists of a set
 of shader function handles and embedded parameters for these functions. The shaders in the table
@@ -39,19 +41,49 @@ a closure in that you need a SR for each unique combination of function and SBT 
 
 <!--more-->
 
-# The What and Why of the Shader Binding Table
+# The RTX Execution Model
+
+To motivate why need the shader binding table, it's important to see how ray tracing
+differs from rasterization.
+
+<figure>
+	<!--<img class="img-fluid" src="https://i.imgur.com/YqdyKCj.png"/>-->
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><b>Figure {{figurecount}}:</b>
+    <i>Some figure showing the RTX execution pipeline and some scene to give
+    a refresher/note on the types of shaders and exec. model
+	</i></figcaption>
+</figure>
 
 When using a rasterizer we can batch objects by the shader they use, and thus
-always know the specific single shader which must be called to render our set of objects.
+always know the pipeline of shaders which must be called to render a set of objects.
 A fundamental difference between rasterization and ray tracing is that in a ray tracer we don't know
 which object a ray will hit when we trace it, and thus need the entire scene available
-in memory (or some proxy of it) to process the ray. This means our ray tracer needs the geometry for
-each object and a function to call which can process intersections with that object. Instead
-of one shader we need all the possible shaders which might be called, and a way
-to associate them with geometry in the scene. Each of the RTX APIs does implements this through
-the Shader Binding Table.
+in memory (or some proxy of it) to process the ray. Our ray tracer needs both the data for
+each object and a function to call for that object which can process intersections. Instead
+of one shader, we need all the possible shaders which might be called, and a way
+to associate them with the objects in the scene. Each of the RTX APIs does this through
+the *Shader Binding Table*. An analogy in the rasterization pipeline is bindless rendering, where
+the required data (textures, buffers) is uploaded to the GPU and accessed as needed by ID
+at runtime in the shader. Our shader dispatch is now "bindless" in some sense.
 
-# DirectX Ray Tracing
+# The Shader Binding Table
+
+*consists of a set of shader records, where each is a function (or functions for hit group)
+and parameters for those functions*
+
+## Shader Record Types
+
+*Think of a shader record like a closure, it combines a set of parameters + a function
+to be called for some object or ray*
+
+#### Ray Generation
+
+#### Hit Group
+
+#### Miss
+
+## DirectX Ray Tracing
 
 SBT can store pairs of 4byte constants (or 4byte + pad) and 8 byte descriptors.
 This appears as any other shader parameters and have to be mapped to the corresponding
@@ -86,7 +118,7 @@ to note here as well, the max size of the stride is 4096 bytes.
 
 Can also talk about how the ray payload is sent here too in trace ray.
 
-# Vulkan Ray Tracing
+## Vulkan Ray Tracing
 
 The most restricted of them, SBT can only store 4byte constants, this data appears
 as a buffer in the shader.
@@ -127,7 +159,7 @@ for shaderGroupHandleSize and shaderGroupBaseAlignment
 
 Can also talk here about how the ray payload is specified in GLSL/Vulkan
 
-# OptiX
+## OptiX
 
 The most flexible of them, just write bytes and get a pointer to this data
 on the GPU side. Only requirement is the alignment restriction.
