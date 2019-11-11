@@ -12,7 +12,7 @@ published: true
 
 DirectX Ray Tracing, Vulkan's NV Ray Tracing extension, and OptiX (or collectively, the RTX APIs)
 build on the same execution model for running user code to trace
-and process rays. The user creates a shader binding table (SBT), which consists of a set
+and process rays. The user creates a *Shader Binding Table* (SBT), which consists of a set
 of shader function handles and embedded parameters for these functions. The shaders in the table
 are executed depending on whether or not a geometry was hit by a ray, and which geometry was hit.
 When a geometry is hit a set of parameters specified on both the host and
@@ -43,47 +43,120 @@ a closure in that you need a SR for each unique combination of function and SBT 
 
 # The RTX Execution Model
 
-To motivate why need the shader binding table, it's important to see how ray tracing
-differs from rasterization.
-
-*brief refresher, link to dxr tutors, other tutorials and book for more*
+To motivate why the RTX APIs need a shader binding table, we can look at how 
+ray tracing differs from rasterization.
+In a rasterizer we can batch objects by the shader they use and thus
+always know the set of shaders which must be called to render a set of objects.
+However, in a ray tracer we don't know
+which object a ray will hit when we trace it, and thus need the entire scene available
+in memory (or some proxy of it) to process the ray. Our ray tracer needs both the data for
+each object and a function to call for that object which can process intersections.
+To render the scene we need access to all of the shaders which might be called, and a way
+to associate them with the objects in the scene. Each of the RTX APIs does this through
+the *Shader Binding Table*. An analogy in the rasterization pipeline is bindless rendering, where
+the required data (textures, buffers) is uploaded to the GPU and accessed as needed by ID
+at runtime in the shader. Our shader dispatch is now "bindless" in some sense.
 
 <figure>
 	<!--<img class="img-fluid" src="https://i.imgur.com/YqdyKCj.png"/>-->
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><b>Figure {{figurecount}}:</b>
-    <i>Some figure showing the RTX execution pipeline and some scene to give
-    a refresher/note on the types of shaders and exec. model
+    <i>The RTX API ray tracing pipeline, with locations where the SBT is
+    queried for a shader to call highlighted.
 	</i></figcaption>
 </figure>
 
-When using a rasterizer we can batch objects by the shader they use, and thus
-always know the pipeline of shaders which must be called to render a set of objects.
-A fundamental difference between rasterization and ray tracing is that in a ray tracer we don't know
-which object a ray will hit when we trace it, and thus need the entire scene available
-in memory (or some proxy of it) to process the ray. Our ray tracer needs both the data for
-each object and a function to call for that object which can process intersections. Instead
-of one shader, we need all the possible shaders which might be called, and a way
-to associate them with the objects in the scene. Each of the RTX APIs does this through
-the *Shader Binding Table*. An analogy in the rasterization pipeline is bindless rendering, where
-the required data (textures, buffers) is uploaded to the GPU and accessed as needed by ID
-at runtime in the shader. Our shader dispatch is now "bindless" in some sense.
+The different shaders used in the ray tracing pipeline are:
+
+- Ray Generation: Called as the entry point to the ray tracer to generate the rays
+    to be processed.
+- Intersection: When using non-triangle geometry an intersection shader is required
+    to compute ray intersections with the custom primitives. This isn't necessary
+    for triangle meshes, as the ray-triangle intersection test is done in hardware.
+- Any Hit: Is called for each potential intersection found along the ray,
+    and can be used to filter potential intersections. For example, when using alpha
+    cutout textues, the Any Hit shader is used to discard hits against the cutout regions
+    of the geometry.
+- Closest Hit: Is called for the closest hit found along the ray, and can compute and
+    return intersection information through the ray payload or trace rays if performing
+    shading in the Closest Hit shader is desired.
+- Miss: When no hit is found for a ray, the miss shader is called. The Miss shader
+    can be used to return a background color for primary rays, or mark occlusion rays
+    as unoccluded.
+
+For a full tutorial check out the
+[Introduction to DirectX Ray Tracing](http://intro-to-dxr.cwyman.org/) course
+given at SIGGRAPH 2018, or the [Optix 7 Tutorial](https://gitlab.com/ingowald/optix7course)
+given at SIGGRAPH 2019.
 
 # The Shader Binding Table
 
 *consists of a set of shader records, where each is a function (or functions for hit group)
 and parameters for those functions*
 
-## Shader Record Types
+The Shader Binding Table contains the entire set of shaders we want to call for the
+scene, along with embedded parameters to be passed to these shaders. Each pair
+of shader functions and embedded parameters is referred to as a *Shader Record*.
+Since it's common for objects to share the same shader code, but need to access different
+data, the embedded parameters in the table can be used to pass such data to
+the shaders. Thus, there should be at least one Shader Record in the table for
+each unique combination of shader functions and embedded parameters. It is possible
+to write the same shader record multiple times in the table, and this may be
+necessary depending on how the instances and geometries in the scene are specified.
+Finally, it is also possible to simply use the instance and geometry IDs available
+in the shaders to perform indirect access into other tables containing the scene data.
+
+## Shader Record
 
 *Think of a shader record like a closure, it combines a set of parameters + a function
 to be called for some object or ray*
 
+A Shader Record combines one or more shader functions with a set of parameters to
+be passed to these functions when they're called by the runtime. In the SBT,
+each shader record is written as the set of function handles, followed by the
+parameters. While the size of the handles, alignment requirements for
+the records and parameters which can be embedded in the table differ across
+the RTX APIs, the functionality of the shader record is the same. 
+
 #### Ray Generation
+
+The Ray Generation shader record consists of a single function referring to the
+ray generation shader to be used, along with any desired in line parameters
+for the function. While some parameters can be passed in line, for things
+which update each frame it can be easier to pass them separately through a
+different globally accessible buffer.
+While multiple ray generation shaders can be written into the table,
+only one can be called for a specific launch.
 
 #### Hit Group
 
+Each Hit Group shader record consists of a Closest Hit shader,
+Any Hit shader (optional) and Intersection (optional) shader, followed by
+the set of embedded parameters to be made available to the three shaders.
+As the hit group which should be called is dependent on the instance
+and geometry which were hit and the ray type, the indexing rules for hit groups are
+the most complicated. The rules for hit group indexing are discussed in detail
+below.
+
 #### Miss
+
+The Miss shader record consists of a single function referring to the miss shader
+to be used, along with any desired in line parameters for the function,
+similar to the ray generation record. The miss shader which is called is selected
+by the ray type, though is specified separately from the hit group ray type to
+allow greater flexibility. This flexibility can be used for optimizations to
+[occlusion rays, for example](/graphics/2019/09/06/faster-shadow-rays-on-rtx).
+
+## Hit Group Shader Record Index Calculation
+
+*Depends on:*
+
+- *instance's sbt offset*
+- *order of geometry in the instance*
+- *ray sbt offset*
+- *ray sbt stride*
+
+*instance and ray mask also play an indirect role in whether something is called at all*
 
 ## DirectX Ray Tracing
 
