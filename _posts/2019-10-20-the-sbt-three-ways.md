@@ -5,6 +5,7 @@ description: ""
 category: graphics
 tags: [graphics, raytracing]
 published: true
+mathjax: true
 ---
 {% include JB/setup %}
 
@@ -84,9 +85,10 @@ The different shaders used in the ray tracing pipeline are:
     can be used to return a background color for primary rays, or mark occlusion rays
     as unoccluded.
 
-For a full tutorial check out the
+For a detailed overview and other interesting gems, see the [Ray Tracing Gems Book](http://www.realtimerendering.com/raytracinggems/),
+or check out the
 [Introduction to DirectX Ray Tracing](http://intro-to-dxr.cwyman.org/) course
-given at SIGGRAPH 2018, or the [Optix 7 Tutorial](https://gitlab.com/ingowald/optix7course)
+given at SIGGRAPH 2018, or [Optix 7 Tutorial](https://gitlab.com/ingowald/optix7course)
 given at SIGGRAPH 2019.
 
 # The Shader Binding Table
@@ -148,6 +150,48 @@ allow greater flexibility. This flexibility can be used for optimizations to
 [occlusion rays, for example](/graphics/2019/09/06/faster-shadow-rays-on-rtx).
 
 ## Hit Group Shader Record Index Calculation
+
+The main point of difficulty in setting up the SBT and scene geometry is understanding
+how the two are coupled together, i.e., if a geometry is hit by a ray,
+which shader record is called? The shader record is determined by parameters set on the
+instance, trace ray call, and the order of hit group records in the SBT.
+These parameters are set on both the host and device during different parts of the scene
+and pipeline setup and execution, and thus tracking them down together can be confusing.
+
+The equation used to determine which hit group record is called when a ray with SBT
+offset $$ R_\text{offset} $$ and stride $$ R_\text{stride} $$ hits a geometry is:
+
+$$
+\begin{equation}
+\text{HG} = \&\text{HG}[0] + \left( \text{HG}_\text{stride} \times
+    \left( R_\text{offset} + R_\text{stride} \times \mathbb{G}_\text{id} + \mathbb{I}_\text{offset} \right)\right)
+\end{equation}
+$$
+
+Where $$\mathbb{I}_\text{offset}$$ is the SBT offset of the instance containing the geometry,
+and $$\mathbb{G}_\text{id}$$ is the index of the hit geometry in the list of geometries in the instance.
+$$\&\text{HG}[0]$$ is the starting address of the table containing the hit group records, and $$\text{HG}_\text{stride}$$
+is the stride between hit group records.
+
+> Note: If you're coming from Ray Tracing Gems, in 3.10 the parameter $$R_\text{offset}$$ is referred
+> to as $$I_\text{ray}$$, and $$R_\text{stride}$$ is referred to as $$\mathbb{G}_\text{mult}$$.
+> While the equations are the same, I think the distinction of which parameters come from the ray,
+> geometry and instance are clearer when written as above.
+
+The ray offset ($$R_\text{offset}$$) and stride ($$R_\text{stride}$$) parameters are set per-ray
+when you call trace ray on the device. These parameters allow us to change which hit group is called based on
+the desired ray query. For example, we can often perform a cheaper intersection test for occlusion
+rays since we only care if the object was hit, but don't need the exact hit point.
+The ray stride lets us
+stride over the hit groups by the number of ray queries we want to perform. In a typical ray tracer
+where we might have a separate primary and occlusion hit group record per-geometry, this stride would be 2.
+
+The instance offset ($$\mathbb{I}_\text{offset}$$) and geometry id ($$\mathbb{G}_\text{id}$$)
+come from how each instance is configured when setting up the scene on the host. Each instance takes
+a base offset into the SBT, which can be seen as defining where its sub-table of hit group
+records begins. Note that this is not multiplied by $$R_\text{stride}$$ in Equation 1.
+The geometry id, $$\mathbb{G}_\text{id}$$, is set implicitly as the index of the geometry
+in the bottom-level acceleration structure being instanced, and is multiplied by the ray stride.
 
 *Depends on:*
 
@@ -476,4 +520,7 @@ just like OptiX to prove an easy example.
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="/assets/sbt.js"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
 
