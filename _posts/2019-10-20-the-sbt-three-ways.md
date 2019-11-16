@@ -76,7 +76,7 @@ The different shaders used in the ray tracing pipeline are:
     for triangle meshes, as the ray-triangle intersection test is done in hardware.
 - Any Hit: Is called for each potential intersection found along the ray,
     and can be used to filter potential intersections. For example, when using alpha
-    cutout textues, the Any Hit shader is used to discard hits against the cutout regions
+    cutout textures, the Any Hit shader is used to discard hits against the cutout regions
     of the geometry.
 - Closest Hit: Is called for the closest hit found along the ray, and can compute and
     return intersection information through the ray payload or trace rays if performing
@@ -85,7 +85,8 @@ The different shaders used in the ray tracing pipeline are:
     can be used to return a background color for primary rays, or mark occlusion rays
     as unoccluded.
 
-For a detailed overview and other interesting gems, see the [Ray Tracing Gems Book](http://www.realtimerendering.com/raytracinggems/),
+For a detailed overview and other interesting applications and use cases, see the
+[Ray Tracing Gems Book](http://www.realtimerendering.com/raytracinggems/),
 or check out the
 [Introduction to DirectX Ray Tracing](http://intro-to-dxr.cwyman.org/) course
 given at SIGGRAPH 2018, or [Optix 7 Tutorial](https://gitlab.com/ingowald/optix7course)
@@ -96,11 +97,11 @@ given at SIGGRAPH 2019.
 *consists of a set of shader records, where each is a function (or functions for hit group)
 and parameters for those functions*
 
-The Shader Binding Table contains the entire set of shaders we want to call for the
-scene, along with embedded parameters to be passed to these shaders. Each pair
+The Shader Binding Table contains the entire set of shaders which may be called when ray tracing
+the scene, along with embedded parameters to be passed to these shaders. Each pair
 of shader functions and embedded parameters is referred to as a *Shader Record*.
-Since it's common for objects to share the same shader code, but need to access different
-data, the embedded parameters in the table can be used to pass such data to
+Since it's common for objects to share the same shader code but access different
+data, the embedded parameters in the record can be used to pass such data to
 the shaders. Thus, there should be at least one Shader Record in the table for
 each unique combination of shader functions and embedded parameters. It is possible
 to write the same shader record multiple times in the table, and this may be
@@ -114,17 +115,17 @@ in the shaders to perform indirect access into other tables containing the scene
 to be called for some object or ray*
 
 A Shader Record combines one or more shader functions with a set of parameters to
-be passed to these functions when they're called by the runtime. In the SBT,
-each shader record is written as the set of function handles, followed by the
-parameters. While the size of the handles, alignment requirements for
+be passed to these functions when they're called by the runtime.
+Each shader record is written into the SBT as a set of function handles followed by the
+embedded parameters. While the size of the handles, alignment requirements for
 the records and parameters which can be embedded in the table differ across
 the RTX APIs, the functionality of the shader record is the same. 
 
 #### Ray Generation
 
 The Ray Generation shader record consists of a single function referring to the
-ray generation shader to be used, along with any desired in line parameters
-for the function. While some parameters can be passed in line, for things
+ray generation shader to be used, along with any desired embedded parameters
+for the function. While some parameters can be passed in the shader record, for things
 which update each frame it can be easier to pass them separately through a
 different globally accessible buffer.
 While multiple ray generation shaders can be written into the table,
@@ -133,7 +134,7 @@ only one can be called for a specific launch.
 #### Hit Group
 
 Each Hit Group shader record consists of a Closest Hit shader,
-Any Hit shader (optional) and Intersection (optional) shader, followed by
+Any Hit shader (optional) and Intersection shader (optional), followed by
 the set of embedded parameters to be made available to the three shaders.
 As the hit group which should be called is dependent on the instance
 and geometry which were hit and the ray type, the indexing rules for hit groups are
@@ -143,7 +144,7 @@ below.
 #### Miss
 
 The Miss shader record consists of a single function referring to the miss shader
-to be used, along with any desired in line parameters for the function,
+to be used, along with any desired embedded parameters for the function,
 similar to the ray generation record. The miss shader which is called is selected
 by the ray type, though is specified separately from the hit group ray type to
 allow greater flexibility. This flexibility can be used for optimizations to
@@ -153,25 +154,25 @@ allow greater flexibility. This flexibility can be used for optimizations to
 
 The main point of difficulty in setting up the SBT and scene geometry is understanding
 how the two are coupled together, i.e., if a geometry is hit by a ray,
-which shader record is called? The shader record is determined by parameters set on the
-instance, trace ray call, and the order of hit group records in the SBT.
+which shader record is called? The shader record to call is determined by parameters set on the
+instance, trace ray call and the order of geometries in the bottom-level acceleration structure.
 These parameters are set on both the host and device during different parts of the scene
-and pipeline setup and execution, and thus tracking them down together can be confusing.
+and pipeline setup and execution, making it difficult to see how they fit together.
 
 The equation used to determine which hit group record is called when a ray with SBT
-offset $$ R_\text{offset} $$ and stride $$ R_\text{stride} $$ hits a geometry is:
+offset $$R_\text{offset}$$ and stride $$ R_\text{stride} $$ hits a geometry is:
 
 $$
-\begin{equation}
+\begin{align}
 \text{HG} = \&\text{HG}[0] + \left( \text{HG}_\text{stride} \times
     \left( R_\text{offset} + R_\text{stride} \times \mathbb{G}_\text{id} + \mathbb{I}_\text{offset} \right)\right)
-\end{equation}
+\end{align}
 $$
 
 Where $$\mathbb{I}_\text{offset}$$ is the SBT offset of the instance containing the geometry,
 and $$\mathbb{G}_\text{id}$$ is the index of the hit geometry in the list of geometries in the instance.
 $$\&\text{HG}[0]$$ is the starting address of the table containing the hit group records, and $$\text{HG}_\text{stride}$$
-is the stride between hit group records.
+is the stride between hit group records (in bytes) in the SBT.
 
 > Note: If you're coming from Ray Tracing Gems, in 3.10 the parameter $$R_\text{offset}$$ is referred
 > to as $$I_\text{ray}$$, and $$R_\text{stride}$$ is referred to as $$\mathbb{G}_\text{mult}$$.
@@ -179,19 +180,48 @@ is the stride between hit group records.
 > geometry and instance are clearer when written as above.
 
 The ray offset ($$R_\text{offset}$$) and stride ($$R_\text{stride}$$) parameters are set per-ray
-when you call trace ray on the device. These parameters allow us to change which hit group is called based on
+when you call trace ray on the device. In a typical ray tracer, $$R_\text{offset}$$ is the ray type,
+e.g., primary (0) or occlusion (1), and $$R_\text{stride}$$ is the total number of ray types, in this example, 2.
+These parameters allow us to change which hit group is called based on
 the desired ray query. For example, we can often perform a cheaper intersection test for occlusion
 rays since we only care if the object was hit, but don't need the exact hit point.
 The ray stride lets us
-stride over the hit groups by the number of ray queries we want to perform. In a typical ray tracer
-where we might have a separate primary and occlusion hit group record per-geometry, this stride would be 2.
+stride over the hit groups by the number of different ray queries we want to perform, similar to a 2D array
+of elements. In a typical ray tracer where we would have a separate primary and occlusion hit group
+record per-geometry, this stride would be 2.
 
 The instance offset ($$\mathbb{I}_\text{offset}$$) and geometry id ($$\mathbb{G}_\text{id}$$)
 come from how each instance is configured when setting up the scene on the host. Each instance takes
-a base offset into the SBT, which can be seen as defining where its sub-table of hit group
+a base offset into the SBT, which defines where its sub-table of hit group
 records begins. Note that this is not multiplied by $$R_\text{stride}$$ in Equation 1.
 The geometry id, $$\mathbb{G}_\text{id}$$, is set implicitly as the index of the geometry
 in the bottom-level acceleration structure being instanced, and is multiplied by the ray stride.
+In a typical ray tracer with two ray types (primary and occlusion), a hit group record for each ray type
+per-geometry and instances do not share hit group records, the offset
+$$\mathbb{I}_\text{offset}^i$$ for instance $$i$$ can be calculated as:
+
+$$
+\begin{align*}
+\mathbb{I}_\text{offset}^i &= \mathbb{I}_\text{offset}^{i - 1} + \mathbb{I}_\text{geom}^{i - 1} \times 2 \\
+\text{where} \;\; \mathbb{I}_\text{offset}^0 &= 0 \\
+\end{align*}
+$$
+
+Where $$\mathbb{I}_\text{geom}^i$$ are the number of geometries in instance $$i$$.
+
+The hit group records in the SBT would then be written in order by instance and the geometry order within
+the instance, with separate primary and occlusion hit groups. A scene with two instances, the first
+with one geometry and the second with two would have the hit group records laid out as shown below.
+
+<figure>
+	<!--<img class="img-fluid" src="https://i.imgur.com/YqdyKCj.png"/>-->
+	{% assign figurecount = figurecount | plus: 1 %}
+	<figcaption><b>Figure {{figurecount}}:</b>
+    <i>SBT Hit Group record section layout for a typical ray tracer with two ray types
+    rendering a scene with two instances.
+	</i></figcaption>
+</figure>
+
 
 *Depends on:*
 
@@ -201,6 +231,27 @@ in the bottom-level acceleration structure being instanced, and is multiplied by
 - *ray sbt stride*
 
 *instance and ray mask also play an indirect role in whether something is called at all*
+
+## Miss Shader Record Index Calculation
+
+The indexing rules for miss shader records are far simpler than for hit groups. When
+tracing a ray we pass an additional miss shader offset, $$R_\text{miss}$$ which is just
+the index of the miss shader to call if the ray does not hit an object.
+
+$$
+\begin{align}
+\text{M} = \&\text{M}[0] + \text{M}_\text{stride} \times  R_\text{miss}
+\end{align}
+$$
+
+As with the hit group records, $$\text{M}_\text{stride}$$ is the stride between miss records
+(in bytes) in the SBT.
+
+# API Specifics
+
+*Discuss now: we have set conventions for our terminology, and will now look at each API
+specifically and see how it differs in what can go in the SBT, and alignment requirements,
+and will unify the terminology*
 
 ## DirectX Ray Tracing
 
