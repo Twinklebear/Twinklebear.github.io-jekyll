@@ -243,8 +243,9 @@ $$
 \end{align}
 $$
 
-As with the hit group records, $$\text{M}_\text{stride}$$ is the stride between miss records
-(in bytes) in the SBT.
+As with the hit group records, $$ \&\text{M}[0] $$ is the starting address of the table containing
+the miss records and $$\text{M}_\text{stride}$$ is the stride between miss records
+in bytes.
 
 # API Specifics
 
