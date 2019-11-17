@@ -211,17 +211,18 @@ Where $$\mathbb{I}_\text{geom}^i$$ are the number of geometries in instance $$i$
 
 The hit group records in the SBT would then be written in order by instance and the geometry order within
 the instance, with separate primary and occlusion hit groups. A scene with two instances, the first
-with one geometry and the second with two would have the hit group records laid out as shown below.
+with one geometry and the second with two, would have its hit group records laid out as shown below.
 
 <figure>
-	<!--<img class="img-fluid" src="https://i.imgur.com/YqdyKCj.png"/>-->
+	<img class="img-fluid" src="/assets/img/2instance_sbt_example.svg">
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><b>Figure {{figurecount}}:</b>
-    <i>SBT Hit Group record section layout for a typical ray tracer with two ray types
-    rendering a scene with two instances.
+    <i>SBT Hit Group record layout for a typical ray tracer with two ray types
+    rendering a scene with two instances. In this example each hit group record
+    is 32 bytes, with a stride of 64 bytes. When tracing a ray, \( R_\text{stride} = 2 \),
+    and \( R_\text{offset} \)will be 0 for primary rays and 1 for occlusion rays.
 	</i></figcaption>
 </figure>
-
 
 *Depends on:*
 
@@ -229,8 +230,6 @@ with one geometry and the second with two would have the hit group records laid 
 - *order of geometry in the instance*
 - *ray sbt offset*
 - *ray sbt stride*
-
-*instance and ray mask also play an indirect role in whether something is called at all*
 
 ## Miss Shader Record Index Calculation
 
