@@ -247,17 +247,62 @@ As with the hit group records, $$ \&\text{M}[0] $$ is the starting address of th
 the miss records and $$\text{M}_\text{stride}$$ is the stride between miss records
 in bytes.
 
-# API Specifics
+# API Specific Details
 
-*Discuss now: we have set conventions for our terminology, and will now look at each API
-specifically and see how it differs in what can go in the SBT, and alignment requirements,
-and will unify the terminology*
+Now that we have a unified terminology to work with across the RTX APIs, and took a brief
+look at how the Shader Binding Table works, we'll dive into the API-specific details of the SBT
+for each API before getting to the interactive SBT builder widget. 
+The most important difference is in how the embedded parameters for a shader record
+are specified, and the typos of parameters which can be embedded.
+The shader record handles and the alignment requirements for them in the SBT can
+also differ between the different APIs.
 
 ## DirectX Ray Tracing
 
-SBT can store pairs of 4byte constants (or 4byte + pad) and 8 byte descriptors.
-This appears as any other shader parameters and have to be mapped to the corresponding
-registers/spaces etc. by specifying a local root signature for the shaders.
+For more documentation about the DXR API, also see the
+[MSDN DXR Documentation](https://docs.microsoft.com/en-us/windows/win32/direct3d12/direct3d-12-raytracing),
+the [DXR HLSL Documentation](https://docs.microsoft.com/en-us/windows/win32/direct3d12/direct3d-12-raytracing-hlsl-shaders)
+and the [DXR Specification](https://microsoft.github.io/DirectX-Specs/d3d/Raytracing.html).
+Here we'll just focus on the parts specific to the Shader Binding Table indexing.
+
+### Shader Records and Parameters
+
+In DXR, the parameters embedded in the shader record can be 8-byte handles
+(e.g., to buffers, textures, etc.) or pairs of 4-byte constants (any single 4-byte constant
+must be padded to 8-bytes). The mapping of these input parameters from the shader record
+to the shader "registers" is specified using a
+[Local Root Signature](https://microsoft.github.io/DirectX-Specs/d3d/Raytracing.html#resource-binding).
+The registers used for the local root signature parameters should not overlap with
+any coming from the global root signature, which is shared by all shaders. 
+
+The shader handle size is defined by `D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES` (32 bytes),
+the shader record stride alignment is `D3D12_RAYTRACING_SHADER_TABLE_BYTE_ALIGNMENT` (64 bytes).
+The maximum size allowed for the stride is 4096 bytes, placing an upper bound on the number of
+parameters which can be embedded for a shader.
+
+### Instance Parameters
+
+Instances in DXR are specified through the [`D3D12_RAYTRACING_INSTANCE_DESC`](https://docs.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_raytracing_instance_desc)
+structure:
+
+{% highlight c++ %}
+typedef struct D3D12_RAYTRACING_INSTANCE_DESC {
+  FLOAT Transform[3];
+  UINT InstanceID : 24;
+  UINT InstanceMask : 8;
+  UINT InstanceContributionToHitGroupIndex : 24;
+  UINT Flags : 8;
+  D3D12_GPU_VIRTUAL_ADDRESS AccelerationStructure;
+} D3D12_RAYTRACING_INSTANCE_DESC;
+{% endhighlight %}
+
+The parameters which effect the SBT indexing are:
+
+- `InstanceContributionToHitGroupIndex`: This sets the instance's SBT offset, $$\mathbb{I}_\text{offset}$$
+- `InstanceMask`: While the mask does not effect which hit group is called, it can
+    be used to skip traversal of instances entirely, by masking them out of the traversal
+
+### Trace Ray Parameters
 
 {% highlight glsl %}
 Template<payload_t>
@@ -271,22 +316,16 @@ void TraceRay(RaytracingAccelerationStructure AccelerationStructure,
               inout payload_t Payload);
 {% endhighlight %}
 
-{% highlight c++ %}
-typedef struct D3D12_RAYTRACING_INSTANCE_DESC {
-  FLOAT Transform[3];
-  UINT InstanceID : 24;
-  UINT InstanceMask : 8;
-  UINT InstanceContributionToHitGroupIndex : 24;
-  UINT Flags : 8;
-  D3D12_GPU_VIRTUAL_ADDRESS AccelerationStructure;
-} D3D12_RAYTRACING_INSTANCE_DESC;
-{% endhighlight %}
+[TraceRay](https://docs.microsoft.com/en-us/windows/win32/direct3d12/traceray-function) takes the
+acceleration structure to trace against, a set of ray flags to adjust the traversal being
+performed, the mask and SBT indexing parameters, the ray and the payload to be updated by the
+closest hit or miss shaders.
 
-Shader handle size `D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES` (32), shader record
-stride alignment `D3D12_RAYTRACING_SHADER_TABLE_BYTE_ALIGNMENT` (64). Interesting
-to note here as well, the max size of the stride is 4096 bytes.
-
-Can also talk about how the ray payload is sent here too in trace ray.
+- `InstanceInclusionMask`: This mask effects which instances are masked out by and'ing it
+    with each instance's `InstanceMask`.
+- `RayContributionToHitGroupIndex`: This is the ray's SBT offset, $$R_\text{offset}$$.
+- `MultiplierForGeometryContributionToHitGroupIndex`: This is the ray's SBT stride $$R_\text{stride}$$.
+- `MissShaderIndex`: This is the miss shader index to call, $$R_\text{miss}$$.
 
 ## Vulkan Ray Tracing
 
