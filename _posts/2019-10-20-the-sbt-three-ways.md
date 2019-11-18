@@ -522,6 +522,8 @@ can be combined for different renderer and scene configurations.
 - Occlusion HG records only for non-opaque geometry, and primary only for opaque using RFO style,
     pick which are called during the occlusion trace using the visibility mask to do a fast
     fixed function first check, then a slower transparent check.
+    This may not be better than just disabling any-hit on a per-instance basis though
+    and having 2 hit groups each
 
 <!--
 Here I'm thinking to put some D3 interactive example where you can build your
