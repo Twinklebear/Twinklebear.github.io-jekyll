@@ -512,6 +512,17 @@ the different geometries. Use this tool to explore different possible configurat
 for the SBT to get a better understanding of how the different parameters
 can be combined for different renderer and scene configurations.
 
+*Configurations to try:*
+
+- "standard ray tracer" with a two ray types (primary/occlusion) and a hit group record
+    and miss record for each type
+- RFO style, only primary hit groups but miss record for primary and occlusion
+- Single hit group shared by all. I think this is do-able if you always use instance ID and
+    (i think geom index is now available too?) to pick your params from separate global buffers.
+- Occlusion HG records only for non-opaque geometry, and primary only for opaque using RFO style,
+    pick which are called during the occlusion trace using the visibility mask to do a fast
+    fixed function first check, then a slower transparent check.
+
 <!--
 Here I'm thinking to put some D3 interactive example where you can build your
 own SBT and see how the different instance, geometry and trace ray parameters
