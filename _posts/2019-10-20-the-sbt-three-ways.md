@@ -519,11 +519,6 @@ can be combined for different renderer and scene configurations.
 - RFO style, only primary hit groups but miss record for primary and occlusion
 - Single hit group shared by all. I think this is do-able if you always use instance ID and
     (i think geom index is now available too?) to pick your params from separate global buffers.
-- Occlusion HG records only for non-opaque geometry, and primary only for opaque using RFO style,
-    pick which are called during the occlusion trace using the visibility mask to do a fast
-    fixed function first check, then a slower transparent check.
-    This may not be better than just disabling any-hit on a per-instance basis though
-    and having 2 hit groups each
 
 <!--
 Here I'm thinking to put some D3 interactive example where you can build your
