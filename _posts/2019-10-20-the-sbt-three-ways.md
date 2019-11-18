@@ -304,6 +304,10 @@ The parameters which effect the SBT indexing are:
 
 ### Trace Ray Parameters
 
+In the ray generation, closest hit and miss shaders the HLSL 
+[TraceRay](https://docs.microsoft.com/en-us/windows/win32/direct3d12/traceray-function) function
+can be called to trace rays through the scene.
+
 {% highlight glsl %}
 Template<payload_t>
 void TraceRay(RaytracingAccelerationStructure AccelerationStructure,
@@ -316,8 +320,7 @@ void TraceRay(RaytracingAccelerationStructure AccelerationStructure,
               inout payload_t Payload);
 {% endhighlight %}
 
-[TraceRay](https://docs.microsoft.com/en-us/windows/win32/direct3d12/traceray-function) takes the
-acceleration structure to trace against, a set of ray flags to adjust the traversal being
+TraceRay takes the acceleration structure to trace against, a set of ray flags to adjust the traversal being
 performed, the mask and SBT indexing parameters, the ray and the payload to be updated by the
 closest hit or miss shaders.
 
