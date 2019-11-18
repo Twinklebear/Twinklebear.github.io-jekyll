@@ -918,7 +918,23 @@ var updateInstanceView = function() {
                 alertDisplay.setAttribute('style', 'display:block')
             }
         });
+    
+    var geomIDSelection = allBlas.selectAll('.geomID')
+        .data(function(d) { return d.geometries; });
 
+    geomIDSelection.enter()
+        .append('text')
+        .attr('class', 'geomID')
+        .merge(geomIDSelection)
+        .text(function(d, i) {
+            return i;
+        })
+        .attr('x', function(d, i) {
+            return (112 + i * 80);
+        })
+        .attr('y', 20);
+
+    geomIDSelection.exit().remove();
     triangleSelection.exit().remove();
     blasSelection.exit().remove();
 

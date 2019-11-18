@@ -165,12 +165,12 @@ offset $$R_\text{offset}$$ and stride $$ R_\text{stride} $$ hits a geometry is:
 $$
 \begin{align}
 \text{HG} = \&\text{HG}[0] + \left( \text{HG}_\text{stride} \times
-    \left( R_\text{offset} + R_\text{stride} \times \mathbb{G}_\text{id} + \mathbb{I}_\text{offset} \right)\right)
+    \left( R_\text{offset} + R_\text{stride} \times \mathbb{G}_\text{ID} + \mathbb{I}_\text{offset} \right)\right)
 \end{align}
 $$
 
 Where $$\mathbb{I}_\text{offset}$$ is the SBT offset of the instance containing the geometry,
-and $$\mathbb{G}_\text{id}$$ is the index of the hit geometry in the list of geometries in the instance.
+and $$\mathbb{G}_\text{ID}$$ is the index of the hit geometry in the list of geometries in the instance.
 $$\&\text{HG}[0]$$ is the starting address of the table containing the hit group records, and $$\text{HG}_\text{stride}$$
 is the stride between hit group records (in bytes) in the SBT.
 
@@ -190,11 +190,11 @@ stride over the hit groups by the number of different ray queries we want to per
 of elements. In a typical ray tracer where we would have a separate primary and occlusion hit group
 record per-geometry, this stride would be 2.
 
-The instance offset ($$\mathbb{I}_\text{offset}$$) and geometry id ($$\mathbb{G}_\text{id}$$)
+The instance offset ($$\mathbb{I}_\text{offset}$$) and geometry id ($$\mathbb{G}_\text{ID}$$)
 come from how each instance is configured when setting up the scene on the host. Each instance takes
 a base offset into the SBT, which defines where its sub-table of hit group
 records begins. Note that this is not multiplied by $$R_\text{stride}$$ in Equation 1.
-The geometry id, $$\mathbb{G}_\text{id}$$, is set implicitly as the index of the geometry
+The geometry id, $$\mathbb{G}_\text{ID}$$, is set implicitly as the index of the geometry
 in the bottom-level acceleration structure being instanced, and is multiplied by the ray stride.
 In a typical ray tracer with two ray types (primary and occlusion), a hit group record for each ray type
 per-geometry and instances do not share hit group records, the offset
@@ -613,6 +613,7 @@ To add an instance use the button below, to remove one double click on its BVH i
 or geometries. Select an instance by clicking on it to modify its SBT offset, number of geometries and
 visibility mask with the inputs below. Setting to the recommended offset
 will set a configuration similar to that shown in Figure 2, using Equations 2 and 3.
+The geometry ID (\(\mathbb{G}_\text{ID}\)) within the instance is displayed next to each geometry in the widget.
 
 The hit groups accessed by the selected instance will also be highlighted in light blue
 in the shader binding table. Click a specific geometry in the scene to see the corresponding hit
