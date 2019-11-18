@@ -274,9 +274,11 @@ to the shader "registers" is specified using a
 [Local Root Signature](https://microsoft.github.io/DirectX-Specs/d3d/Raytracing.html#resource-binding).
 The registers used for the local root signature parameters should not overlap with
 any coming from the global root signature, which is shared by all shaders. 
+One way to avoid conflicts is to use separate register spaces for the global and
+local root signature parameter registers. 
 
 The shader handle size is defined by `D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES` (32 bytes),
-the shader record stride alignment is `D3D12_RAYTRACING_SHADER_TABLE_BYTE_ALIGNMENT` (64 bytes).
+the shader record alignment requirement is `D3D12_RAYTRACING_SHADER_TABLE_BYTE_ALIGNMENT` (64 bytes).
 The maximum size allowed for the stride is 4096 bytes, placing an upper bound on the number of
 parameters which can be embedded for a shader.
 
@@ -332,28 +334,38 @@ closest hit or miss shaders.
 
 ## Vulkan Ray Tracing
 
-The most restricted of them, SBT can only store 4byte constants, this data appears
-as a buffer in the shader.
+For more documentation about the Vulkan NV Ray Tracing extension, also
+[extension specification](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_NV_ray_tracing),
+[manual page](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VK_NV_ray_tracing.html)
+and the [GLSL NV Ray Tracing extension](https://github.com/KhronosGroup/GLSL/blob/master/extensions/nv/GLSL_NV_ray_tracing.txt).
+
+### Shader Records and Parameters
+
+In Vulkan, the parameters embedded in the shader record can only be 4-byte constants,
+but do not require extra padding to 8-bytes as in DXR. The embedded parameters are
+passed to the appear as a special buffer type declared with the `shaderRecordNV` layout.
+For example, if we wanted to pass a material ID for the geometry in the shader record
+we could declare the buffer as follows:
 
 {% highlight glsl %}
-void traceNV(accelerationStructureNV acceleration_structure,
-             uint ray_flags,
-             uint instance_inclusion_mask,
-             uint ray_contribution_to_hit_group_index, (sbt_record_offset)
-             uint multiplier_for_geometry_contribution_to_hit_group_index, (sbt_record_stride)
-             uint miss_shader_index,
-             vec3 ray_origin
-             float t_min
-             vec3 ray_dir,
-             float t_max,
-             uint payload_index);
-{% endhighlight %}
-
-{% highlight glsl %}
-layout(shaderRecordNV) buffer SBT {
-    // data
+layout(shaderRecordNV) buffer SBTData {
+    uint32_t material_id;
 };
 {% endhighlight %}
+
+The size of the shader handles and alignment requirements for the shader records
+are queried at runtime by querying the
+[`VkPhysicalDeviceRayTracingPropertiesNV`](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkPhysicalDeviceRayTracingPropertiesNV.html).
+On my desktop with an RTX 2070 and Nvidia driver XXX the shader handle size
+is 16 bytes, and the shader record alignment requirement is 64 bytes.
+The maximum allowed size for the shader record stride is XXX bytes.
+
+### Instance Parameters
+
+Instances in Vulkan are specified through the same structure layout as in DXR
+(see [Vulkan Spec on Acceleration Structures](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#acceleration-structure)).
+However, a definition is not provided in the headers and we must declare
+our own struct which matches the specified layout:
 
 {% highlight c++ %}
 struct GeometryInstance {
@@ -366,17 +378,88 @@ struct GeometryInstance {
 };
 {% endhighlight %}
 
-Alignment requirements queried at runtime. Can use what the vals are on my desktop
-for shaderGroupHandleSize and shaderGroupBaseAlignment
+The parameters which effect the SBT indexing are:
 
-Can also talk here about how the ray payload is specified in GLSL/Vulkan
+- `instance_offset`: This sets the instance's SBT offset, $$\mathbb{I}_\text{offset}$$
+- `mask`: While the mask does not effect which hit group is called, it can
+    be used to skip traversal of instances entirely, by masking them out of the traversal
+
+### Trace Ray Parameters
+
+In the ray generation, closest hit and miss shaders the function [traceNV](https://github.com/KhronosGroup/GLSL/blob/master/extensions/nv/GLSL_NV_ray_tracing.txt#L687-L697) from
+the GLSL NV Ray Tracing extension can be called to trace rays.
+
+{% highlight glsl %}
+ void traceNV(accelerationStructureNV topLevel,
+              uint rayFlags,
+              uint cullMask,
+              uint sbtRecordOffset,
+              uint sbtRecordStride,
+              uint missIndex,
+              vec3 origin,
+              float Tmin,
+              vec3 direction,
+              float Tmax,
+              int payload);
+{% endhighlight %}
+
+traceNV takes the acceleration structure to trace against,
+a set of ray flags to adjust the traversal being
+performed, the mask and SBT indexing parameters, the ray parameters
+and the index of the ray payload to be updated by the closest hit or miss shaders.
+
+- `cullMask`: This mask effects which instances are masked out by and'ing it
+    with each instance's `mask`.
+- `sbtRecordOffset`: This is the ray's SBT offset, $$R_\text{offset}$$.
+- `sbtRecordStride`: This is the ray's SBT stride $$R_\text{stride}$$.
+- `missIndex`: This is the miss shader index to call, $$R_\text{miss}$$.
+
+In contrast to HLSL, the ray payloads are specified as special shader input/output
+variable, where the value of `payload` passed to traceNV selects which
+one will be used. For example:
+
+{% highlight glsl %}
+struct RayPayload {
+    vec3 hit_pos;
+    vec3 normal;
+};
+layout(location = 0) rayPayloadNV RayPayload payload;
+{% endhighlight %}
 
 ## OptiX
+
+For more documentation about OptiX see the
+[OptiX 7 Programming Guide](https://raytracing-docs.nvidia.com/optix7/guide/index.html#introduction#)
+and the [OptiX 7 Course](https://gitlab.com/ingowald/optix7course) from SIGGRAPH 2019.
+
+### Shader Records and Parameters
+
+Shader handle size `OPTIX_SBT_RECORD_HEADER_SIZE` (32), shader record stride
+alignment requirement is `OPTIX_SBT_RECORD_ALIGNMENT` (16).
 
 The most flexible of them, just write bytes and get a pointer to this data
 on the GPU side. Only requirement is the alignment restriction.
 The SBT data is fetched as a raw ptr to the SBT data component via
 `optixGetSbtDataPointer()`.
+
+### Instance Parameters
+
+{% highlight c++ %}
+struct OptixInstance {
+    float transform[12];
+    unsigned int instanceId;
+    unsigned int sbtOffset;
+    unsigned int visibilityMask;
+    unsigned int flags;
+    OptixTraversableHandle traversableHandle;
+    unsigned int pad[2];
+};
+{% endhighlight %}
+
+### Trace Ray Parameters
+
+Here can also discuss how the ray payload is set, and the trick for packing
+a pointer to a stack var as the payload.
 
 {% highlight c %}
 void optixTrace(OptixTraversableHandle handle,
@@ -394,24 +477,6 @@ void optixTrace(OptixTraversableHandle handle,
     // unsigned int &p0-p7
 )
 {% endhighlight %}
-
-{% highlight c++ %}
-struct OptixInstance {
-    float transform[12];
-    unsigned int instanceId;
-    unsigned int sbtOffset;
-    unsigned int visibilityMask;
-    unsigned int flags;
-    OptixTraversableHandle traversableHandle;
-    unsigned int pad[2];
-};
-{% endhighlight %}
-
-Shader handle size `OPTIX_SBT_RECORD_HEADER_SIZE` (32), shader record stride
-alignment requirement is `OPTIX_SBT_RECORD_ALIGNMENT` (16).
-
-Here can also discuss how the ray payload is set, and the trick for packing
-a pointer to a stack var as the payload.
 
 # Interactive SBT Builder
 
