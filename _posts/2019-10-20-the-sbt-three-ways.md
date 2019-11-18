@@ -434,15 +434,19 @@ and the [OptiX 7 Course](https://gitlab.com/ingowald/optix7course) from SIGGRAPH
 
 ### Shader Records and Parameters
 
-Shader handle size `OPTIX_SBT_RECORD_HEADER_SIZE` (32), shader record stride
-alignment requirement is `OPTIX_SBT_RECORD_ALIGNMENT` (16).
+In OptiX, the parameters embedded in the shader record can be arbitrary structs,
+potentially containing CUDA device pointers or texture handles.
+A pointer to the embedded parameters for the shader can be retrieved with the
+`optixGetSbtDataPointer()` function, which returns a `void*` to the data
+after the shader handle.
 
-The most flexible of them, just write bytes and get a pointer to this data
-on the GPU side. Only requirement is the alignment restriction.
-The SBT data is fetched as a raw ptr to the SBT data component via
-`optixGetSbtDataPointer()`.
+The size of the shader handle is defined by `OPTIX_SBT_RECORD_HEADER_SIZE` (32 bytes),
+the shader record alignment requirement is `OPTIX_SBT_RECORD_ALIGNMENT` (16 bytes).
 
 ### Instance Parameters
+
+Instances in OptiX are specified through the [`OptixInstance`](https://raytracing-docs.nvidia.com/optix7/api/html/struct_optix_instance.html)
+structure:
 
 {% highlight c++ %}
 struct OptixInstance {
@@ -456,27 +460,46 @@ struct OptixInstance {
 };
 {% endhighlight %}
 
+The parameters which effect the SBT indexing are:
+
+- `sbtOffset`: This sets the instance's SBT offset, $$\mathbb{I}_\text{offset}$$
+- `visibilityMask`: While the mask does not effect which hit group is called, it can
+    be used to skip traversal of instances entirely, by masking them out of the traversal
+
 ### Trace Ray Parameters
 
-Here can also discuss how the ray payload is set, and the trick for packing
-a pointer to a stack var as the payload.
+In the ray generation, closest hit and miss shaders the
+[optixTrace](https://raytracing-docs.nvidia.com/optix7/api/html/group__optix__device__api.html)
+function can be called to trace rays through the scene.
 
 {% highlight c %}
 void optixTrace(OptixTraversableHandle handle,
-    float3 rayOrigin,
-    float3 rayDirection,
-    float tmin,
-    float tmax,
-    float rayTime,
-    OptixVisibilityMask visibilityMask,
-    unsigned int rayFlags,
-    unsigned int SBToffset,
-    unsigned int SBTstride,
-    unsigned int missSBTIndex
-    // up to 8 32-bit values to be passed through registers
-    // unsigned int &p0-p7
+                float3 rayOrigin,
+                float3 rayDirection,
+                float tmin,
+                float tmax,
+                float rayTime,
+                OptixVisibilityMask visibilityMask,
+                unsigned int rayFlags,
+                unsigned int SBToffset,
+                unsigned int SBTstride,
+                unsigned int missSBTIndex,
+                // up to 8 32-bit values to be passed through registers
+                // unsigned int &p0-p7
 )
 {% endhighlight %}
+
+optixTrace takes the acceleration structure to trace against, a set of ray flags to adjust the traversal being
+performed, the mask and SBT indexing parameters, the ray parameters and up to 8 unsigned 32-bit values
+which are passed through registers to the closest hit and miss shaders. To pass a struct larger
+than 32 bytes it's possible to pass a pointer to a stack variable in the calling shader
+through 2 32-bit ints, and pack the pointer together in the closest hit or miss shader.
+
+- `visibilityMask`: This mask effects which instances are masked out by and'ing it
+    with each instance's `visibilityMask`.
+- `SBToffset`: This is the ray's SBT offset, $$R_\text{offset}$$.
+- `SBTstride`: This is the ray's SBT stride $$R_\text{stride}$$.
+- `missSBTIndex`: This is the miss shader index to call, $$R_\text{miss}$$.
 
 # Interactive SBT Builder
 
