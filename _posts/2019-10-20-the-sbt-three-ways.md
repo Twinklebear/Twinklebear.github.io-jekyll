@@ -201,10 +201,10 @@ per-geometry and instances do not share hit group records, the offset
 $$\mathbb{I}_\text{offset}^i$$ for instance $$i$$ can be calculated as:
 
 $$
-\begin{align*}
+\begin{align}
 \mathbb{I}_\text{offset}^i &= \mathbb{I}_\text{offset}^{i - 1} + \mathbb{I}_\text{geom}^{i - 1} \times 2 \\
 \text{where} \;\; \mathbb{I}_\text{offset}^0 &= 0 \\
-\end{align*}
+\end{align}
 $$
 
 Where $$\mathbb{I}_\text{geom}^i$$ are the number of geometries in instance $$i$$.
@@ -503,6 +503,16 @@ through 2 32-bit ints, and pack the pointer together in the closest hit or miss 
 
 # Interactive SBT Builder
 
+Now that we've discussed the how the SBT works and what parts of the SBT,
+instance and trace ray setup are similar or different between the RTX APIs,
+lets do some hands on activities! Using the interactive tool below
+you can build a shader binding table, setup a scene,
+set the trace ray parameters and visualize which hit groups are called for
+the different geometries. Use this tool to explore different possible configurations
+for the SBT to get a better understanding of how the different parameters
+can be combined for different renderer and scene configurations.
+
+<!--
 Here I'm thinking to put some D3 interactive example where you can build your
 own SBT and see how the different instance, geometry and trace ray parameters
 effect what entries in the SBT are accessed.
@@ -530,24 +540,39 @@ the ability to switch API. Note that switching the API will potentially lead to 
 invalid SBT entries because the data that can be set differs and how they should be
 aligned. Maybe it would be better to be able to view all 3 at once, or just reset the
 data when the API is switched.
+-->
+
+## Shader Binding Table
+
+You can add new hit and miss records with the buttons below, or remove them by double-clicking
+the record. Click a shader record to select it and add or remove parameters,
+add parameters using the buttons below or double click the parameter to remove them.
+When you select a hit group the instance containing the geometry which would call the hit group
+when hit by a ray for the current scene and trace ray setup is selected. If more than
+one geometry share the same hit group, the first one will be highlighted.
+
+You can also change the ray tracing API to see how the different handle sizes
+and alignment requirements effect the SBT layout in memory. While it is also possible
+to use separate buffers for the ray generation, hit group and miss records I've kept
+them all in one buffer here to simplify the visualization.
 
 <div class="col-12">
     <svg width="100%" width="800" height="380" id="sbtWidget">
     </svg>
     <div class="col-12 row mb-2">
-        <div class="col-6 mb-3">
+        <div class="col-2 mb-3">
             API: <select id="selectAPI" onchange="selectAPI()">
             <option selected="selected">DXR</option>
             <option>Vulkan</option>
             <option>OptiX</option>
             </select>
         </div>
-        <div class="col-6">
+        <div class="col-8">
             Dispatch/Launch Config:
             <ul>
             <li>Raygen Size: <span id='raygenSize'></span></li>
-            <li>HitGroup offset: <span id='hitGroupOffset'></span>, stride: <span id='hitGroupStride'></span></li>
-            <li>Miss Shader offset: <span id='missOffset'></span>, stride: <span id='missStride'></span></li>
+            <li>HitGroup start (\(\&HG[0]\)): <span id='hitGroupOffset'></span>, stride (\(\text{HG}_\text{stride}\)): <span id='hitGroupStride'></span></li>
+            <li>Miss start: (\(\&M[0]\)): <span id='missOffset'></span>, stride (\(\text{M}_\text{stride}\)): <span id='missStride'></span></li>
             </ul>
         </div>
         <div class="col-6">
@@ -580,8 +605,23 @@ data when the API is switched.
     </div>
 </div>
 
-This instance widget will have all the instances here, each with a list of geometries
-represented as triangles
+## Scene Setup
+
+Here you can setup the scene you want to trace rays against by adding or removing instances
+and geometries within instances or change each instance's mask.
+To add an instance use the button below, to remove one double click on its BVH icon
+or geometries. Select an instance by clicking on it to modify its SBT offset, number of geometries and
+visibility mask with the inputs below. Setting to the recommended offset
+will set a configuration similar to that shown in Figure 2, using Equations 2 and 3.
+
+The hit groups accessed by the selected instance will also be highlighted in light blue
+in the shader binding table. Click a specific geometry in the scene to see the corresponding hit
+group which will be called when intersected by the ray traced in the current trace ray call.
+If a geometry would access an out of bounds for the current trace call, it will be highlighted in red.
+If the instance potentially accesses out of bounds hit groups (i.e., across the ray stride)
+a warning will be displayed when it is selected.
+Instances which are masked out of the current ray traversal will be grayed out.
+
 <svg width="800" height="400" class="col-12" id="instanceWidget">
 </svg>
 <div class="col-12 row mb-2">
@@ -591,7 +631,7 @@ represented as triangles
                oninput="updateInstance()">
     </div>
     <div class="col-4">
-        <label for="instanceSbtOffset">SBT Offset</label>
+        <label for="instanceSbtOffset">SBT Offset (\(\mathbb{I}_\text{offset}\))</label>
         <input type="number" min="0" class="form-control" id="instanceSbtOffset" value="0"
                oninput="updateInstance()">
     </div>
@@ -610,7 +650,12 @@ represented as triangles
     <div class="col-12 alert alert-danger mt-2" role="alert" id="hgOutOfBounds" style="display:none"></div>
 </div>
 
-Craft your trace call:
+## Trace Ray
+
+Here you can setup your trace ray call to set the ray SBT offset, stride and miss index.
+After setting up the trace call click on geometries in the scene to see which hit group
+will be called!
+
 <div id="dxrTrace" class="col-12">
 <figure class="highlight">
 <pre>
@@ -665,17 +710,17 @@ optixTrace(accelerationStructure,
 
 <div class="col-12 row mb-2 mt-1">
     <div class="col-4">
-        <label for="raySBTOffset">Ray SBT Offset</label>
+        <label for="raySBTOffset">Ray SBT Offset (\(R_\text{offset}\))</label>
         <input type="number" min="0" class="form-control" id="raySBTOffset" value="0"
                oninput="updateTraceCall();">
     </div>
     <div class="col-4">
-        <label for="raySBTStride">Ray SBT Stride</label>
+        <label for="raySBTStride">Ray SBT Stride (\(R_\text{stride}\))</label>
         <input type="number" min="0" class="form-control" id="raySBTStride" value="1"
                oninput="updateTraceCall();">
     </div>
     <div class="col-4">
-        <label for="missShaderIndex">Miss Shader Index</label>
+        <label for="missShaderIndex">Miss Shader Index (\(R_\text{miss} \))</label>
         <input type="number" min="0" class="form-control" id="missShaderIndex" value="0"
                oninput="updateTraceCall();">
     </div>
@@ -686,7 +731,7 @@ optixTrace(accelerationStructure,
     </div>
     <div class="col-4 mt-4">
         <button id="showMissShader" type="button" class="btn btn-primary" onclick="showMissShader()">
-        Show Miss Shader</button>
+        Select Miss Shader</button>
     </div>
     <div class="col-12 mt-2 alert alert-danger" role="alert" id="missOutOfBounds" style="display:none">
     </div>
