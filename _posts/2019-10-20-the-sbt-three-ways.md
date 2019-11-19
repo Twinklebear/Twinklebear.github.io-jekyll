@@ -32,45 +32,44 @@ and executing trace calls on the scene to see which hit groups and miss shaders 
 Finally, we'll look at how this model can be brought back to the CPU using Embree,
 to potentially build a unified low-level API for ray tracing.
 
-*Lead-in: some stuff like the SBT setup and how the different options for
-tweaking how it's indexed can be confusing to work out. The information around
-is a bit partial and most people are left to kind of work out the math or some
-guess work to see what's going on. Here I'll explain each and provide an interactive
-tool for playing with how the SBT is setup and indexed in the shader.
-Also explain difference of a shader vs. the shader record, which is more like
-a closure in that you need a SR for each unique combination of function and SBT parameters.*
-
 <!--more-->
 
 # The RTX Execution Model
 
-To motivate why the RTX APIs need a shader binding table, we can look at how 
+To motivate why the RTX APIs use a shader binding table, we need to look at how 
 ray tracing differs from rasterization.
 In a rasterizer we can batch objects by the shader they use and thus
 always know the set of shaders which must be called to render a set of objects.
 However, in a ray tracer we don't know
 which object a ray will hit when we trace it, and thus need the entire scene available
-in memory (or some proxy of it) to process the ray. Our ray tracer needs both the data for
-each object and a function to call for that object which can process intersections.
-To render the scene we need access to all of the shaders which might be called, and a way
-to associate them with the objects in the scene. Each of the RTX APIs does this through
+in memory (or some proxy of it) along with a function to call for that object
+which can process intersections.
+Our ray tracer needs access to all of the shaders which might be called for the scene, and a way
+to associate them with the geometries in the scene. Each of the RTX APIs implements this using
 the *Shader Binding Table*. An analogy in the rasterization pipeline is bindless rendering, where
 the required data (textures, buffers) is uploaded to the GPU and accessed as needed by ID
-at runtime in the shader. Our shader dispatch is now "bindless" in some sense.
+at runtime in the shader. In some sense, our shader dispatch is now "bindless".
 
 <figure>
 	<img class="img-fluid" src="/assets/img/rtx-execution-model.svg">
 	{% assign figurecount = figurecount | plus: 1 %}
-	<figcaption><b>Figure {{figurecount}}:</b>
-    <i>The RTX API ray tracing execution pipeline
-    TODO MORE CAP
+	<figcaption class="text-left"><b>Figure {{figurecount}}:</b>
+    <i>The RTX API execution pipeline. Rays are traversed through
+     the acceleration structure and tested against primitives
+     in the leaf nodes of the acceleration structure. If an intersection is
+     found the any hit shader is called. Note that for triangles the intersection
+     shader is not needed as it is performed in hardware. After the traversal
+     is complete the closest hit shader of the hit geometry is called if a
+     hit was found, otherwise the miss shader is called.
+     These shaders then return control to the caller of TraceRay, or can
+     make recursive trace calls.
 	</i></figcaption>
 </figure>
 
-The different shaders used in the ray tracing pipeline are:
+The different shaders used in the ray tracing pipeline above are:
 
-- Ray Generation: Called as the entry point to the ray tracer to generate the rays
-    to be processed.
+- Ray Generation: Called as the entry point to the ray tracer to generate the initial
+    set of rays to be traced.
 - Intersection: When using non-triangle geometry an intersection shader is required
     to compute ray intersections with the custom primitives. This isn't necessary
     for triangle meshes, as the ray-triangle intersection test is done in hardware.
@@ -79,11 +78,18 @@ The different shaders used in the ray tracing pipeline are:
     cutout textures, the Any Hit shader is used to discard hits against the cutout regions
     of the geometry.
 - Closest Hit: Is called for the closest hit found along the ray, and can compute and
-    return intersection information through the ray payload or trace rays if performing
-    shading in the Closest Hit shader is desired.
-- Miss: When no hit is found for a ray, the miss shader is called. The Miss shader
+    return intersection information through the ray payload or trace additional rays.
+- Miss: When no hit is found, the miss shader is called. The Miss shader
     can be used to return a background color for primary rays, or mark occlusion rays
     as unoccluded.
+
+The intersection, any hit and closest hit shaders are used together as a Hit Group to describe
+how to process rays and intersections with the geometry. The closest hit shader is required,
+while the intersection and any hit shaders are optional if not needed.
+
+> Aside: for geometry not using an any hit shader, explicitly disable it using
+> the corresponding force opaque or disable any hit geometry or ray flags, otherwise an empty any hit
+> shader will be called.
 
 For a detailed overview and other interesting applications and use cases, see the
 [Ray Tracing Gems Book](http://www.realtimerendering.com/raytracinggems/),
@@ -216,7 +222,7 @@ with one geometry and the second with two, would have its hit group records laid
 <figure>
 	<img class="img-fluid" src="/assets/img/2instance_sbt_example.svg">
 	{% assign figurecount = figurecount | plus: 1 %}
-	<figcaption><b>Figure {{figurecount}}:</b>
+	<figcaption class="text-left"><b>Figure {{figurecount}}:</b>
     <i>SBT Hit Group record layout for a typical ray tracer with two ray types
     rendering a scene with two instances. In this example each hit group record
     is 32 bytes, with a stride of 64 bytes. When tracing a ray, \( R_\text{stride} = 2 \),
