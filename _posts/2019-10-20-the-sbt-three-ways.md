@@ -59,11 +59,11 @@ the required data (textures, buffers) is uploaded to the GPU and accessed as nee
 at runtime in the shader. Our shader dispatch is now "bindless" in some sense.
 
 <figure>
-	<!--<img class="img-fluid" src="https://i.imgur.com/YqdyKCj.png"/>-->
+	<img class="img-fluid" src="/assets/img/rtx-execution-model.svg">
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><b>Figure {{figurecount}}:</b>
-    <i>The RTX API ray tracing pipeline, with locations where the SBT is
-    queried for a shader to call highlighted.
+    <i>The RTX API ray tracing execution pipeline
+    TODO MORE CAP
 	</i></figcaption>
 </figure>
 
@@ -558,6 +558,8 @@ add parameters using the buttons below or double click the parameter to remove t
 When you select a hit group the instance containing the geometry which would call the hit group
 when hit by a ray for the current scene and trace ray setup is selected. If more than
 one geometry share the same hit group, the first one will be highlighted.
+The miss shader which will be called for the current trace ray call is also highlighted
+in light purple.
 
 You can also change the ray tracing API to see how the different handle sizes
 and alignment requirements effect the SBT layout in memory. While it is also possible
