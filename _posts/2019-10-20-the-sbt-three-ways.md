@@ -748,10 +748,56 @@ optixTrace(accelerationStructure,
 
 # Extra: An SBT for Embree
 
-We can do the same thing with Embree since the whole code is in our control for
-how calls get dispatched. So if we want a consistent API for ray tracing we can
-actually implement an SBT for Embree as well. We could implement one that works
-just like OptiX to prove an easy example.
+Now that we've seen the similarities between the RTX API's shader binding table setup,
+this leads us to an interesting question: If we wanted to write a unified model
+for programming the GPU APIs, we'd implement a way to wrap over the RTX
+execution model and shader table, but what about the CPU? On the CPU we can use [Embree](https://www.embree.org/)
+to accelerate ray traversal to act as our "hardware-accelerated" API,
+[ISPC](https://ispc.github.io/) as our SPMD programming language for vectorization
+and [TBB](https://github.com/intel/tbb) for multi-threading; however, the natural
+way to write our CPU ray tracer would differ significantly from an RTX one, since we don't
+have the rest of the RTX execution model, shader table and so on. But since we're on
+the CPU we have pretty much full control over how the code is setup and run,
+so what if we just implemented the same execution model on top of Embree, ISPC and TBB?
+
+I've begun exploring exactly this idea in the [embree-sbt branch of ChameleonRT](https://github.com/Twinklebear/ChameleonRT/tree/embree-sbt/embree),
+and now support enough features to re-implement my original embree path tracer backend in this
+Embree-SBT model (two ray types, shader record parameters, opaque geometry).
+Since ISPC is somewhat similar to CUDA, I've followed
+the OptiX style of SBT in my implementation. The shader handles are just
+ISPC function pointers which then are passed a `void*` to the region
+following the handle containing any user-provided struct of embedded parameters.
+On the ISPC side I provide a
+[trace ray wrapper function](https://github.com/Twinklebear/ChameleonRT/blob/embree-sbt/embree/render_embree.ispc#L110-L146)
+which calls `rtcIntersect` or `rtcOccluded` as appropriate and computes Equations 1 or 4
+to determine which hit group or miss shader to call from the shader table.
+What's most interesting to note here is that not only does this work,
+but in my limited testing it actually seems to perform slightly better than my original implementation!
+
+# Final Thoughts
+
+Now that we've gotten an understanding of the RTX and SBT execution model and
+even seen how this model can be brought back to the CPU, we might find ourselves
+pointed in a pretty exciting direction. Although not discussed in this post,
+the rest of the host-side RTX APIs (e.g., setting up geometries) are also quite similar,
+and we can implement anything we want on top of Embree to make it fit in.
+The most challenging difference between the APIs to hide are the different
+languages used to write the shaders (HLSL, GLSL, CUDA, ISPC),
+the different ways the shader modules are setup, and how they receive parameters
+embedded in the shader record and from global state. If we squint a little
+bit the four languages are actually [very similar](https://github.com/Twinklebear/ChameleonRT/tree/hyperrender),
+but we're still left with difficult differences to hide in how the host sets up
+the shader models and parameters, and how those parameters are received by the shaders.
+
+To unify these final differences in shader setup and parameters, it seems like what we
+really need is a programming language similar to HLSL, GLSL, ISPC and CUDA, but which
+gives us enough information that we can hook up the shader record and global
+parameters the user wants across all four APIs. Since the rest of the APIs are
+so similar, I think this is not a big stretch to implement. My end goal
+is to write a host and device side codepath for my path tracer in [ChameleonRT](https://github.com/Twinklebear/ChameleonRT/)
+which can then run on all three RTX APIs and Embree. I've got to learn
+about compilers to do that, but watch this blog
+or follow me on [Twitter]() for updates.
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="/assets/sbt.js"></script>
