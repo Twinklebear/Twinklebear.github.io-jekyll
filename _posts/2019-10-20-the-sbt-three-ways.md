@@ -16,7 +16,7 @@ build on the same execution model for running user code to trace
 and process rays. The user creates a *Shader Binding Table* (SBT), which consists of a set
 of shader function handles and embedded parameters for these functions. The shaders in the table
 are executed depending on whether or not a geometry was hit by a ray, and which geometry was hit.
-When a geometry is hit a set of parameters specified on both the host and
+When a geometry is hit, a set of parameters specified on both the host and
 device side of the application combine to determine which shader is executed.
 The RTX APIs provide a great deal of flexibility in how the SBT can be set up and
 indexed into during rendering, leaving a number of options open to applications.
@@ -42,31 +42,33 @@ In a rasterizer we can batch objects by the shader they use and thus
 always know the set of shaders which must be called to render a set of objects.
 However, in a ray tracer we don't know
 which object a ray will hit when we trace it, and thus need the entire scene available
-in memory (or some proxy of it) along with a function to call for that object
-which can process intersections.
+in memory (or some proxy of it) along with a function to call for each object
+which can process intersections with it.
 Our ray tracer needs access to all of the shaders which might be called for the scene, and a way
-to associate them with the geometries in the scene. Each of the RTX APIs implements this using
+to associate them with the objects in the scene. Each of the RTX APIs implements this using
 the *Shader Binding Table*. An analogy in the rasterization pipeline is bindless rendering, where
 the required data (textures, buffers) is uploaded to the GPU and accessed as needed by ID
 at runtime in the shader. In some sense, our shader dispatch is now "bindless".
+The RTX execution pipeline is shown below.
 
 <figure>
 	<img class="img-fluid" src="/assets/img/rtx-execution-model.svg">
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption class="text-left"><b>Figure {{figurecount}}:</b>
-    <i>The RTX API execution pipeline. Rays are traversed through
-     the acceleration structure and tested against primitives
-     in the leaf nodes of the acceleration structure. If an intersection is
+    <i>The RTX API execution pipeline.
+     (a) Rays are traced in the ray generation shader and traversed through
+     the acceleration structure. (b) During traversal rays are tested against primitives
+     in the leaf nodes of the acceleration structure. (c) If an intersection is
      found the any hit shader is called. Note that for triangles the intersection
      shader is not needed as it is performed in hardware. After the traversal
      is complete the closest hit shader of the hit geometry is called if a
-     hit was found, otherwise the miss shader is called.
+     hit was found (d), otherwise the miss shader is called (e).
      These shaders then return control to the caller of TraceRay, or can
      make recursive trace calls.
 	</i></figcaption>
 </figure>
 
-The different shaders used in the ray tracing pipeline above are:
+The different shaders used in the ray tracing pipeline are:
 
 - Ray Generation: Called as the entry point to the ray tracer to generate the initial
     set of rays to be traced.
@@ -75,7 +77,7 @@ The different shaders used in the ray tracing pipeline above are:
     for triangle meshes, as the ray-triangle intersection test is done in hardware.
 - Any Hit: Is called for each potential intersection found along the ray,
     and can be used to filter potential intersections. For example, when using alpha
-    cutout textures, the Any Hit shader is used to discard hits against the cutout regions
+    cutout textures the Any Hit shader is used to discard hits against the cutout regions
     of the geometry.
 - Closest Hit: Is called for the closest hit found along the ray, and can compute and
     return intersection information through the ray payload or trace additional rays.
@@ -84,29 +86,26 @@ The different shaders used in the ray tracing pipeline above are:
     as unoccluded.
 
 The intersection, any hit and closest hit shaders are used together as a Hit Group to describe
-how to process rays and intersections with the geometry. The closest hit shader is required,
-while the intersection and any hit shaders are optional if not needed.
+how to process rays and intersections with a geometry. The closest hit shader is required,
+while the intersection and any hit shaders are optional.
 
-> Aside: for geometry not using an any hit shader, explicitly disable it using
-> the corresponding force opaque or disable any hit geometry or ray flags, otherwise an empty any hit
-> shader will be called.
+> Note: for geometry not using an any hit shader, explicitly disable it using
+> the corresponding force opaque or disable any hit geometry, instance or ray flags,
+> otherwise an empty any hit shader will be called.
 
 For a detailed overview and other interesting applications and use cases, see the
 [Ray Tracing Gems Book](http://www.realtimerendering.com/raytracinggems/),
 or check out the
 [Introduction to DirectX Ray Tracing](http://intro-to-dxr.cwyman.org/) course
-given at SIGGRAPH 2018, or [Optix 7 Tutorial](https://gitlab.com/ingowald/optix7course)
+given at SIGGRAPH 2018, or the [Optix 7 Tutorial](https://gitlab.com/ingowald/optix7course)
 given at SIGGRAPH 2019.
 
 # The Shader Binding Table
 
-*consists of a set of shader records, where each is a function (or functions for hit group)
-and parameters for those functions*
-
 The Shader Binding Table contains the entire set of shaders which may be called when ray tracing
 the scene, along with embedded parameters to be passed to these shaders. Each pair
 of shader functions and embedded parameters is referred to as a *Shader Record*.
-Since it's common for objects to share the same shader code but access different
+Since it's common for geometries to share the same shader code but access different
 data, the embedded parameters in the record can be used to pass such data to
 the shaders. Thus, there should be at least one Shader Record in the table for
 each unique combination of shader functions and embedded parameters. It is possible
@@ -116,9 +115,6 @@ Finally, it is also possible to simply use the instance and geometry IDs availab
 in the shaders to perform indirect access into other tables containing the scene data.
 
 ## Shader Record
-
-*Think of a shader record like a closure, it combines a set of parameters + a function
-to be called for some object or ray*
 
 A Shader Record combines one or more shader functions with a set of parameters to
 be passed to these functions when they're called by the runtime.
@@ -132,7 +128,7 @@ the RTX APIs, the functionality of the shader record is the same.
 The Ray Generation shader record consists of a single function referring to the
 ray generation shader to be used, along with any desired embedded parameters
 for the function. While some parameters can be passed in the shader record, for things
-which update each frame it can be easier to pass them separately through a
+which update each frame (e.g., the camera position) it is better to pass them separately through a
 different globally accessible buffer.
 While multiple ray generation shaders can be written into the table,
 only one can be called for a specific launch.
@@ -153,7 +149,7 @@ The Miss shader record consists of a single function referring to the miss shade
 to be used, along with any desired embedded parameters for the function,
 similar to the ray generation record. The miss shader which is called is selected
 by the ray type, though is specified separately from the hit group ray type to
-allow greater flexibility. This flexibility can be used for optimizations to
+allow greater flexibility. This flexibility can be used to implement optimizations for
 [occlusion rays, for example](/graphics/2019/09/06/faster-shadow-rays-on-rtx).
 
 ## Hit Group Shader Record Index Calculation
@@ -165,6 +161,15 @@ instance, trace ray call and the order of geometries in the bottom-level acceler
 These parameters are set on both the host and device during different parts of the scene
 and pipeline setup and execution, making it difficult to see how they fit together.
 
+When setting up the scene, the bottom level acceleration structured referenced by
+each instance can contain an array of geometries. The index of each geometry in this array
+is the geometry's ID ($$\mathbb{G}_\text{ID}$$). Each instance can be assigned a starting
+offset within the SBT ($$\mathbb{I}_\text{offset}$$) where its sub-table of hit group records start.
+
+When tracing a ray on the device we can specify an additional SBT offset for the ray ($$R_\text{offset}$$),
+often referred to as the ray "type", an SBT stride to apply ($$R_\text{stride}$$), typically referred
+to as the number of ray "types", and the miss shader index to call ($$R_\text{miss}$$).
+
 The equation used to determine which hit group record is called when a ray with SBT
 offset $$R_\text{offset}$$ and stride $$ R_\text{stride} $$ hits a geometry is:
 
@@ -175,7 +180,7 @@ $$
 \end{align}
 $$
 
-Where $$\mathbb{I}_\text{offset}$$ is the SBT offset of the instance containing the geometry,
+Where $$\mathbb{I}_\text{offset}$$ is the SBT offset of the instance containing the hit geometry,
 and $$\mathbb{G}_\text{ID}$$ is the index of the hit geometry in the list of geometries in the instance.
 $$\&\text{HG}[0]$$ is the starting address of the table containing the hit group records, and $$\text{HG}_\text{stride}$$
 is the stride between hit group records (in bytes) in the SBT.
@@ -229,13 +234,6 @@ with one geometry and the second with two, would have its hit group records laid
     and \( R_\text{offset} \)will be 0 for primary rays and 1 for occlusion rays.
 	</i></figcaption>
 </figure>
-
-*Depends on:*
-
-- *instance's sbt offset*
-- *order of geometry in the instance*
-- *ray sbt offset*
-- *ray sbt stride*
 
 ## Miss Shader Record Index Calculation
 
@@ -518,43 +516,16 @@ the different geometries. Use this tool to explore different possible configurat
 for the SBT to get a better understanding of how the different parameters
 can be combined for different renderer and scene configurations.
 
-*Configurations to try:*
+Here are some suggested configurations to try setting up:
 
-- "standard ray tracer" with a two ray types (primary/occlusion) and a hit group record
-    and miss record for each type
-- RFO style, only primary hit groups but miss record for primary and occlusion
-- Single hit group shared by all. I think this is do-able if you always use instance ID and
-    (i think geom index is now available too?) to pick your params from separate global buffers.
-
-<!--
-Here I'm thinking to put some D3 interactive example where you can build your
-own SBT and see how the different instance, geometry and trace ray parameters
-effect what entries in the SBT are accessed.
-
-Things this should support:
-
-- <s>need to account for the single stride param for each SBT group, right now
-      it only does the alignment part.</s>
-- <s>adding/removing miss groups</s>
-- <s>adding/removing hit groups</s>
-- <s>changing the parameters for the different shader records (add/remove)</s>
-- <s>changing the API backend</s>
-- <s>view the dispatch rays desc with the stride/offset/etc. values</s>
-- <s>multiple geom per-instance, see what the instance contribution should be for different
-    ray types in the scene</s>
-- <s>changing the trace ray parameters to see which hit groups are accessed for specific
-    instances and geometries</s>
-- <s>see which hit group is called for a specific geometry given the current indexing params</s>
-- <s>see which miss group is called for a specific trace call</s>
-- <s>also show and talk about the instance mask and how this can be used</s>
-- also make clear that the different shader records can be stored in different buffers
-
-The interactive graphic style I'd like to be similar to that used in RT Gems, but with
-the ability to switch API. Note that switching the API will potentially lead to making
-invalid SBT entries because the data that can be set differs and how they should be
-aligned. Maybe it would be better to be able to view all 3 at once, or just reset the
-data when the API is switched.
--->
+- A "standard ray tracer" as shown in Figure 2 with a two ray types (primary/occlusion) and a hit group record
+    and miss record for each type.
+- A [ray flags only](/graphics/2019/09/06/faster-shadow-rays-on-rtx) style ray tracer,
+    with only primary ray hit groups but primary and occlusion miss shaders.
+- A single hit group shared by all geometries. Note that different geometries and data
+    can still be accessed in this mode by using the instance ID, and in DXR 1.1
+    the [geometry index](https://devblogs.microsoft.com/directx/dxr-1-1/#geometryindex),
+    to fetch data from global buffers.
 
 ## Shader Binding Table
 
