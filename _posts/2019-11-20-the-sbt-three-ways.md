@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "The Shader Binding Table Three Ways"
+title: "The RTX Shader Binding Table Three Ways"
 description: ""
 category: graphics
 tags: [graphics, raytracing]
