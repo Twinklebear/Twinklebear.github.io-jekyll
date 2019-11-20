@@ -110,8 +110,8 @@ data, the embedded parameters in the record can be used to pass such data to
 the shaders. Thus, there should be at least one Shader Record in the table for
 each unique combination of shader functions and embedded parameters. It is possible
 to write the same shader record multiple times in the table, and this may be
-necessary depending on how the instances and geometries in the scene are specified.
-Finally, it is also possible to simply use the instance and geometry IDs available
+necessary depending on how the instances and geometries in the scene are setup.
+Finally, it is also possible to use the instance and geometry IDs available
 in the shaders to perform indirect access into other tables containing the scene data.
 
 ## Shader Record
@@ -126,12 +126,12 @@ the RTX APIs, the functionality of the shader record is the same.
 #### Ray Generation
 
 The Ray Generation shader record consists of a single function referring to the
-ray generation shader to be used, along with any desired embedded parameters
-for the function. While some parameters can be passed in the shader record, for things
-which update each frame (e.g., the camera position) it is better to pass them separately through a
+ray generation shader to be called, along with any desired embedded parameters
+for the function. While some parameters can be passed in the shader record, for parameters
+that get updated each frame (e.g., the camera position) it is better to pass them separately through a
 different globally accessible buffer.
 While multiple ray generation shaders can be written into the table,
-only one can be called for a specific launch.
+only one can be called for a each launch.
 
 #### Hit Group
 
@@ -147,7 +147,7 @@ below.
 
 The Miss shader record consists of a single function referring to the miss shader
 to be used, along with any desired embedded parameters for the function,
-similar to the ray generation record. The miss shader which is called is selected
+similar to the ray generation record. The miss shader to call is selected
 by the ray type, though is specified separately from the hit group ray type to
 allow greater flexibility. This flexibility can be used to implement optimizations for
 [occlusion rays, for example](/graphics/2019/09/06/faster-shadow-rays-on-rtx).
@@ -171,7 +171,8 @@ often referred to as the ray "type", an SBT stride to apply ($$R_\text{stride}$$
 to as the number of ray "types", and the miss shader index to call ($$R_\text{miss}$$).
 
 The equation used to determine which hit group record is called when a ray with SBT
-offset $$R_\text{offset}$$ and stride $$ R_\text{stride} $$ hits a geometry is:
+offset $$R_\text{offset}$$ and stride $$ R_\text{stride} $$ hits a geometry with
+ID $$\mathbb{G}_\text{ID}$$ in an instance with offset $$\mathbb{I}_\text{offset}$$ is:
 
 $$
 \begin{align}
@@ -180,35 +181,35 @@ $$
 \end{align}
 $$
 
-Where $$\mathbb{I}_\text{offset}$$ is the SBT offset of the instance containing the hit geometry,
-and $$\mathbb{G}_\text{ID}$$ is the index of the hit geometry in the list of geometries in the instance.
 $$\&\text{HG}[0]$$ is the starting address of the table containing the hit group records, and $$\text{HG}_\text{stride}$$
 is the stride between hit group records (in bytes) in the SBT.
 
 > Note: If you're coming from Ray Tracing Gems, in 3.10 the parameter $$R_\text{offset}$$ is referred
 > to as $$I_\text{ray}$$, and $$R_\text{stride}$$ is referred to as $$\mathbb{G}_\text{mult}$$.
-> While the equations are the same, I think the distinction of which parameters come from the ray,
+> While the equations are the same, the distinction of which parameters come from the ray,
 > geometry and instance are clearer when written as above.
 
 The ray offset ($$R_\text{offset}$$) and stride ($$R_\text{stride}$$) parameters are set per-ray
-when you call trace ray on the device. In a typical ray tracer, $$R_\text{offset}$$ is the ray type,
+when you call trace ray on the device. In a typical ray tracer, $$R_\text{offset}$$ is the ray "type",
 e.g., primary (0) or occlusion (1), and $$R_\text{stride}$$ is the total number of ray types, in this example, 2.
 These parameters allow us to change which hit group is called based on
 the desired ray query. For example, we can often perform a cheaper intersection test for occlusion
 rays since we only care if the object was hit, but don't need the exact hit point.
-The ray stride lets us
-stride over the hit groups by the number of different ray queries we want to perform, similar to a 2D array
-of elements. In a typical ray tracer where we would have a separate primary and occlusion hit group
+The hit groups for the different ray types of the geometry are written consecutively in the SBT,
+so the ray stride is used to step the next geometry's set of hit groups.
+This acts like a flattened 2D array of $$\text{num geometries} \times \text{num ray types}$$ elements.
+In a typical ray tracer where we would have a separate primary and occlusion hit group
 record per-geometry, this stride would be 2.
 
-The instance offset ($$\mathbb{I}_\text{offset}$$) and geometry id ($$\mathbb{G}_\text{ID}$$)
-come from how each instance is configured when setting up the scene on the host. Each instance takes
-a base offset into the SBT, which defines where its sub-table of hit group
+The instance offset ($$\mathbb{I}_\text{offset}$$) and geometry ID ($$\mathbb{G}_\text{ID}$$)
+come from how each instance and bottom-level acceleration structure are configured when setting up
+the scene on the host. Each instance is assigned
+a base offset into the SBT, $$\mathbb{I}_\text{offset}$$, which defines where its sub-table of hit group
 records begins. Note that this is not multiplied by $$R_\text{stride}$$ in Equation 1.
 The geometry id, $$\mathbb{G}_\text{ID}$$, is set implicitly as the index of the geometry
-in the bottom-level acceleration structure being instanced, and is multiplied by the ray stride.
+in the bottom-level acceleration structure being instanced, and is multiplied by $$R_\text{stride}$$.
 In a typical ray tracer with two ray types (primary and occlusion), a hit group record for each ray type
-per-geometry and instances do not share hit group records, the offset
+per-geometry and where instances do not share hit group records, the offset
 $$\mathbb{I}_\text{offset}^i$$ for instance $$i$$ can be calculated as:
 
 $$
@@ -221,7 +222,8 @@ $$
 Where $$\mathbb{I}_\text{geom}^i$$ are the number of geometries in instance $$i$$.
 
 The hit group records in the SBT would then be written in order by instance and the geometry order within
-the instance, with separate primary and occlusion hit groups. A scene with two instances, the first
+the instance's bottom-level acceleration structure, with separate primary and occlusion hit groups.
+A scene with two instances, the first
 with one geometry and the second with two, would have its hit group records laid out as shown below.
 
 <figure>
@@ -253,13 +255,18 @@ in bytes.
 
 # API Specific Details
 
-Now that we have a unified terminology to work with across the RTX APIs, and took a brief
+Now that we have a unified terminology to work with across the RTX APIs and took a general
 look at how the Shader Binding Table works, we'll dive into the API-specific details of the SBT
-for each API before getting to the interactive SBT builder widget. 
-The most important difference is in how the embedded parameters for a shader record
-are specified, and the typos of parameters which can be embedded.
-The shader record handles and the alignment requirements for them in the SBT can
-also differ between the different APIs.
+for each API.
+In each API the SBT is passed as a set of one or more buffers of shader records to the
+launch call (each record type can be in a separate buffer, or all in one),
+with information specifying the starting address and stride of each
+group of records. Each record consists of an API specific shader handle followed by any
+embedded parameters for the record.
+The biggest difference between the APIs is in how the embedded parameters for a shader record
+are specified on the host and retrieved on the device, and the types of parameters which can be embedded.
+The sizes of the shader record handles and their alignment requirements can
+also differ between the APIs.
 
 ## DirectX Ray Tracing
 
@@ -272,19 +279,19 @@ Here we'll just focus on the parts specific to the Shader Binding Table indexing
 ### Shader Records and Parameters
 
 In DXR, the parameters embedded in the shader record can be 8-byte handles
-(e.g., to buffers, textures, etc.) or pairs of 4-byte constants (any single 4-byte constant
+(e.g., buffers, textures, etc.) or pairs of 4-byte constants (a single 4-byte constant
 must be padded to 8-bytes). The mapping of these input parameters from the shader record
 to the shader "registers" is specified using a
 [Local Root Signature](https://microsoft.github.io/DirectX-Specs/d3d/Raytracing.html#resource-binding).
 The registers used for the local root signature parameters should not overlap with
-any coming from the global root signature, which is shared by all shaders. 
+those used by the global root signature, which is shared by all shaders. 
 One way to avoid conflicts is to use separate register spaces for the global and
 local root signature parameter registers. 
 
 The shader handle size is defined by `D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES` (32 bytes),
 the shader record alignment requirement is `D3D12_RAYTRACING_SHADER_TABLE_BYTE_ALIGNMENT` (64 bytes).
 The maximum size allowed for the stride is 4096 bytes, placing an upper bound on the number of
-parameters which can be embedded for a shader.
+parameters which can be embedded for a shader record.
 
 ### Instance Parameters
 
@@ -327,8 +334,9 @@ void TraceRay(RaytracingAccelerationStructure AccelerationStructure,
 {% endhighlight %}
 
 TraceRay takes the acceleration structure to trace against, a set of ray flags to adjust the traversal being
-performed, the mask and SBT indexing parameters, the ray and the payload to be updated by the
+performed, the instance mask, SBT indexing parameters, the ray and the payload to be updated by the
 closest hit or miss shaders.
+The parameters which effect the SBT indexing are:
 
 - `InstanceInclusionMask`: This mask effects which instances are masked out by and'ing it
     with each instance's `InstanceMask`.
@@ -347,7 +355,7 @@ and the [GLSL NV Ray Tracing extension](https://github.com/KhronosGroup/GLSL/blo
 
 In Vulkan, the parameters embedded in the shader record can only be 4-byte constants,
 but do not require extra padding to 8-bytes as in DXR. The embedded parameters are
-passed to the appear as a special buffer type declared with the `shaderRecordNV` layout.
+accessed in the shader through a special buffer type declared with the `shaderRecordNV` layout.
 For example, if we wanted to pass a material ID for the geometry in the shader record
 we could declare the buffer as follows:
 
@@ -360,9 +368,9 @@ layout(shaderRecordNV) buffer SBTData {
 The size of the shader handles and alignment requirements for the shader records
 are queried at runtime by querying the
 [`VkPhysicalDeviceRayTracingPropertiesNV`](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkPhysicalDeviceRayTracingPropertiesNV.html).
-On my desktop with an RTX 2070 and Nvidia driver XXX the shader handle size
-is 16 bytes, and the shader record alignment requirement is 64 bytes.
-The maximum allowed size for the shader record stride is XXX bytes.
+On my desktop with an RTX 2070 and Nvidia driver 441.12 the shader handle size
+is 16 bytes and the shader record alignment requirement is 64 bytes.
+The maximum allowed size for the shader record stride is 4096 bytes.
 
 ### Instance Parameters
 
@@ -409,8 +417,9 @@ the GLSL NV Ray Tracing extension can be called to trace rays.
 
 traceNV takes the acceleration structure to trace against,
 a set of ray flags to adjust the traversal being
-performed, the mask and SBT indexing parameters, the ray parameters
+performed, the instance mask, SBT indexing parameters, the ray parameters
 and the index of the ray payload to be updated by the closest hit or miss shaders.
+The parameters which effect the SBT indexing are:
 
 - `cullMask`: This mask effects which instances are masked out by and'ing it
     with each instance's `mask`.
@@ -418,7 +427,7 @@ and the index of the ray payload to be updated by the closest hit or miss shader
 - `sbtRecordStride`: This is the ray's SBT stride $$R_\text{stride}$$.
 - `missIndex`: This is the miss shader index to call, $$R_\text{miss}$$.
 
-In contrast to HLSL, the ray payloads are specified as special shader input/output
+In contrast to HLSL, the ray payloads are specified as a special shader input/output
 variable, where the value of `payload` passed to traceNV selects which
 one will be used. For example:
 
@@ -440,8 +449,8 @@ and the [OptiX 7 Course](https://gitlab.com/ingowald/optix7course) from SIGGRAPH
 
 In OptiX, the parameters embedded in the shader record can be arbitrary structs,
 potentially containing CUDA device pointers or texture handles.
-A pointer to the embedded parameters for the shader can be retrieved with the
-`optixGetSbtDataPointer()` function, which returns a `void*` to the data
+A pointer to the embedded parameters for the shader can be retrieved in the shader with by calling
+`optixGetSbtDataPointer()`, which returns a `void*` to the portion of the SBT
 after the shader handle.
 
 The size of the shader handle is defined by `OPTIX_SBT_RECORD_HEADER_SIZE` (32 bytes),
@@ -489,15 +498,16 @@ void optixTrace(OptixTraversableHandle handle,
                 unsigned int SBTstride,
                 unsigned int missSBTIndex,
                 // up to 8 32-bit values to be passed through registers
-                // unsigned int &p0-p7
+                // unsigned int& p0-p7
 )
 {% endhighlight %}
 
 optixTrace takes the acceleration structure to trace against, a set of ray flags to adjust the traversal being
-performed, the mask and SBT indexing parameters, the ray parameters and up to 8 unsigned 32-bit values
-which are passed through registers to the closest hit and miss shaders. To pass a struct larger
+performed, the instance mask, SBT indexing parameters, the ray parameters and up to 8 unsigned 32-bit values
+which are passed by reference through registers to the closest hit and miss shaders. To pass a struct larger
 than 32 bytes it's possible to pass a pointer to a stack variable in the calling shader
-through 2 32-bit ints, and pack the pointer together in the closest hit or miss shader.
+through by splitting it into two 32-bit ints, and then packing the pointer back together in the closest hit or miss shader.
+The parameters which effect the SBT indexing are:
 
 - `visibilityMask`: This mask effects which instances are masked out by and'ing it
     with each instance's `visibilityMask`.
@@ -511,30 +521,33 @@ Now that we've discussed the how the SBT works and what parts of the SBT,
 instance and trace ray setup are similar or different between the RTX APIs,
 lets do some hands on activities! Using the interactive tool below
 you can build a shader binding table, setup a scene,
-set the trace ray parameters and visualize which hit groups are called for
+set the trace ray parameters and see which hit groups are called for
 the different geometries. Use this tool to explore different possible configurations
-for the SBT to get a better understanding of how the different parameters
+for the SBT, scene and trace ray parameters to get a better understanding of how the different parameters
 can be combined for different renderer and scene configurations.
 
 Here are some suggested configurations to try setting up:
 
-- A "standard ray tracer" as shown in Figure 2 with a two ray types (primary/occlusion) and a hit group record
-    and miss record for each type.
+- A "standard ray tracer" as shown in Figure 2 with two ray types, primary and occlusion.
+    Each geometry should have a hit group record for each ray type, and there should be a miss
+    record for each ray type.
 - A [ray flags only](/graphics/2019/09/06/faster-shadow-rays-on-rtx) style ray tracer,
-    with only primary ray hit groups but primary and occlusion miss shaders.
-- A single hit group shared by all geometries. Note that different geometries and data
+    with only primary ray hit groups for geometry, but both primary and occlusion miss shaders.
+- A single hit group shared by all geometries. Note that different geometry's data
     can still be accessed in this mode by using the instance ID, and in DXR 1.1
     the [geometry index](https://devblogs.microsoft.com/directx/dxr-1-1/#geometryindex),
     to fetch data from global buffers.
 
 ## Shader Binding Table
 
-You can add new hit and miss records with the buttons below, or remove them by double-clicking
-the record. Click a shader record to select it and add or remove parameters,
-add parameters using the buttons below or double click the parameter to remove them.
-When you select a hit group the instance containing the geometry which would call the hit group
-when hit by a ray for the current scene and trace ray setup is selected. If more than
-one geometry share the same hit group, the first one will be highlighted.
+Here you can add new hit and miss records with the buttons below, or remove them by double-clicking
+the record. Click a record to select it and add or remove parameters.
+Add parameters using the buttons below or double click a parameter to remove it.
+When you select a hit group record the instance containing the geometry which would call the record
+when hit by a ray for the current scene and trace ray setup is selected in the scene setup widget. If more than
+one geometry share the same record, the first one will be highlighted.
+The hit groups records which can be called by the currently selected instance in the scene
+setup widget are highlighted in light blue.
 The miss shader which will be called for the current trace ray call is also highlighted
 in light purple.
 
@@ -594,19 +607,21 @@ them all in one buffer here to simplify the visualization.
 
 ## Scene Setup
 
-Here you can setup the scene you want to trace rays against by adding or removing instances
-and geometries within instances or change each instance's mask.
+Here you can setup the scene you want to trace rays against by adding or removing instances,
+changing the number of geometries within instances, or changing each instance's mask.
 To add an instance use the button below, to remove one double click on its BVH icon
-or geometries. Select an instance by clicking on it to modify its SBT offset, number of geometries and
-visibility mask with the inputs below. Setting to the recommended offset
-will set a configuration similar to that shown in Figure 2, using Equations 2 and 3.
-The geometry ID (\(\mathbb{G}_\text{ID}\)) within the instance is displayed next to each geometry in the widget.
+or geometries. Select an instance by clicking on it to modify its SBT offset, number of geometries or
+visibility mask with the inputs below. Setting $$\mathbb{I}_\text{offset}$$ to the recommended offset
+will set it to match a configuration like that shown in Figure 2, using Equations 2 and 3.
+The geometry ID ($$\mathbb{G}_\text{ID}$$) of each geometry in the instance is displayed next to
+the geometry in the widget.
 
 The hit groups accessed by the selected instance will also be highlighted in light blue
 in the shader binding table. Click a specific geometry in the scene to see the corresponding hit
-group which will be called when intersected by the ray traced in the current trace ray call.
-If a geometry would access an out of bounds for the current trace call, it will be highlighted in red.
-If the instance potentially accesses out of bounds hit groups (i.e., across the ray stride)
+group which will be called when intersected by a ray traced in the current trace ray call.
+If a geometry would access an out of bounds hit group record for the current trace call,
+it will be highlighted in red.
+If a geometry in the instance potentially accesses an out of bounds hit group record (i.e., across the ray stride)
 a warning will be displayed when it is selected.
 Instances which are masked out of the current ray traversal will be grayed out.
 
@@ -642,7 +657,8 @@ Instances which are masked out of the current ray traversal will be grayed out.
 
 Here you can setup your trace ray call to set the ray SBT offset, stride and miss index.
 After setting up the trace call click on geometries in the scene to see which hit group
-will be called!
+will be called! The select miss shader button will select the miss shader which will be called
+in the SBT widget above.
 
 <div id="dxrTrace" class="col-12">
 <figure class="highlight">
@@ -728,55 +744,60 @@ optixTrace(accelerationStructure,
 # Extra: An SBT for Embree
 
 Now that we've seen the similarities between the RTX API's shader binding table setup,
-this leads us to an interesting question: If we wanted to write a unified model
-for programming the GPU APIs, we'd implement a way to wrap over the RTX
-execution model and shader table, but what about the CPU? On the CPU we can use [Embree](https://www.embree.org/)
+this leads us to an interesting question: If we wanted to write a unified programming model
+for the RTX APIs, we'd implement something to wrap over the RTX
+execution model and shader binding table, but what about the CPU?
+On the CPU we can use [Embree](https://www.embree.org/)
 to accelerate ray traversal to act as our "hardware-accelerated" API,
 [ISPC](https://ispc.github.io/) as our SPMD programming language for vectorization
 and [TBB](https://github.com/intel/tbb) for multi-threading; however, the natural
-way to write our CPU ray tracer would differ significantly from an RTX one, since we don't
-have the rest of the RTX execution model, shader table and so on. But since we're on
+way to write our CPU ray tracer differs significantly from how we'd write an RTX one, since we don't
+have the rest of the RTX execution model, shader binding table and so on. But since we're on
 the CPU we have pretty much full control over how the code is setup and run,
 so what if we just implemented the same execution model on top of Embree, ISPC and TBB?
 
 I've begun exploring exactly this idea in the [embree-sbt branch of ChameleonRT](https://github.com/Twinklebear/ChameleonRT/tree/embree-sbt/embree),
-and now support enough features to re-implement my original embree path tracer backend in this
+which now support enough features to re-implement my original Embree path tracer backend for
+[ChameleonRT](https://github.com/Twinklebear/ChameleonRT/tree/master/embree) in this
 Embree-SBT model (two ray types, shader record parameters, opaque geometry).
 Since ISPC is somewhat similar to CUDA, I've followed
-the OptiX style of SBT in my implementation. The shader handles are just
-ISPC function pointers which then are passed a `void*` to the region
-following the handle containing any user-provided struct of embedded parameters.
+the OptiX style SBT in my implementation. The shader handles are just
+ISPC function pointers which are passed a `void*` to the region
+following the shader handle which contains any user-provided struct of embedded parameters.
 On the ISPC side I provide a
 [trace ray wrapper function](https://github.com/Twinklebear/ChameleonRT/blob/embree-sbt/embree/render_embree.ispc#L110-L146)
-which calls `rtcIntersect` or `rtcOccluded` as appropriate and computes Equations 1 or 4
-to determine which hit group or miss shader to call from the shader table.
-What's most interesting to note here is that not only does this work,
-but in my limited testing it actually seems to perform slightly better than my original implementation!
+which calls `rtcIntersect` or `rtcOccluded` based on the ray flags and computes Equations 1 or 4
+to determine which hit group or miss shader to call from the shader binding table.
+What's really exciting to note here is that not only does this work,
+but in my limited testing it actually seems to perform similar to or even slightly
+better than my original implementation!
 
 # Final Thoughts
 
 Now that we've gotten an understanding of the RTX and SBT execution model and
-even seen how this model can be brought back to the CPU, we might find ourselves
+even seen how this model can be successfully brought back to the CPU, we find ourselves
 pointed in a pretty exciting direction. Although not discussed in this post,
-the rest of the host-side RTX APIs (e.g., setting up geometries) are also quite similar,
+the rest of the host-side RTX APIs (e.g., setting up geometries) are quite similar,
 and we can implement anything we want on top of Embree to make it fit in.
-The most challenging difference between the APIs to hide are the different
+The most challenging differences between the APIs to hide are the different
 languages used to write the shaders (HLSL, GLSL, CUDA, ISPC),
 the different ways the shader modules are setup, and how they receive parameters
 embedded in the shader record and from global state. If we squint a little
-bit the four languages are actually [very similar](https://github.com/Twinklebear/ChameleonRT/tree/hyperrender),
+bit the four languages are actually [very similar](https://github.com/Twinklebear/ChameleonRT/tree/hyperrender/kernels),
 but we're still left with difficult differences to hide in how the host sets up
-the shader models and parameters, and how those parameters are received by the shaders.
+the shader modules and parameters, and how those parameters are received by the shaders.
 
-To unify these final differences in shader setup and parameters, it seems like what we
+To unify these final differences it seems like what I
 really need is a programming language similar to HLSL, GLSL, ISPC and CUDA, but which
-gives us enough information that we can hook up the shader record and global
-parameters the user wants across all four APIs. Since the rest of the APIs are
-so similar, I think this is not a big stretch to implement. My end goal
-is to write a host and device side codepath for my path tracer in [ChameleonRT](https://github.com/Twinklebear/ChameleonRT/)
-which can then run on all three RTX APIs and Embree. I've got to learn
-about compilers to do that, but watch this blog
-or follow me on [Twitter]() for updates.
+gives me enough information that I can hook up the shader record and global
+parameters the user wants across all four APIs. The compiler would then output HLSL, GLSL,
+ISPC or CUDA as appropriate for the selected backend. Since the rest of the APIs are
+so similar, I think this is not a big stretch to implement, but will take some careful API and
+language design.
+My end goal is to write a single host and device code path for my path tracer in [ChameleonRT](https://github.com/Twinklebear/ChameleonRT/)
+which can run on all three RTX APIs and Embree. I've got to learn about compilers to do that, but watch this blog
+or follow me on [Twitter](https://twitter.com/_wusher) for updates! If you have questions
+or comments about this post, Twitter or email are the best ways to get in touch.
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="/assets/sbt.js"></script>
