@@ -1,5 +1,59 @@
 [
 	{
+		"title": " A Comparison of Rendering Techniques for 3D Line Sets with Transparency",
+		"authors": "Michael Kern, Christoph Neuhauser, Torben Maack, Mengjiao Han,
+            Will Usher, Rüdiger Westermann",
+		"venue": "IEEE Transactions on Visualization and Computer Graphics (To Appear)",
+		"paper_pdf": "http://sci.utah.edu/~will/papers/tvcg20_oit/tvcg_oit_lines.pdf",
+		"teaser": "https://i.imgur.com/Sceg1iM.jpg",
+		"thumb": "https://i.imgur.com/Yy9H2ZR.jpg",
+		"year": 2020,
+		"exact_date": "2020-02-24 00:00:00 -0600",
+		"short_title": "tvcg20_oit",
+		"doi": "10.1109/TVCG.2020.2975795",
+		"bibtex": "@article{kern_comparison_20,\n
+			journal = {IEEE Transactions on Visualization and Computer Graphics (To Appear)},\n
+			title = {{A Comparison of Rendering Techniques for 3D Line Sets with Transparency}},\n
+			author = {Kern, Michael and Neuhauser, Christoph and Maack, Torben and Han, Mengjiao and
+                Usher, Will and Westermann, Rüdiger},\n
+			year = {2020},\n
+			DOI = {10.1109/TVCG.2020.2975795}\n}",
+		"abstract": "This paper presents a comprehensive study of rendering techniques for 3D line sets with transparency. The rendering of transparent lines is widely used for visualizing trajectories of tracer particles in flow fields. Transparency is then used to fade out lines deemed unimportant, based on, for instance, geometric properties or attributes defined along with them. Accurate blending of transparent lines requires rendering the lines in back-to-front or front-to-back order, yet enforcing this order for space-filling 3D line sets with extremely high-depth complexity becomes challenging. In this paper, we study CPU and GPU rendering techniques for transparent 3D line sets. We compare accurate and approximate techniques using optimized implementations and several benchmark data sets. We discuss the effects of data size and transparency on quality, performance, and memory consumption. Based on our study, we propose two improvements to per-pixel fragment lists and multi-layer alpha blending. The first improves the rendering speed via an improved GPU sorting operation, and the second improves rendering quality via transparency-based bucketing.",
+		"teaser_caption": "Strengths and weaknesses of transparent line rendering techniques. For each pair, the left image shows the ground truth (GT). Right images show (a) approximate blending using MLABDB, (b) opacity over-estimation of MBOIT, (c) reverse blending order of MLABDB, (d) blur effect of MBOIT. Speed-ups to GT rendering technique: (a) 7, (b) 2, (c) 3.5, (d) 4.5.",
+		"downloads": [
+			{
+				"title": "Supplemental Material",
+                "list": [
+                    {
+                        "title": "Appendices",
+                        "link": "http://sci.utah.edu/~will/papers/tvcg20_oit/tvcg_oit_lines_appendices.pdf",
+                        "icon": "far fa-file-pdf"
+                    },
+                    {
+                        "title": "Benchmark Framework and GPU Rendering Algorithms",
+                        "link": "https://github.com/chrismile/PixelSyncOIT",
+                        "icon": "fab fa-github"
+                    },
+                    {
+                        "title": "OSPRay Generalized Tubes Module",
+                        "link": "https://github.com/MengjiaoH/ospray-module-tubes",
+                        "icon": "fab fa-github"
+                    },
+                    {
+                        "title": "Line Data Sets",
+                        "link": "http://doi.org/10.5281/zenodo.3637625",
+                        "icon": "far fa-file-archive"
+                    },
+                    {
+                        "title": "RTX Ray Tracing Test Framework",
+                        "link": "http://doi.org/10.5281/zenodo.3637621",
+                        "icon": "far fa-file-archive"
+                    }
+                ]
+			}
+		]
+	},
+	{
 		"title": "Scalable Ray Tracing Using the Distributed FrameBuffer",
 		"authors": "Will Usher, Ingo Wald, Jefferson Amstutz, Johannes Günther,
 			Carson Brownlee, and Valerio Pascucci",
@@ -12,6 +66,7 @@
 		"short_title": "dfb",
 		"supplemental_video": "https://www.youtube.com/embed/F2nahk4GAB0",
 		"doi": "10.1111/cgf.13702",
+        "selected": true,
 		"bibtex": "@article{usher_scalable_2019,\n
 			journal = {Computer Graphics Forum},\n
 			title = {{Scalable Ray Tracing Using the Distributed FrameBuffer}},\n
@@ -143,6 +198,7 @@
 		"year": 2019,
 		"exact_date": "2019-10-20 00:00:00 -0600",
 		"short_title": "rtx-space-skipping",
+        "selected": true,
 		"bibtex": "@inproceedings{morrical_skipping_2019,\n
 			title = {Efficient {Space} {Skipping} and {Adaptive} {Sampling} of {Unstructured}
 				{Volumes} {Using} {Hardware} {Accelerated} {Ray} {Tracing}},\n
@@ -176,6 +232,7 @@
 		"exact_date": "2019-07-08 00:00:00 -0600",
 		"short_title": "rtx-points",
 		"doi": "10.2312/hpg.20191189",
+        "selected": true,
 		"bibtex": "@inproceedings{wald_rtx_2019,\n
 			title = {{RTX} {Beyond} {Ray} {Tracing:} {Exploring} the {Use} of {Hardware}
 				{Ray} {Tracing} {Cores} for {Tet}-{Mesh} {Point} {Location}},\n
@@ -219,6 +276,7 @@
 		"exact_date": "2019-08-05 00:00:00 -0600",
 		"short_title": "icpp19",
 		"doi": "10.1145/3337821.3337875",
+        "selected": true,
 		"bibtex": "@inproceedings{kumar_spatially-aware_2019,\n
 			title = {{Spatially}-aware {Parallel} {I}/{O} for {Particle} {Data}},\n
 			booktitle = {Proceedings of the 48th International Conference on Parallel Processing},\n
@@ -252,6 +310,7 @@
 		"exact_date": "2019-01-01 00:00:00 -0600",
 		"short_title": "amr-iso",
 		"doi": "10.1109/TVCG.2018.2864850",
+        "selected": true,
 		"bibtex": "@article{Wang_AMR_Iso_2019,\n
 			author={F. Wang and I. Wald and Q. Wu and W. Usher and C. R. Johnson},\n
 			journal={{IEEE} {Transactions} on {Visualization} and {Computer} {Graphics}},\n
@@ -287,6 +346,7 @@
 		"doi": "10.1109/TVCG.2017.2744079",
 		"supplemental_video": "https://www.youtube.com/embed/lTNef_kbLKg",
 		"presentation_video": "https://www.youtube.com/embed/XzmYdl9rFs0",
+        "selected": true,
 		"downloads": [
 			{
 				"title": "Videos",
@@ -349,6 +409,7 @@
 		"short_title": "libis-isav18",
 		"doi": "10.1145/3281464.3281466",
 		"supplemental_video": "https://www.youtube.com/embed/YUH55CvPmxg",
+        "selected": true,
 		"bibtex": "@inproceedings{usher_libis_2018,\n
 			title = {{libIS}: {A} {Lightweight} {Library} for
 				{Flexible} {In} {Transit} {Visualization}},\n
@@ -404,6 +465,7 @@
 		"exact_date": "2018-06-04 00:00:00 -0600",
 		"short_title": "visit-ospray",
 		"doi": "10.2312/pgv.20181091",
+        "selected": true,
 		"bibtex": "@inproceedings{Wu_VisItOSPRay_2018,\n
 			booktitle = {Eurographics Symposium on Parallel Graphics and Visualization},\n
 			editor = {Hank Childs and Fernando Cucchietti},\n
@@ -489,6 +551,7 @@
 		"exact_date": "2017-11-27 00:00:00 -0600",
 		"short_title": "cvamr",
 		"doi": "10.1145/3139295.3139305",
+        "selected": true,
 		"bibtex": "@inproceedings{Wald_CVAMR_2017,\n
 			author = {Wald, Ingo and Brownlee, Carson and Usher, Will and Knoll, Aaron},\n
 			title = {CPU Volume Rendering of Adaptive Mesh Refinement Data},\n
@@ -603,6 +666,7 @@
 				Chun-Ming Chen, Robert Maynard, Berk Geveci",
 		"venue": "IEEE Computer Graphics and Applications",
 		"paper_pdf": "http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=7466740",
+		"thumb": "https://i.imgur.com/VEcRSDW.jpg",
 		"doi": "10.1109/MCG.2016.48",
 		"year": 2016,
 		"exact_date": "2016-05-09 00:00:00 -0600",
@@ -637,6 +701,7 @@
 		"short_title": "pkd",
 		"year": 2015,
 		"exact_date": "2015-10-25 00:00:00 -0600",
+        "selected": true,
 		"bibtex": "@inproceedings{Wald_PKD_2015,\n
 			author={I. Wald and A. Knoll and G. P. Johnson and W. Usher and V. Pascucci and M. E. Papka},\n
 			booktitle={2015 IEEE Scientific Visualization Conference (SciVis)},\n

@@ -48,35 +48,34 @@ title: Will Usher
 	</div>
 	<div class="col-12 mb-1">
 		<h2 class="border-bottom border-secondary">Publications</h2>
-		{% for pub in site.data.publications %}
-		<div class="row col-12 mb-3 float-sm-left">
-			<div class="float-sm-left col-12 col-sm-2">
-				{% if pub.thumb %}
-				<!-- I'm debating if I prefer with or without the thumbnail border -->
-				<img class="mx-auto img-thumbnail" src="{{pub.thumb}}">
-				{% endif %}
-				<!-- todo: something for pubss wihtout thumbs? -->
-			</div>
-			<div class="col-sm-10 col-12 text-center text-sm-left">
-				<h5><b>{{pub.title}}</b></h5>
-				{{pub.authors}}. <i>{{pub.venue}}</i>, {{pub.year}}.
-				<br/>
-				<a class="mr-2" href="/publications/{{pub.short_title}}">
-					<i class="far fa-file-alt"></i> Project Page</a>
-				<a class="mr-2" href="{{pub.paper_pdf}}"><i class="far fa-file-pdf"></i> PDF</a>
-				{% if pub.bibtex %}
-				<a class="bib mr-2" href="javascript:void(0);"
-					data-clipboard-text="{{pub.bibtex}}" data-toggle="popover" data-content="Copied!"
-					data-delay='{"show":0,"hide":1000}' data-trigger="focus">
-					<i class="fas fa-quote-left"></i> Copy BibTeX</a>
-				{% endif %}
-				{% if pub.doi %}
-				<a class="mr-2" href="https://dx.doi.org/{{pub.doi}}">
-					<i class="fas fa-external-link-alt"></i> Publisher's Version</a>
-				{% endif %}
-			</div>
-		</div>
-		{% endfor %}
+        <ul class="nav nav-tabs" id="pubTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="selectedPubsTab" data-toggle="tab" href="#selectedPublications" role="tab"
+                    aria-controls="selectedPublications" aria-selected="true">
+                    Selected Publications</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="allPubsTab" data-toggle="tab" href="#allPublications" role="tab"
+                    aria-controls="allPublications" aria-selected="false">
+                    All Publications</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="selectedPublications" role="tabpanel" aria-labelledby="selectedPubsTab">
+                <div class="col-12 mt-4"></div>
+                {% for pub in site.data.publications %}
+                    {% if pub.selected %}
+                        {% include publication_listing.html %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="tab-pane fade" id="allPublications" role="tabpanel" aria-labelledby="allPubsTab">
+                <div class="col-12 mt-4"></div>
+                {% for pub in site.data.publications %}
+                    {% include publication_listing.html %}
+                {% endfor %}
+            </div>
+        </div>
 	</div>
 	<div class="col-12">
 		<h2 class="border-bottom border-secondary">Selected Projects</h2>
