@@ -352,6 +352,8 @@ For more documentation about the Vulkan NV Ray Tracing extension, also
 [manual page](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VK_NV_ray_tracing.html),
 and the [GLSL NV Ray Tracing extension](https://github.com/KhronosGroup/GLSL/blob/master/extensions/nv/GLSL_NV_ray_tracing.txt).
 
+> Note: This post covers the `NV_ray_racing` extension, I'll update it soon to cover `KHR_ray_tracing` instead
+
 ### Shader Records and Parameters
 
 In Vulkan, the parameters embedded in the shader record can only be 4-byte constants,
