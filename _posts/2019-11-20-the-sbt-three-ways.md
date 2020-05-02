@@ -500,7 +500,7 @@ void main() {
 
 The size of the shader handles and alignment requirements for the shader records
 are queried at runtime by querying the
-[`VkPhysicalDeviceRayTracingPropertiesKHR`](https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPhysicalDeviceRayTracingPropertiesKHR.html)
+[`VkPhysicalDeviceRayTracingPropertiesKHR`](https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPhysicalDeviceRayTracingPropertiesKHR.html).
 On my desktop with an RTX 2070 and Nvidia driver 442.81 the shader handle size
 is 32 bytes and the shader record stride must be a multiple of 32 bytes.
 The required alignment for the starting address of each table is 64 bytes.
