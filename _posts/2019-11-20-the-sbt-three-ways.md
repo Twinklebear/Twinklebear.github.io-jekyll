@@ -451,7 +451,7 @@ layout(location = 0) rayPayloadNV RayPayload payload;
 
 ## Vulkan KHR Ray Tracing (added 5/1/2020)
 
-For more documentation about the Vulkan KHR Ray Tracing extension, also
+For more documentation about the Vulkan KHR Ray Tracing extension, also see the
 [extension specification](https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VK_KHR_ray_tracing.html)
 and the [GLSL EXT Ray Tracing extension](https://github.com/KhronosGroup/GLSL/blob/master/extensions/ext/GLSL_EXT_ray_tracing.txt).
 
