@@ -2,20 +2,22 @@
 	{
 		"title": "CPU Ray Tracing of Tree-Based Adaptive Mesh Refinement Data",
 		"authors": "Feng Wang, Nathan Marshak, Will Usher, Carsten Burstedde, Aaron Knoll, Timo Heister, and Chris R. Johnson",
-		"venue": "Computer Graphics Forum (To Appear)",
+		"venue": "Computer Graphics Forum",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/tamr/tamr.pdf",
 		"teaser": "https://i.imgur.com/bwoCE0y.jpg",
 		"thumb": "https://i.imgur.com/jpqy4ym.jpg",
 		"year": 2020,
 		"exact_date": "2020-03-25 00:00:00 -0600",
 		"short_title": "tamr",
+        "doi": "10.1111/cgf.13958",
         "selected": true,
 		"bibtex": "@article{wang_tamr_20,\n
-			journal = {Computer Graphics Forum (To Appear)},\n
+			journal = {Computer Graphics Forum},\n
 			title = {{CPU Ray Tracing of Tree-Based Adaptive Mesh Refinement Data}},\n
 			author = {Wang, Feng and Marshak, Nathan and Usher, Will and
                 Burstedde, Carsten and Knoll, Aaron and Heister, Timo
                 and Johson, Chris R.},\n
+            DOI = {10.1111/cgf.13958},\n
 			year = {2020},\n}",
 		"abstract": "Adaptive mesh refinement (AMR) techniques allow for representing a simulation’s computation domain in an adaptive fashion. Although these techniques have found widespread adoption in high-performance computing simulations, visualizing their data output interactively and without cracks or artifacts remains challenging. In this paper, we present an efficient solution for direct volume rendering and hybrid implicit isosurface ray tracing of tree-based AMR (TB-AMR) data. We propose a novel reconstruction strategy, Generalized Trilinear Interpolation (GTI), to interpolate across AMR level boundaries without cracks or discontinuities in the surface normal. We employ a general sparse octree structure supporting a wide range of AMR data, and use it to accelerate volume rendering, hybrid implicit isosurface rendering and value queries. We demonstrate that our approach achieves artifact-free isosurface and volume rendering and provides higher quality output images compared to existing methods at interactive rendering rates.",
 		"teaser_caption": "High-fidelity visualization (volume and implicit isosurface rendering) of the NASA ExaJet dataset (field: vorticity). This dataset contains 656M cells (1.31B after instancing) of adaptive resolution and 63.2M triangles (126M after instancing). This 2400×600 image is rendered on a workstation with four Intel Xeon E7-8890 v3 CPUs (72 cores, 2.5 GHz) at a framerate of 6.64 FPS. We show that our system has the capability of ray tracing TB-AMR data in combination with advanced shading effects like ambient occlusion and path tracing.",
@@ -46,7 +48,7 @@
 	{
 		"title": "A Comparison of Rendering Techniques for 3D Line Sets with Transparency",
 		"authors": "Michael Kern, Christoph Neuhauser, Torben Maack, Mengjiao Han,
-            Will Usher, Rüdiger Westermann",
+            Will Usher, and Rüdiger Westermann",
 		"venue": "IEEE Transactions on Visualization and Computer Graphics (To Appear)",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/tvcg20_oit/tvcg_oit_lines.pdf",
 		"teaser": "https://i.imgur.com/Sceg1iM.jpg",
@@ -586,7 +588,7 @@
 	},
 	{
 		"title": "CPU Volume Rendering of Adaptive Mesh Refinement Data",
-		"authors": "Ingo Wald, Carson Brownlee, Will Usher, Aaron Knoll",
+		"authors": "Ingo Wald, Carson Brownlee, Will Usher, and Aaron Knoll",
 		"venue": "SIGGRAPH Asia 2017 Symposium on Visualization",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/cvamr/cvamr.pdf",
 		"teaser": "https://i.imgur.com/CqZc3VJ.png",
@@ -634,7 +636,7 @@
 	},
 	{
 		"title": "Progressive CPU Volume Rendering with Sample Accumulation",
-		"authors": "Will Usher, Jefferson Amstutz, Carson Brownlee, Aaron Knoll, Ingo Wald",
+		"authors": "Will Usher, Jefferson Amstutz, Carson Brownlee, Aaron Knoll, and Ingo Wald",
 		"venue": "Eurographics Symposium on Parallel Graphics and Visualization",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/savr/savr.pdf",
 		"teaser": "https://i.imgur.com/15y1f8I.png",
@@ -670,7 +672,7 @@
 	},
 	{
 		"title": "In Situ Exploration of Particle Simulations with CPU Ray Tracing",
-		"authors": "Will Usher, Ingo Wald, Aaron Knoll, Michael Papka, Valerio Pascucci",
+		"authors": "Will Usher, Ingo Wald, Aaron Knoll, Michael E. Papka, and Valerio Pascucci",
 		"venue": "Supercomputing Frontiers and Innovations",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/in_situ_particles/in_situ_particles.pdf",
 		"teaser": "https://i.imgur.com/DO3JqOb.png",
@@ -680,7 +682,7 @@
 		"year": 2016,
 		"exact_date": "2016-10-01 00:00:00 -0600",
 		"bibtex": "@article{Usher_InSituParticles_2016,\n
-			author={Will Usher and Ingo Wald and Aaron Knoll and Michael Papka and Valerio Pascucci},\n
+			author={Will Usher and Ingo Wald and Aaron Knoll and Michael E. Papka and Valerio Pascucci},\n
 			title={In {Situ} {Exploration} of {Particle} {Simulations} with {CPU} {Ray} {Tracing}},\n
 			journal={{Supercomputing} {Frontiers} and {Innovations}},\n
 			volume={3},\n
@@ -707,7 +709,7 @@
 		"title": "VTK-m: Accelerating the Visualization Toolkit for Massively Threaded Architectures",
 		"authors": "Kenneth Moreland, Christopher Sewell, William Usher, Li-ta Lo, Jeremy Meredith,
 				David Pugmire, James Kress, Hendrik Schroots, Kwan-Liu Ma, Hank Childs, Matthew Larsen,
-				Chun-Ming Chen, Robert Maynard, Berk Geveci",
+				Chun-Ming Chen, Robert Maynard, and Berk Geveci",
 		"venue": "IEEE Computer Graphics and Applications",
 		"paper_pdf": "http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=7466740",
 		"thumb": "https://i.imgur.com/VEcRSDW.jpg",
@@ -736,7 +738,7 @@
 	},
 	{
 		"title": "CPU Ray Tracing Large Particle Data with Balanced P-k-d Trees",
-		"authors": "Ingo Wald, Aaron Knoll, Gregory P. Johnson, Will Usher, Valerio Pasucci, Michael E. Papka",
+		"authors": "Ingo Wald, Aaron Knoll, Gregory P. Johnson, Will Usher, Valerio Pasucci, and Michael E. Papka",
 		"venue": "IEEE Vis (conference)",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/pkd/pkd_tree.pdf",
 		"doi": "10.1109/SciVis.2015.7429492",

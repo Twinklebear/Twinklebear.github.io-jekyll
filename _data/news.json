@@ -1,5 +1,10 @@
 [	
     {
+		"date": "2020-05-26",
+		"text": "Feng's EuroVis 2020 presentation on our [Tree-Based Adaptive Mesh Refinement rendering paper](publications/tamr)
+        is now online."
+	},
+    {
 		"date": "2020-04-05",
 		"text": "The pre-print of our paper at EuroVis 2020 is now available online
         [here](publications/tamr)."
