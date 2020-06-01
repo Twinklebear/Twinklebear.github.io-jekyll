@@ -73,7 +73,7 @@ and just use the primary ray group for the hit group, since we know it will neve
 
 For example, in DXR/HLSL this would look like:
 
-```c
+{% highlight c %}
 struct ShadowPayload {
     int hit;
 };
@@ -98,7 +98,8 @@ void ShadowMiss(inout ShadowHitInfo shadow_hit : SV_RayPayload) {
     shadow_hit.hit = 0;
 }
 
-```
+{% endhighlight %}
+
 ### Benchmarks
 
 <div class="col-12 row">
