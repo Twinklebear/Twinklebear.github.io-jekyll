@@ -10,14 +10,37 @@ published: true
 
 {% assign figurecount = 0 %}
 
-**What's webgpu, what we're gonna do here**
-
-<!--more-->
-
-# Why WebGPU?
+WebGPU is a modern graphics API for the web browser in development by the
+major browser vendors. When compared to WebGL, WebGPU provides more direct
+control over the GPU, allowing programs to leverage the hardware
+more efficiently in a manner similar to Vulkan and DirectX 12.
+WebGPU also exposes more advanced GPU capabilities, such as compute
+shaders and storage buffers, enabling powerful GPU compute applications
+to run on the web.
+In this series, we'll learn the key aspects of WebGPU from the ground up,
+with the goal of going from zero to a basic glTF model renderer.
+This post marks our initial step on this journey, where we'll setup
+a WebGPU context and get a basic triangle on the screen.
 
 **What's cool about it, why do we want it? What's different vs. WebGL2
 and native APIs?**
+
+- Faster rendering, easier to use b/c less state machine issues like GL
+- Access to modern GPU features like SSBOs and compute, texture storage as well
+- In my opinion, webgpu sits at an ideal level of abstraction for modern graphics.
+  Not so low as to be difficult or tedious to work with directly (Vulkan), but not
+  so high level as to lose performance or capabilities.
+
+<!--more-->
+
+# Rendering with WebGPU
+
+Other links to mention:
+
+- The spec https://gpuweb.github.io/gpuweb/
+- Alain's Raw WebGPU (typescript) https://alain.xyz/blog/raw-webgpu
+- https://github.com/mikbry/awesome-webgpu
+- https://hacks.mozilla.org/2020/04/experimental-webgpu-in-firefox/
 
 <figure>
 	<img class="img-fluid"
