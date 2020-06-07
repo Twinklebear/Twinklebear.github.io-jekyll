@@ -1,5 +1,5 @@
 .highlight .hll { background-color: #ffffcc }
-.highlight  { background: #1B1D1E; color: #F8F8F2; background-color: #1B1D1E }
+.highlight  { background: #1B1D1E; color: #F8F8F2; background-color: #1B1D1E; border-radius: 0.25rem; }
 .highlight .c { color: #7E8E91; background-color: #1B1D1E } /* Comment */
 .highlight .err { color: #F8F8F2; background-color: #1B1D1E } /* Error */
 .highlight .esc { color: #F8F8F2; background-color: #1B1D1E } /* Escape */
