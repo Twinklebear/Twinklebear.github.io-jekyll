@@ -9,7 +9,7 @@
     var adapter = await navigator.gpu.requestAdapter();
     var device = await adapter.requestDevice();
 
-    // Get a canvas to display our rendered image to
+    // Get a context to display our rendered image on the canvas
     var canvas = document.getElementById("webgpu-canvas");
     var context = canvas.getContext("gpupresent");
 
