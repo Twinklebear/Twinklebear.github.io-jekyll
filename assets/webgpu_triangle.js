@@ -178,20 +178,6 @@
         usage: GPUTextureUsage.OUTPUT_ATTACHMENT
     });
 
-    var renderPassDesc = {
-        colorAttachments: [{
-            attachment: undefined,
-            loadValue: [0.3, 0.3, 0.3, 1]
-        }],
-        depthStencilAttachment: {
-            attachment: depthTexture.createView(),
-            depthLoadValue: 1.0,
-            depthStoreOp: "store",
-            stencilLoadValue: 0,
-            stencilStoreOp: "store"
-        }
-    };
-
     // Create render pipeline
     var layout = device.createPipelineLayout({bindGroupLayouts: []});
 
@@ -210,6 +196,20 @@
             depthCompare: "less"
         }
     });
+
+    var renderPassDesc = {
+        colorAttachments: [{
+            attachment: undefined,
+            loadValue: [0.3, 0.3, 0.3, 1]
+        }],
+        depthStencilAttachment: {
+            attachment: depthTexture.createView(),
+            depthLoadValue: 1.0,
+            depthStoreOp: "store",
+            stencilLoadValue: 0,
+            stencilStoreOp: "store"
+        }
+    };
 
     var frame = function() {
         renderPassDesc.colorAttachments[0].attachment = swapChain.getCurrentTexture().createView();
