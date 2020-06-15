@@ -12,11 +12,13 @@ published: true
 
 WebGPU is a modern graphics API for the web, in development by the
 major browser vendors. When compared to WebGL, WebGPU provides more direct
-control over the GPU to allow programs to leverage the hardware
+control over the GPU to allow applications to leverage the hardware
 more efficiently, similar to Vulkan and DirectX 12.
 WebGPU also exposes additional GPU capabilities not available in WebGL, such as compute
 shaders and storage buffers, enabling powerful GPU compute applications
-to run on the web.
+to run on the web. As with the switch from OpenGL to Vulkan, WebGPU
+exposes more complexity to the user than WebGL, though the API strikes
+a good balance between complexity and usability, and overall is quite nice to work with.
 In this series, we'll learn the key aspects of WebGPU from the ground up,
 with the goal of going from zero to a basic glTF model renderer.
 This post marks our initial step on this journey, where we'll setup
@@ -26,13 +28,15 @@ a WebGPU context and get a triangle on the screen.
 
 # Getting a WebGPU Context
 
-The first step to working is to setup a browser
-with WebGPU enabled. Chrome, Firefox, and Safari's implementations
+The first step to working with WebGPU is to setup a browser
+with it enabled. Chrome, Firefox, and Safari's implementations
 are [still in progress](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status),
 and as such we need to use the corresponding nightly
-browsers provided by the vendors. At the time of writing, I've found that Chrome Canary
+browsers provided by the vendors. At the time of writing, I've found that
+[Chrome Canary](https://www.google.com/chrome/canary/)
 has the most complete implementation, and recommend using it for
-development at the moment. You'll also need to enable the WebGPU feature
+development.
+You'll also need to enable the WebGPU feature
 in the nightly browser, following the [guides here](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status).
 Since browser support is still in progress, you'll want to disable
 WebGPU during regular web browsing.
@@ -40,10 +44,16 @@ You can check if you've got WebGPU enabled by jumping to the bottom of this
 post, where you should see the triangle we're going to be rendering. If
 WebGPU isn't enabled, you'll see an error message instead.
 
-The initial setup of our WebGPU rendering context is similar to WebGL2.
-Our webpage will have a canvas, which will display our rendered image,j
-along with any other HTML we need for our UI, etc. The page will also load
-our rendering code in `render.js`.
+The triangle renderer we'll implement in this post will work
+in both Chrome Canary and Firefox Nightly; however, the WebGPU
+implementation in Safari Technology Preview looks to possibly be on an older
+version of the spec, and has some differences in default parameters
+and the vertex buffer specificiation APIs. Thus, the code we discuss here
+will not work in Safari for now, but can be made to work with some smaller tweaks.
+
+The initial setup of our WebGPU rendering context is similar to WebGL.
+Our webpage will have a canvas to display our rendered image,
+and load our rendering code from `render.js`.
 
 {% highlight html %}
 <!DOCTYPE html>
@@ -70,12 +80,12 @@ from the adapter, which gives us a context to work with the hardware.
 The `GPUDevice` provides APIs to create GPU objects such as buffers and textures, and
 execute commands on the device. The distinction between the `GPUAdapter`
 and `GPUDevice` is similar to that of `VkPhysicalDevice` and `VkDevice` in Vulkan.
-As with WebGL2, we need a context for the canvas which will
+As with WebGL, we need a context for the canvas which will
 be used to display our rendered image. To use WebGPU with the
-canvas, we request a `gpupresent` context.
+canvas, we request a `gpupresent` context (Safari calls it a `gpu` context).
 After this setup, we can load our shaders and vertex
 data, configure our render targets, and build our render pipeline, to draw
-our triangle to the canvas.
+our triangle!
 
 {% highlight js %}
 (async () => {
@@ -112,8 +122,8 @@ our triangle to the canvas.
 # The WebGPU Rendering Pipeline
 
 The WebGPU rendering pipeline consists of two programmable stages: the
-vertex and fragment stage, similar to WebGL2.
-WebGPU also adds a separate compute shader stage, which exists outside
+vertex shader and the fragment shader, similar to WebGL.
+WebGPU also adds support for compute shaders, which exist outside
 the rendering pipeline.
 
 <figure>
@@ -124,19 +134,24 @@ the rendering pipeline.
 	<i>The rendering pipeline in WebGPU consists of two programmable shader stages:
 	the vertex shader, responsible for transforming input
 	vertices into clip space, and the fragment shader, responsible
-	for the shading pixels covered by each triangle.
+	for shading the pixels covered by each triangle.
 	</i></figcaption>
 </figure>
 
 To render our triangle, we'll need to configure such a pipeline,
 specifying our shaders, vertex attribute configuration, etc.
-A number of the different aspects of the pipeline (e.g., the shaders,
-vertex state, render outputs, etc.) are fixed, allowing the GPU
-to better optimize rendering for the pipeline.
+In WebGPU, this pipeline takes the form of a concrete object, the
+[`GPURenderPipeline`](https://gpuweb.github.io/gpuweb/#gpurenderpipeline),
+which specifies the different pieces of the pipeline.
+The configuration of the components of this pipeline (e.g., the shaders,
+vertex state, render output state, etc.) are fixed, allowing the GPU
+to better optimize rendering for the pipeline. The buffers
+or textures bound to the corresponding inputs or outputs can be changed;
+however, the number of inputs and outputs, and their types, etc. cannot be changed.
 This is in contrast to WebGL, where the pipeline state for a draw
 is implicitly specified through modifying a global state machine,
 and the shaders, vertex state, etc., can be swapped out at any time
-between draw calls, making such optimizations difficult.
+between draw calls, making it challenging to optimize the pipeline.
 
 ## Shader Modules
 
@@ -146,8 +161,8 @@ which will be executed in the pipeline.
 WebGPU takes shaders in the form of SPV bytecode, which can either
 be compiled from GLSL in the browser by shipping a GLSL compiler with
 your application, or compiled to SPV bytecode ahead of time and fetched
-or embedded in the application code.
-We'll take the embedded SPV route, and use the `glslc` compiler
+from the server or embedded in the application code.
+We'll take the embedded route, and use the `glslc` compiler
 provided with the Vulkan SDK to compile our GLSL shaders to SPV.
 
 The GLSL shaders for rendering our triangle are shown below.
@@ -161,7 +176,7 @@ it out to the first render target.
 #version 450 core
 
 // Inputs: position and color
-layout(location = 0) in vec3 pos;
+layout(location = 0) in vec4 pos;
 layout(location = 1) in vec4 vcolor;
 
 // Outputs: color passed to fragment shader
@@ -169,7 +184,7 @@ layout(location = 0) out vec4 fcolor;
 
 void main(void) {
     fcolor = vcolor;
-    gl_Position = vec4(pos, 1);
+    gl_Position = pos;
 }
 {% endhighlight %}
 
@@ -190,10 +205,10 @@ void main(void) {
 
 To embed our SPV bytecode JavaScript, we'll use the same approach for
 embedding it in C or C++ programs. We compile the shaders
-to SPV using `glslc` and output it as a C array storing the bytecode (`-mfmt=c`).
+to SPV using `glslc` and output the bytecode as a C array (`-mfmt=c`).
 The compiler will output our shader as an array of uint32's
 which can be embedded into the program as an array variable.
-In JavaScript, we can embed this data as a `Uint32Array` variable.
+In JavaScript, we can embed this array as a `Uint32Array` variable.
 The shader compilation and output as an embedded `Uint32Array`
 is performed by the Python script below.
 First, the shader is compiled to SPV and output to `a.spv`,
@@ -234,7 +249,7 @@ print(compiled_shader)
 We can then paste the embedded SPV arrays into our code
 and use them to create shader modules.
 A shader module is created by calling `createShaderModule` on
-our `GPUDevice`. Create shader module takes an object containing
+our `GPUDevice`. The method takes an object containing
 the parameters, and expects that the `code` member of the object
 refers to our desired SPV bytecode.
 Each shader module will be used in the pipeline as part of a
@@ -265,7 +280,7 @@ var fragmentStage =  {
 Although embedding the shader bytecode is convenient,
 if many variants of the shader need to be compiled and embedded (e.g., to handle different
 model properties or material configurations), embedding them all can significantly
-increase your application size. In this case, it would be better to store the
+increase your application download size. In this case, it would be better to store the
 different compiled variants separately on the server and fetch
 them as needed using additional web requests.
 
@@ -274,14 +289,14 @@ them as needed using additional web requests.
 Next, we'll specify the vertex data for our triangle.
 We'll specify both the vertex positions and colors in a single
 buffer, with the positions and colors interleaved with each other.
-Each position and color will be stored as a `vec4`.
+Each position and color will be stored as a `float4`.
 First, we allocate and map a buffer on the device with enough
 room to store the vertex data, using `createBufferMapped`.
 This method takes the size (in bytes) of the buffer we want
 to create and a set of flags or'd together specifying the
 desired [usage modes](https://gpuweb.github.io/gpuweb/#buffer-usage) of the buffer.
 
-`createBufferMapped` returns both the `GPUBuffer` and an `ArrayBuffer` which
+`createBufferMapped` returns the `GPUBuffer` and an `ArrayBuffer` which
 we can use to upload data into the buffer.
 To write our vertex data we create a `Float32Array` view of the array buffer
 and set the data through this view.
@@ -289,23 +304,25 @@ Finally, we have to unmap the buffer before using it later in rendering.
 
 {% highlight js %}
 // Specify vertex data
+// Allocate room for the vertex data: 3 vertices, each with 2 float4's
 var [dataBuf, dataBufMapping] = device.createBufferMapped({
     size: 3 * 2 * 4 * 4,
     usage: GPUBufferUsage.VERTEX
 });
+
 // Interleaved positions and colors
 new Float32Array(dataBufMapping).set([
-    1, -1, 0, 1,
-    1, 0, 0, 1,
-    -1, -1, 0, 1,
-    0, 1, 0, 1,
-    0, 1, 0, 1,
-    0, 0, 1, 1,
+    1, -1, 0, 1,  // position
+    1, 0, 0, 1,   // color
+    -1, -1, 0, 1, // position
+    0, 1, 0, 1,   // color
+    0, 1, 0, 1,   // position
+    0, 0, 1, 1,   // color
 ]);
 dataBuf.unmap();
 {% endhighlight %}
 
-In the pipeline, we'll set an array of
+In the rendering pipeline, we'll specify an array of
 [`GPUVertexBufferLayoutDescriptor`](https://gpuweb.github.io/gpuweb/#dictdef-gpuvertexbufferlayoutdescriptor)
 objects, describing the input buffers containing vertex data and the
 attributes within them. The attributes are described with an
@@ -315,20 +332,20 @@ This array is passed as the `vertexBuffers`
 member of the [`GPUVertexStateDescriptor`](https://gpuweb.github.io/gpuweb/#dictdef-gpuvertexstatedescriptor)
 object.
 In this example, we have a single buffer containing the interleaved
-attributes of each vertex. Thus, the stride between elements is 32 bytes (2 `vec4`),
+attributes of each vertex. Thus, the stride between elements is 32 bytes (2 `float4`),
 and the buffer specifies two `float4` attributes.
 The first attribute is the position, and is sent to shader input location 0.
 The second is the color, and is sent to shader input location 1.
 
 WebGPU's model for specifying vertex buffers and attributes follows that of D3D12 and Vulkan,
-where vertex buffers are bound to input slots and provide some set of vertex attributes.
+where vertex buffers are bound to input slots and provide some set of vertex attributes,
+illustrated below.
 From a D3D12 view, the `vertexBuffers` member maps to the array of [`D3D12_INPUT_ELEMENT_DESC`](https://docs.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_input_element_desc)
 structures passed through the [`D3D12_INPUT_LAYOUT_DESC`](https://docs.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_input_layout_desc)
 when creating a graphics pipeline.
 From a Vulkan view, the `vertexBuffers` member maps directly to the
 [`VkPipelineVertexInputStateCreateInfo`](https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPipelineVertexInputStateCreateInfo.html)
-structure passed when creating a graphics pipeline. This model
-is illustrated in the figure below.
+structure passed when creating a graphics pipeline.
 
 <figure>
 	<img class="img-fluid"
@@ -337,13 +354,13 @@ is illustrated in the figure below.
 	<figcaption><b>Figure {{figurecount}}:</b>
 	<i>Providing vertex attributes for our triangle to the input assembler through buffers.
     Our attributes are read from the buffer bound to input slot 0 and passed to the
-    specified shader input locations. The stride between elements in the buffer and
-    offsets to the different attribute data are specified below as well.
+    specified shader input locations, using the strides and offsets specified for
+    the input slot and attributes.
 	</i></figcaption>
 </figure>
 
 {% highlight js %}
-// Specify vertex buffer inputs and attributes provided by those buffers
+// Specify vertex buffer input slots and the attributes provided by those buffers
 var vertexState = {
     vertexBuffers: [
         {
@@ -369,7 +386,7 @@ var vertexState = {
 
 Next we'll create a swap chain and specify where the results output from our fragment
 shader should be written.
-To display the images on our canvas, we need a swap chain associated with the context.
+To display the images on our canvas, we need a swap chain associated with its context.
 The swap chain will let us rotate through the images being displayed on the canvas,
 rendering to a buffer which is not visible while another is shown (i.e., double-buffering).
 We create a swap chain by specifying the desired image format and texture usage.
@@ -410,24 +427,24 @@ var depthTexture = device.createTexture({
 
 ## Creating the Rendering Pipeline
 
-Finally, we can create the rendering pipeline which combines our
-shaders, vertex attributes and output configuration that we can
+Finally, we can create the rendering pipeline that combines our
+shaders, vertex attributes, and output configuration, which we can
 use to render our triangle. The rendering pipeline description is
 passed through a [`GPURenderPipelineDescriptor`](https://gpuweb.github.io/gpuweb/#dictdef-gpurenderpipelinedescriptor)
 object, passed to `createRenderPipeline`.
 The final pieces required to create the rendering pipeline are
-the pipeline layout, specifying the bind groups layouts used by the pipeline;
+the pipeline layout, which specifies the bind group layouts used by the pipeline;
 and the color and depth states, specifying the configuration used
 to write the shader outputs.
-We don't make use of bind groups in this example, so we can make a
+We won't need bind groups in this example, so we can make a
 pipeline layout which specifies that no bind groups will be used.
 
 The color states behave similar to the input assembler's input slots.
 We specify an array of [`GPUColorStateDescriptor`](https://gpuweb.github.io/gpuweb/#dictdef-gpucolorstatedescriptor),
-which describe the set of output slots and which texture format will
-be bound to them. During rendering, we bind textures to these slot
-to write the shader outputs to. Our fragment shader has a single output slot
-to write the color data, which we'll write directly to the swap chain
+which describe the set of output slots and texture format that will
+be bound to them. During rendering, we attach textures to these slots
+to write shader outputs to them. Our fragment shader has a single output slot
+for the color data, which we'll write directly to the swap chain
 image. Thus, we specify a single color state for an image with the swap
 chain format. We'll also use our depth buffer, and specify the depth state
 describing how the depth buffer should be used.
@@ -482,24 +499,25 @@ var renderPassDesc = {
 
 All that's left to do is write our rendering loop, and pass it to `requestAnimationFrame`
 to call it each frame to update the image.
-Commands are enqueued through a [`GPUCommandEncoder`](https://gpuweb.github.io/gpuweb/#command-encoder),
-which can be used to prerecord and buffer command buffers which can
-be submitted multiple times to the GPU.
-As we'll be changing the render pass color attachment each frame, we don't
-prerecord our render loop here.
-Each frame, we get the latest swap chain image which we should write rendering outputs
+To record and submit GPU commands, we use a [`GPUCommandEncoder`](https://gpuweb.github.io/gpuweb/#command-encoder).
+The command encoder can be used to prerecord and command buffers that can
+be submitted multiple times to the GPU, or rerecord and submit each frame.
+As we'll be changing the render pass color attachment each frame, we'll be
+rerecording and submitting the command buffer each frame.
+
+For each frame, we get the latest swap chain image which we should write rendering outputs
 to and set this as our output color attachment image.
-To render our frame, we create a command encoder to record our rendering commands.
-We can then begin a render pass by passing our render pass descriptor
-to get a [`GPURenderPassEncoder`](https://gpuweb.github.io/gpuweb/#gpurenderpassencoder),
+We then create a command encoder to record our rendering commands.
+We begin the render pass by calling `beginRenderPass` and passing our render pass descriptor
+to get back a [`GPURenderPassEncoder`](https://gpuweb.github.io/gpuweb/#gpurenderpassencoder),
 that will allow us to record rendering commands.
 We can then set the render pipeline to use, bind our vertex buffers to the
 corresponding input slots, draw the triangle, and end the render pass.
 To get a command buffer which can be submitted to the GPU for execution
 we call `finish` on the command encoder. The returned command buffer
-is passed to the device for execution. After the command buffer is run
+is then passed to the device for execution. After the command buffer is run
 our triangle will be written to the swap chain image and displayed on the
-canvas!
+canvas as shown below!
 
 {% highlight js %}
 // Render!
@@ -546,7 +564,7 @@ With our first triangle on screen, we're well on our way to getting a basic
 glTF model viewer together. In the next post, we'll look at how
 to pass additional data to our shaders (e.g., uniform buffers), using
 bind groups. If you run into issues getting the example to work,
-[check out the code](/assets/webgpu_triangle.js) for rendering the triangle shown above,
+[check out the code](/assets/webgpu_triangle.js) for rendering the triangle in Figure 3,
 or get in touch via [Twitter](https://twitter.com/_wusher) or email.
 
 Although WebGPU is in its early stages, here are a few useful resources
