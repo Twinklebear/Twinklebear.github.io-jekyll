@@ -9,7 +9,7 @@ tags: ["SDL2"]
 
 In this lesson we'll learn the basics of reading user input with SDL, in this simple example we'll interpret any input
 as the user wanting to quit our application.
-To read events SDL provides the [`SDL_Event`](http://wiki.libsdl.org/SDL_Event) structure
+To read events SDL provides the [`SDL_Event`](http://wiki.libsdl.org/SDL_Event) union
 and functions to get events from the queue such as [`SDL_PollEvent`](http://wiki.libsdl.org/SDL_PollEvent).
 The code for this lesson is built off of the lesson 3 code, if you need that code to start from grab it on [Github](https://github.com/Twinklebear/TwinklebearDev-Lessons/tree/master/Lesson3) and let's get started!
 
