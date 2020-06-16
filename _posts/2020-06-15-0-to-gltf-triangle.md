@@ -556,7 +556,7 @@ requestAnimationFrame(frame);
         </i></figcaption>
     </div>
 </div>
-<script src="/assets/webgpu_triangle.js"></script>
+<script src="/assets/webgpu/triangle.js"></script>
 
 ## Wrapping Up
 
@@ -564,7 +564,7 @@ With our first triangle on screen, we're well on our way to getting a basic
 glTF model viewer together. In the next post, we'll look at how
 to pass additional data to our shaders (e.g., uniform buffers), using
 bind groups. If you run into issues getting the example to work,
-[check out the code](/assets/webgpu_triangle.js) for rendering the triangle in Figure 3,
+[check out the code](/assets/webgpu/triangle.js) for rendering the triangle in Figure 3,
 or get in touch via [Twitter](https://twitter.com/_wusher) or email.
 
 Although WebGPU is in its early stages, here are a few useful resources
