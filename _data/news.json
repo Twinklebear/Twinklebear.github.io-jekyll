@@ -1,5 +1,11 @@
 [	
     {
+		"date": "2020-07-15",
+		"text": "Nate presented our paper *Using Hardware Ray Transforms to
+        Accelerate Ray/Primitive Intersections for Long, Thin Primitive Types* at HPG 2020,
+        the talk recording is available on [Youtube](https://www.youtube.com/watch?v=tYP9pWT51MA)"
+	},
+    {
 		"date": "2020-07-05",
 		"text": "The preprint of our HPG 2020 paper *Using Hardware Ray Transforms to
         Accelerate Ray/Primitive Intersections for Long, Thin Primitive Types* is now [online](publications/owltubes)!"

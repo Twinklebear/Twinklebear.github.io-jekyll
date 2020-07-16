@@ -2,14 +2,14 @@
     {
 		"title": "Using Hardware Ray Transforms to Accelerate Ray/Primitive Intersections for Long, Thin Primitive Types",
 		"authors": "Ingo Wald, Nate Morrical, Stefan Zellmann, Lei Ma, Will Usher, Tiejun Huang, Valerio Pascucci",
-		"venue": "Proceedings of the ACM on Computer Graphics and Interactive Techniques (Proceedings of High Performance Graphics),
-        To Appear",
+		"venue": "Proceedings of the ACM on Computer Graphics and Interactive Techniques (Proceedings of High Performance Graphics)",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/owl-tubes-hpg20.pdf",
 		"teaser": "https://i.imgur.com/trtSPND.jpg",
 		"thumb": "https://i.imgur.com/PqZhtFN.jpg",
 		"year": 2020,
 		"exact_date": "2020-07-05 00:00:00 -0600",
 		"short_title": "owltubes",
+		"presentation_video": "https://www.youtube.com/embed/tYP9pWT51MA",
         "selected": true,
 		"bibtex": "@article{wald_owltubes_20,\n
 			journal = {Proceedings of the ACM on Computer Graphics and Interactive Techniques (Proceedings of High Performance Graphics)},\n
