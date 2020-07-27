@@ -14,7 +14,7 @@
 		"bibtex": "@article{wald_owltubes_20,\n
 			journal = {Proceedings of the ACM on Computer Graphics and Interactive Techniques (Proceedings of High Performance Graphics)},\n
 			title = {{Using Hardware Ray Transforms to Accelerate Ray/Primitive Intersections for Long, Thin Primitive Types}},\n
-			author = {Wald, Ingo and Morrical, Nate and Zellmann, Stefan and Ma, Lei and Usher, Will and Huang, Tiejun and Pascucci, Valerio}\n
+			author = {Wald, Ingo and Morrical, Nate and Zellmann, Stefan and Ma, Lei and Usher, Will and Huang, Tiejun and Pascucci, Valerio},\n
 			year = {2020},\n}",
         "abstract": "With the recent addition of hardware ray tracing capabilities, GPUs have become incredibly efficient
             at ray tracing both triangular geometry, and instances thereof. However, the bounding volume hierarchies
