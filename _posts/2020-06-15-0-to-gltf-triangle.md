@@ -246,6 +246,14 @@ os.remove("a.spv")
 print(compiled_shader)
 {% endhighlight %}
 
+To compile a shader you can run the script and pass the glslc compiler, your shader,
+and the variable name to use for the array. The compiled shader bytecode array will
+be printed to the console.
+
+{% highlight bash %}
+python3 ./compile_shader.py glslc.exe ./triangle.vert triangle_vert_spv
+{% endhighlight %}
+
 We can then paste the embedded SPV arrays into our code
 and use them to create shader modules.
 A shader module is created by calling `createShaderModule` on
