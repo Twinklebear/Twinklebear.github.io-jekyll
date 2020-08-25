@@ -262,11 +262,12 @@ var frame = function() {
 
     // Compute and upload the combined projection and view matrix
     projView = mat4.mul(projView, projection, camera.camera);
-    var [upload, mapping] = device.createBufferMapped({
+    var upload = device.createBuffer({
         size: 16 * 4,
-        usage: GPUBufferUsage.COPY_SRC
+        usage: GPUBufferUsage.COPY_SRC,
+        mappedAtCreation: true
     });
-    new Float32Array(mapping).set(projView);
+    new Float32Array(upload.getMappedRange()).set(projView);
     upload.unmap();
 
     var commandEncoder = device.createCommandEncoder();
@@ -317,4 +318,9 @@ first real triangle mesh.
 If you run into issues getting the example to work,
 [check out the code](/assets/webgpu/triangle_bind_groups.js) for rendering the triangle in Figure 3,
 or get in touch via [Twitter](https://twitter.com/_wusher) or email.
+
+## Update 8/24
+
+Updated from `device.createBufferMapped` to `device.createBuffer` with the `mappedAtCreation` parameter set.
+See the [corresponding Dawn PSA about these changes in Chrome and WebGPU](https://hackmd.io/szV68rOVQ56GYzPJMBko8A#PSA-for-Chromium--Dawn-WebGPU-API-updates-2020-07-28).
 

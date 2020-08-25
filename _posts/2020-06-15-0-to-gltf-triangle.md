@@ -299,12 +299,13 @@ We'll specify both the vertex positions and colors in a single
 buffer, with the positions and colors interleaved with each other.
 Each position and color will be stored as a `float4`.
 First, we allocate and map a buffer on the device with enough
-room to store the vertex data, using `createBufferMapped`.
+room to store the vertex data, using `createBuffer`.
 This method takes the size (in bytes) of the buffer we want
 to create and a set of flags or'd together specifying the
 desired [usage modes](https://gpuweb.github.io/gpuweb/#buffer-usage) of the buffer.
+We specify the buffer should be mapped when it's created by setting the `mappedAtCreation` parameter.
 
-`createBufferMapped` returns the `GPUBuffer` and an `ArrayBuffer` which
+`createBuffer` returns the `GPUBuffer` and an `ArrayBuffer` which
 we can use to upload data into the buffer.
 To write our vertex data we create a `Float32Array` view of the array buffer
 and set the data through this view.
@@ -313,13 +314,14 @@ Finally, we have to unmap the buffer before using it later in rendering.
 {% highlight js %}
 // Specify vertex data
 // Allocate room for the vertex data: 3 vertices, each with 2 float4's
-var [dataBuf, dataBufMapping] = device.createBufferMapped({
+var dataBuf = device.createBuffer({
     size: 3 * 2 * 4 * 4,
-    usage: GPUBufferUsage.VERTEX
+    usage: GPUBufferUsage.VERTEX,
+    mappedAtCreation: true
 });
 
 // Interleaved positions and colors
-new Float32Array(dataBufMapping).set([
+new Float32Array(dataBuf.getMappedRange()).set([
     1, -1, 0, 1,  // position
     1, 0, 0, 1,   // color
     -1, -1, 0, 1, // position
@@ -584,4 +586,9 @@ which are also worth checking out:
 - Austin's [WebGPU Samples](https://github.com/austinEng/webgpu-samples)
 - The [Safari WebGPU Demos](https://webkit.org/demos/webgpu/)
 - [The WebGPU Specification](https://gpuweb.github.io/gpuweb/)
+
+## Update 8/24
+
+Updated from `device.createBufferMapped` to `device.createBuffer` with the `mappedAtCreation` parameter set.
+See the [corresponding Dawn PSA about these changes in Chrome and WebGPU](https://hackmd.io/szV68rOVQ56GYzPJMBko8A#PSA-for-Chromium--Dawn-WebGPU-API-updates-2020-07-28).
 
