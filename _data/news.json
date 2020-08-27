@@ -1,5 +1,10 @@
 [	
     {
+		"date": "2020-08-27",
+		"text": "The prepring of our LDAV paper *Interactive Visualization of Terascale Data in the Browser: Fact or Fiction?*
+        is [now available](publications/teraweb)!"
+	},
+    {
 		"date": "2020-07-15",
 		"text": "Nate presented our paper *Using Hardware Ray Transforms to
         Accelerate Ray/Primitive Intersections for Long, Thin Primitive Types* at HPG 2020,
