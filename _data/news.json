@@ -5,6 +5,11 @@
         is [now available](publications/exabrick)!"
 	},
     {
+		"date": "2020-09-04",
+		"text": "The preprint of our VIS short paper *A Virtual Frame Buffer Abstraction for Parallel Rendering of Large Tiled Display Walls*
+        is [now available](publications/ospDisplayWall)!"
+	},
+    {
 		"date": "2020-09-03",
 		"text": "The preprint of our VIS paper *Improving the Usability of Virtual Reality Neuron Tracing with Topological Elements*
         is [now available](publications/mscvrnt)!"
