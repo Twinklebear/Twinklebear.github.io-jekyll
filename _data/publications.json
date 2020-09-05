@@ -173,7 +173,19 @@
             Right: The Boeing 777 model, consisting of 349M triangles, rendered remotely with
             OSPRay's scivis renderer using 64 Intel Xeon Phi Knight’s Landing nodes on
             Stampede2 and streamed to the POWERwall, averages 6-7 FPS",
-		"supplemental_video": "https://www.youtube.com/embed/tXgYoaf3NBU"
+		"supplemental_video": "https://www.youtube.com/embed/tXgYoaf3NBU",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "Display Wall 2",
+						"link": "https://github.com/MengjiaoH/display_wall",
+						"icon": "fab fa-github"
+					}
+				]
+			}
+		]
 	},
     {
 		"title": "Using Hardware Ray Transforms to Accelerate Ray/Primitive Intersections for Long, Thin Primitive Types",
