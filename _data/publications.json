@@ -148,7 +148,7 @@
 		"thumb": "https://i.imgur.com/AvS0RGC.jpg",
 		"year": 2020,
 		"exact_date": "2020-10-27 00:00:00 -0600",
-		"short_title": "ospDisplayWall",
+		"short_title": "ospdisplaywall",
         "selected": false,
 		"bibtex": "@inproceedings{han_displaywall_2020,\n
 			author={Han, Mengjiao and Wald, Ingo and Usher, Will and Morrical, Nate and Knoll, Aaron
