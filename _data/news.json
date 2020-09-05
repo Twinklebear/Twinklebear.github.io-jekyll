@@ -1,12 +1,17 @@
-[	
+[ 	
+    {
+		"date": "2020-09-04",
+		"text": "The preprint of our VIS paper *Ray Tracing Structured AMR Data Using ExaBricks*
+        is [now available](publications/exabrick)!"
+	},
     {
 		"date": "2020-09-03",
-		"text": "The prepring of our VIS paper *Improving the Usability of Virtual Reality Neuron Tracing with Topological Elements*
+		"text": "The preprint of our VIS paper *Improving the Usability of Virtual Reality Neuron Tracing with Topological Elements*
         is [now available](publications/mscvrnt)!"
 	},
     {
 		"date": "2020-08-27",
-		"text": "The prepring of our LDAV paper *Interactive Visualization of Terascale Data in the Browser: Fact or Fiction?*
+		"text": "The preprint of our LDAV paper *Interactive Visualization of Terascale Data in the Browser: Fact or Fiction?*
         is [now available](publications/teraweb)!"
 	},
     {
