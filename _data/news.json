@@ -1,5 +1,10 @@
 [ 	
     {
+		"date": "2020-09-07",
+		"text": "The preprint of our VIS paper *Efficient and Flexible Hierarchical Data Layouts for a Unified Encoding of Scalar Field Precision and Resolution*
+        is [now available](publications/varprec-vis20)!"
+	},
+    {
 		"date": "2020-09-04",
 		"text": "The preprint of our VIS paper *Ray Tracing Structured AMR Data Using ExaBricks*
         is [now available](publications/exabrick)!"
