@@ -740,12 +740,7 @@
 				"list": [
 					{
 						"title": "libIS",
-						"link": "https://github.com/ospray/libIS",
-						"icon": "fab fa-github"
-					},
-					{
-						"title": "OSPRay-based Viewer Application",
-						"link": "https://github.com/ospray/ospray_senpai",
+						"link": "https://github.com/Twinklebear/libIS",
 						"icon": "fab fa-github"
 					},
 					{
