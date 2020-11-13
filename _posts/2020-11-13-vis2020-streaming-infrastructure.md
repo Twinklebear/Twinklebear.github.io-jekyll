@@ -853,7 +853,7 @@ During VIS, some attendees were surprised about the bidirectional nature of the
 chat synchronization. Synchronizing the chat platforms bidirectionally is required
 to provide a unified chat experience on either platform; however, some users
 were not comfortable with their messages on the more private/internal Discord
-channel conference being visible publicly on YouTube.
+channel being visible publicly on YouTube.
 
 To address this, I initially developed a quick hack that would let attendees prefix their message
 with the `-` character, thereby instructing the bot to not synchronize the message to YouTube.
