@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Hardware Accelerated Video Encoding on the Raspberry Pi 4"
+title: "Hardware Accelerated Video Encoding on the Raspberry Pi 4 on Ubuntu 20.04 64-bit"
 description: ""
 category: general
 tags: [python, raspberrypi]
@@ -21,7 +21,7 @@ that I put together to monitor the progress of the encoding tasks.
 
 <!--more-->
 
-# Setting up FFmpeg for Hardware Accelerated Encoding on Ubuntu 20.04 64-bit on the RPi4
+# Setting up FFmpeg
 
 Some initial searching about what encoder to pick in FFmpeg for hardware accelerated
 encoding on the Raspberry Pi pointed me to the `h264_omx` encoder. Unfortunately,
