@@ -39,7 +39,8 @@ Jagoda Walny, and Steve Petruzza on the web committee setting up the
 [virtual conference webpage](https://virtual.ieeevis.org/).
 The webpage was adapted from [mini-conf](https://github.com/Mini-Conf/Mini-Conf),
 originally written by Alexander Rush and Hendrik Strobelt.
-Alper promised a separate blog post about this, so I won't discuss it here.
+Alper [has written up a blog post about this](https://alper.datav.is/blog/2020/11/virtual-ieee-vis-website/),
+so I won't cover it here.
 Finally, during the event we had a rotation of about 24 student volunteers
 who were responsible for managing the streams and assisting presenters
 with technical issues, without whom the event would not have been possible.
@@ -1195,6 +1196,5 @@ be enormous and I'd probably never finish writing it. So feel free to get in tou
 if you have other questions that aren't answered here, in the documentation
 on [Github](https://github.com/superministream/virtual-conference) or the demo
 video about [SuperMiniStream](https://youtu.be/wDZnmMAWsbU).
-Also keep an eye out for Alper's write up about the virtual conference webpage, which I'll link
-to here when it's up.
+Also be sure to check out [Alper's write up about the virtual conference webpage](https://alper.datav.is/blog/2020/11/virtual-ieee-vis-website/)!
 
