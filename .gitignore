@@ -2,4 +2,5 @@ _site/
 *.swp
 *.vim
 _theme_packages/
+.jekyll-cache/
 
