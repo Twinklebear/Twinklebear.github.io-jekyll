@@ -6,9 +6,11 @@ title: News
 
 <div class="row mt-4 justify-content-center">
 	{% for news in site.data.news %}
-	<div class="col-8 mb-2 border-bottom border-secondary">
-		<h5>{{news.date | date: "%b %d, %Y" }}</h5>
+	<div class="col-8">
+		<h5>{{news.date | date: "%B %e, %Y" }}</h5>
 		{{news.text | markdownify}}
+        <div class="col-12 mx-auto mb-3 mt-2 border-bottom border-secondary">
+        </div>
 	</div>
 	{% endfor %}
 </div>

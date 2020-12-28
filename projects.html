@@ -6,7 +6,7 @@ title: Projects
 
 <div class="col-12 row pb-2 pt-2 mt-1 bg-light rounded">
 	<div class="col-12">
-		<h4>Table of Contents:</h4>
+		<h4>Project List:</h4>
 	</div>
 	<div class="col-12 row">
 		{% assign alphabetical = site.data.projects | sort: "title" %}
@@ -18,8 +18,7 @@ title: Projects
 	</div>
 </div>
 {% for prj in site.data.projects %}
-	<div class="col-12 row pb-4 mt-4 border-bottom border-secondary"
-	  id="{{prj.title}}">
+	<div class="col-12 row mt-4" id="{{prj.title}}">
 		<div class="col-12">
 			<h2><b>{{prj.title}}</b></h2>
 		</div>
@@ -135,6 +134,8 @@ title: Projects
 			<h1 class="bg-danger text-white">Invalid Layout!</h1>
 		</div>
 {% endif %}
+        <div class="col-10 mx-auto mt-4 border-bottom border-secondary">
+        </div>
 	</div>
 {% endfor %}
 

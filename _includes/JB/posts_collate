@@ -28,6 +28,8 @@ Usage:
 
     {% if forloop.first %}
       <h2>{{this_year}}</h2>
+		<div class="mb-2 mx-auto col-12 border-bottom border-secondary">
+		</div>
       <h4>{{this_month}}</h4>
       <ul>
     {% endif %}
@@ -40,6 +42,8 @@ Usage:
       {% if this_year != next_year %}
         </ul>
         <h2>{{next_year}}</h2>
+		<div class="mb-2 mx-auto col-12 border-bottom border-secondary">
+		</div>
         <h4>{{next_month}}</h4>
         <ul>
       {% else %}

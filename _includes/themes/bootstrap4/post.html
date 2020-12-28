@@ -2,11 +2,9 @@
 
 <div class="row justify-content-center">
 	<div class="col-9">
+        <p>{{ page.date | date: "%B %e, %Y" }}</p>
 		{{content}}
 		<hr>
-		<div class="col-12">
-			<p>Published: {{page.date | date_to_long_string}}</p>
-		</div>
 		<div class="col-12 row">
 			{% if page.previous %}
 			<div class="col-md-6 justify-content-left">
