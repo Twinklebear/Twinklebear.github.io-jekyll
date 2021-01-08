@@ -86,7 +86,7 @@ TraceRay(scene,
     | RAY_FLAG_SKIP_CLOSEST_HIT_SHADER,
     0xff,
     PRIMARY_RAY_TYPE, // Note: HG never called
-    NUM_RAY_TYPES,
+    1,                // No HG's so we set HG stride = 1
     OCCLUSION_RAY_TYPE,
     shadow_ray,
     shadow_hit);
