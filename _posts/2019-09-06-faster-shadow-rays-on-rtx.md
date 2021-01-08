@@ -74,12 +74,12 @@ and just use the primary ray group for the hit group, since we know it will neve
 For example, in DXR/HLSL this would look like:
 
 {% highlight c %}
-struct ShadowPayload {
+struct OcclusionHitInfo {
     int hit;
 };
 
 // Trace the shadow ray, assuming it is occluded
-shadow_hit.hit = 1;
+occlusion_hit.hit = 1;
 TraceRay(scene,
     RAY_FLAG_FORCE_OPAQUE
     | RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH
@@ -94,8 +94,8 @@ TraceRay(scene,
 // The shadow ray miss shader marks the ray as not occluded if
 // no hit was encountered
 [shader("miss")]
-void ShadowMiss(inout ShadowHitInfo shadow_hit : SV_RayPayload) {
-    shadow_hit.hit = 0;
+void ShadowMiss(inout OcclusionHitInfo occlusion : SV_RayPayload) {
+    occlusion.hit = 0;
 }
 
 {% endhighlight %}
