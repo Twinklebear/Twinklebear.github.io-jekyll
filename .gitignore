@@ -3,3 +3,4 @@ _site/
 *.vim
 _theme_packages/
 .jekyll-cache/
+_output/
