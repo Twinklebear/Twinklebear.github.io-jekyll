@@ -23,7 +23,7 @@ I recently learned a method for skipping all hit group shaders (any hit, closest
 and instead using just the miss shader to determine if the ray is *not* occluded.
 This was a bit non-obvious to me, though has been used by others
 (see [Chris Wyman's Intro to DXR](http://intro-to-dxr.cwyman.org/presentations/IntroDXR_ShaderTutorial.pdf)
-and [Sascha Willems's NV Ray Tracing Shadows Example](https://github.com/SaschaWillems/Vulkan/tree/master/data/shaders/nv_ray_tracing_shadows)).
+and [Sascha Willems's Ray Tracing Shadows Example](https://github.com/SaschaWillems/Vulkan/tree/master/data/shaders/glsl/raytracingshadows)
 After switching to this approach in [ChameleonRT](https://github.com/Twinklebear/ChameleonRT)
 I decided to run a small benchmark comparing some of the options for tracing shadow rays.
 I'll also discuss an extra trick we can use to simplify the shader binding table setup,
