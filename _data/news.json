@@ -1,5 +1,10 @@
 [ 	
     {
+		"date": "2020-02-01",
+		"text": "The preprint of our paper [IPDPS 2021](http://www.ipdps.org/) paper,
+        [*Adaptive Spatially Aware I/O for Multiresolution Particle Data Layouts*](/publications/aggtree-io), is now online!"
+	},
+    {
 		"date": "2020-12-10",
 		"text": "Our paper extending our work on RTX-accelerated point location,
         [*Accelerating Unstructured Mesh Point Location with RT Cores*](/publications/rtx-points-tvcg), has been accepted

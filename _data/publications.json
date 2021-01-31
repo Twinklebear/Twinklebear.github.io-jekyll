@@ -1,5 +1,71 @@
 [
     {
+		"title": "Adaptive Spatially Aware I/O for Multiresolution Particle Data Layouts",
+		"authors": "Will Usher, Xuan Huang, Steve Petruzza, Sidharth Kumar, Stuart R. Slattery,
+            Sam T. Reeve, Feng Wang, Chris R. Johnson, and Valerio Pascucci",
+		"venue": "IEEE International Parallel & Distributed Processing Symposium (IPDPS) (To Appear)",
+		"paper_pdf": "http://sci.utah.edu/~will/papers/aggtree-ipdps21.pdf",
+		"teaser": "/assets/img/ipdps-aggtree.svg",
+		"thumb": "https://i.imgur.com/nDURJI4.png",
+		"year": 2021,
+		"exact_date": "2021-05-17 00:00:00 -0600",
+		"short_title": "aggtree-io",
+        "selected": true,
+		"bibtex": "@inproceedings{usher_aggtree_2021,\n
+			booktitle = {35th IEEE International Parallel & Distributed Processing Symposium (IPDPS) (To Appear)},\n
+			title = {{Adaptive} {Spatially} {Aware} {I}/{O} for {Multiresolution} {Particle} {Data} {Layouts}},\n
+			author = {Usher, Will and Huang, Xuan and Petruzza, Steve and Kumar, Sidharth
+            and Slattery, Stuart R. and Reeve, Sam T. and Wang, Feng and Johnson, Chris. R.
+            and Pascucci, Valerio},\n
+			year = {2021},\n}",
+        "abstract": "Large-scale simulations on nonuniform particle distributions that evolve
+            over time are widely used in cosmology, molecular dynamics, and
+            engineering. Such data are often saved in an unstructured format that neither
+            preserves spatial locality nor provides metadata for accelerating spatial
+            or attribute subset queries, leading to poor performance of visualization
+            tasks. Furthermore, the parallel I/O strategy used typically writes a
+            file per process or a single shared file, neither of which is portable or
+            scalable across different HPC systems.  We present a portable technique for scalable,
+            spatially aware adaptive aggregation that preserves spatial locality in the
+            output. We evaluate our approach on two supercomputers, Stampede2 and Summit,
+            and demonstrate that it outperforms prior approaches at scale, achieving up to 2.5×
+            faster writes and reads for nonuniform distributions. Furthermore, the layout written
+            by our method is directly suitable for visual analytics, supporting low-latency reads
+            and attribute-based filtering with little overhead.",
+        "teaser_caption": "An overview of our adaptive two-phase I/O pipeline. (a) Given the number
+            of particles on each rank, rank 0 constructs the Aggregation Tree to
+            create leaves with similar numbers of particles. Each leaf
+            is assigned to a rank responsible for aggregating the data and writing it to disk.
+            (b) Each rank sends its data to its aggregator.
+            (c) Each aggregator constructs our multiresolution data layout and
+            writes it to disk. (d) The aggregators send the local value ranges and root node
+            bitmaps for each attribute to rank 0, which populates the Aggregation
+            Tree with the bitmaps and writes it out.",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "Adaptive Spatially Aware I/O Library",
+						"link": "https://github.com/Twinklebear/libbat",
+						"icon": "fab fa-github"
+					},
+					{
+						"title": "Benchmark scripts used to run the evaluation",
+						"link": "https://github.com/Twinklebear/libbat-benchmark-scripts",
+						"icon": "fab fa-github"
+					},
+					{
+						"title": "ExaMPM modified to use our I/O library",
+						"link": "https://github.com/Twinklebear/ExaMPM-libbat",
+						"icon": "fab fa-github"
+					}
+				]
+			}
+		]
+	},
+
+    {
 		"title": "Interactive Visualization of Terascale Data in the Browser: Fact or Fiction?",
 		"authors": "Will Usher and Valerio Pascucci",
 		"venue": "IEEE Symposium on Large Data Analysis and Visualization (LDAV)",
