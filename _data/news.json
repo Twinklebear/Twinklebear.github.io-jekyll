@@ -1,5 +1,9 @@
 [ 	
     {
+        "date": "2020-03-17",
+        "text": "I've successfully defended my PhD dissertation!"
+    },
+    {
 		"date": "2020-02-05",
 		"text": "The preprint of our paper [IPDPS 2021](http://www.ipdps.org/) paper,
         [*Adaptive Spatially Aware I/O for Multiresolution Particle Data Layouts*](/publications/aggtree-io), is now online!"
