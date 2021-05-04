@@ -41,6 +41,7 @@
             writes it to disk. (d) The aggregators send the local value ranges and root node
             bitmaps for each attribute to rank 0, which populates the Aggregation
             Tree with the bitmaps and writes it out.",
+		"presentation_video": "https://www.youtube.com/embed/DKNeRmauAdE",
 		"downloads": [
 			{
 				"title": "Code",
