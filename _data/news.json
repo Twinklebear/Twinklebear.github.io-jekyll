@@ -1,10 +1,16 @@
 [ 	
     {
-        "date": "2020-03-17",
+        "date": "2021-08-04",
+        "text": "[Ray Tracing Gems II](https://link.springer.com/book/10.1007/978-1-4842-7185-8)
+        is available now online for free,
+        and includes a chapter by me on demystifying the shader binding table!"
+    },
+    {
+        "date": "2021-03-17",
         "text": "I've successfully defended my PhD dissertation!"
     },
     {
-		"date": "2020-02-05",
+		"date": "2021-02-05",
 		"text": "The preprint of our paper [IPDPS 2021](http://www.ipdps.org/) paper,
         [*Adaptive Spatially Aware I/O for Multiresolution Particle Data Layouts*](/publications/aggtree-io), is now online!"
 	},
