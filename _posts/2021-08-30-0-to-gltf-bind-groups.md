@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "From 0 to glTF with WebGPU: Bind Groups"
+title: "From 0 to glTF with WebGPU: Bind Groups - Updated"
 description: ""
 category: graphics
 tags: [graphics, webgpu]
@@ -9,6 +9,11 @@ published: true
 {% include JB/setup %}
 
 {% assign figurecount = 0 %}
+
+This tutorial is an updated version of my previous one and updates the
+code listing to match the finalizing WebGPU APIs. If you've read
+the previous version of this tutorial you can skim through the code
+listings to get up to date.
 
 In this second post of the series we'll learn about Bind Groups,
 which let us pass buffers and textures to our shaders.
@@ -21,11 +26,8 @@ parameters in the shader. In WebGPU, the association of data to parameters is ma
 In this post, we'll use Bind Groups to pass a uniform buffer containing a view
 transform to our vertex shader, allowing us to add camera controls to our triangle
 from the previous post.
-If you haven't read the [first post in this series]({% post_url 2020-06-15-0-to-gltf-triangle %})
+If you haven't read the [updated first post in this series]({% post_url 2021-08-29-0-to-gltf-triangle %})
 I recommend reading that first, as we'll continue directly off the code written there.
-
-**This post has been updated to reflect changes to the WebGPU API!** Please
-see the <a href="{% post_url 2021-08-30-0-to-gltf-bind-groups %}">updated post.</a>
 
 <!--more-->
 
@@ -72,32 +74,53 @@ Uniform buffers are used to pass small to medium size buffers of constant data t
 WebGPU also supports storage buffers, which can be used to pass larger
 or shader writeable buffers.
 
-In GLSL, the different input slots to which bind groups are bound are referred
-to as sets. Each bind group bound to a set contains some number of parameter bindings,
-which are mapped to the corresponding parameters in the shader.
-Uniform shader parameters in GLSL are annotated with the corresponding set and binding which will
-provide the underlying data for the parameter, using the `layout` qualifier.
-Here we'll have a single set, set 0, which binds the uniform buffer containing our
-transform matrix to binding 0.
+WebGPU supports multiple groups of bindings, where each group can contain one
+or more buffers, textures, etc., which are bound to inputs in the shader.
+This is analogous to sets and bindings in Vulkan, where sets are referred to
+as groups in WGSL.
+
+To specify a uniform buffer in WGSL we first define a struct with the
+`[[block]]` qualifier, indicating that this struct will be used as
+the type of a buffer input. We then define a uniform variable to create
+a uniform buffer of this type, and specify that it will be passed through
+bind group 0 at binding 0.
+
 The updated vertex shader that applies the transform passed through the uniform
 buffer to our vertices is shown below.
 
 {% highlight glsl %}
-#version 450 core
-
-layout(location = 0) in vec4 pos;
-layout(location = 1) in vec4 vcolor;
-
-layout(location = 0) out vec4 fcolor;
-
-// Our uniform buffer containing the projection * view matrix
-layout(set = 0, binding = 0, std140) uniform ViewParams {
-    mat4 proj_view;
+type float4 = vec4<f32>;
+struct VertexInput {
+    [[location(0)]] position: float4;
+    [[location(1)]] color: float4;
 };
 
-void main(void) {
-    fcolor = vcolor;
-    gl_Position = proj_view * pos;
+struct VertexOutput {
+    [[builtin(position)]] position: float4;
+    [[location(0)]] color: float4;
+};
+
+// New: define a structure with the block qualifier
+[[block]]
+struct ViewParams {
+    view_proj: mat4x4<f32>;
+};
+
+// And a uniform variable using that structure
+[[group(0), binding(0)]]
+var<uniform> view_params: ViewParams;
+
+[[stage(vertex)]]
+fn vertex_main(vert: VertexInput) -> VertexOutput {
+    var out: VertexOutput;
+    out.color = vert.color;
+    out.position = view_params.view_proj * vert.position;
+    return out;
+};
+
+[[stage(fragment)]]
+fn fragment_main(in: VertexOutput) -> [[location(0)]] float4 {
+    return float4(in.color);
 }
 {% endhighlight %}
 
@@ -110,7 +133,7 @@ configuration of inputs to the pipeline, the GPU can better optimize execution o
 the pipeline.
 The layouts of the bind groups which will be used in the pipeline
 are specified through an array of [`GPUBindGroupLayout`](https://gpuweb.github.io/gpuweb/#bind-group-layout)
-objects which are passed to [`createPipelineLayout`](https://gpuweb.github.io/gpuweb/#device-create-pipeline-layout)
+objects which are passed to [`createPipelineLayout`](https://gpuweb.github.io/gpuweb/#dom-gpudevice-createpipelinelayout)
 through the `bindGroupLayouts` member.
 The index of a bind group layout in the pipeline layout's `bindGroupLayouts` array
 is its set number in GLSL. The actual data associated with the binding points
@@ -129,7 +152,7 @@ The bind group and pipeline layout which we'll use in this post is illustrated b
 	</i></figcaption>
 </figure>
 
-The bind group layout is created through [`createBindGroupLayout`](https://gpuweb.github.io/gpuweb/#GPUDevice-createBindGroupLayout),
+The bind group layout is created through [`createBindGroupLayout`](https://gpuweb.github.io/gpuweb/#dom-gpudevice-createbindgrouplayout),
 which takes a list of entries that the corresponding bind group used during rendering must contain.
 Each [entry](https://gpuweb.github.io/gpuweb/#dictdef-gpubindgrouplayoutentry) specifies the type
 of the parameter, which shader stages will be able to
@@ -139,19 +162,12 @@ specifying that pipelines created using the layout (i.e., our rendering pipeline
 will use bind groups matching the bind group layouts specified.
 
 {% highlight js %}
-// Create the bind group layout
+// Create bind group layout
 var bindGroupLayout = device.createBindGroupLayout({
-    entries: [
-        {
-            binding: 0,
-            // One or more stage flags, or'd together
-            visibility: GPUShaderStage.VERTEX,
-            type: "uniform-buffer"
-        }
-    ]
+    entries: [{binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {type: "uniform"}}]
 });
 
-// Create the pipeline layout, specifying which bind group layouts will be used
+// Create render pipeline
 var layout = device.createPipelineLayout({bindGroupLayouts: [bindGroupLayout]});
 {% endhighlight %}
 
@@ -182,16 +198,9 @@ a matching binding must be specified in the bind group.
 
 {% highlight js %}
 // Create a bind group which places our view params buffer at binding 0
-var bindGroup = device.createBindGroup({
+var viewParamBG = device.createBindGroup({
     layout: bindGroupLayout,
-    entries: [
-        {
-            binding: 0,
-            resource: {
-                buffer: viewParamsBuffer
-            }
-        }
-    ]
+    entries: [{binding: 0, resource: {buffer: viewParamsBuffer}}]
 });
 {% endhighlight %}
 
@@ -250,7 +259,7 @@ upload our view transform. We set this buffer's usage as `COPY_SRC`,
 meaning that we'll use it to copy data from it into another buffer,
 i.e., into our uniform buffer.
 We then copy the uploaded view matrix into our uniform buffer
-by enqueuing a [`copyBufferToBuffer`](https://gpuweb.github.io/gpuweb/#GPUCommandEncoder-copyBufferToBuffer)
+by enqueuing a [`copyBufferToBuffer`](https://gpuweb.github.io/gpuweb/#dom-gpucommandencoder-copybuffertobuffer)
 command on the command encoder before beginning our rendering pass.
 In the rendering pass, we set the bind group to be used before rendering our triangle
 by calling [`setBindGroup`](https://gpuweb.github.io/gpuweb/#dom-gpuprogrammablepassencoder-setbindgroup)
@@ -260,36 +269,34 @@ view transform applied, as shown below!
 
 {% highlight js %}
 var frame = function() {
-    renderPassDesc.colorAttachments[0].attachment =
-        swapChain.getCurrentTexture().createView();
+    // Update camera buffer
+    projView = mat4.mul(projView, proj, camera.camera);
 
-    // Compute and upload the combined projection and view matrix
-    projView = mat4.mul(projView, projection, camera.camera);
-    var upload = device.createBuffer({
-        size: 16 * 4,
-        usage: GPUBufferUsage.COPY_SRC,
-        mappedAtCreation: true
-    });
-    new Float32Array(upload.getMappedRange()).set(projView);
-    upload.unmap();
+    var upload = device.createBuffer(
+        {size: 16 * 4, usage: GPUBufferUsage.COPY_SRC, mappedAtCreation: true});
+    {
+        var map = new Float32Array(upload.getMappedRange());
+        map.set(projView);
+        upload.unmap();
+    }
+
+    renderPassDesc.colorAttachments[0].view = context.getCurrentTexture().createView();
 
     var commandEncoder = device.createCommandEncoder();
-
-    // Copy the upload buffer to our uniform buffer
     commandEncoder.copyBufferToBuffer(upload, 0, viewParamsBuffer, 0, 16 * 4);
 
     var renderPass = commandEncoder.beginRenderPass(renderPassDesc);
 
     renderPass.setPipeline(renderPipeline);
+    renderPass.setBindGroup(0, viewParamBG);
     renderPass.setVertexBuffer(0, dataBuf);
-    // Set the bind group to its associated slot
-    renderPass.setBindGroup(0, bindGroup);
     renderPass.draw(3, 1, 0, 0);
 
     renderPass.endPass();
-    device.defaultQueue.submit([commandEncoder.finish()]);
+    device.queue.submit([commandEncoder.finish()]);
     requestAnimationFrame(frame);
-}
+};
+requestAnimationFrame(frame);
 {% endhighlight %}
 
 <div class="col-12 row">
@@ -310,7 +317,7 @@ var frame = function() {
 
 <script src="/assets/gl-matrix-min.js"></script>
 <script src="/assets/webgl-util.min.js"></script>
-<script src="/assets/webgpu/triangle_bind_groups.js"></script>
+<script src="/assets/webgpu/triangle-bind-groups-updated-aug-30.js"></script>
 
 ## Wrapping Up
 
@@ -319,11 +326,6 @@ object transform matrices, material parameters, and textures, to our shaders. In
 next post, we'll take a look at the glTF Binary format to load and render our
 first real triangle mesh.
 If you run into issues getting the example to work,
-[check out the code](/assets/webgpu/triangle_bind_groups.js) for rendering the triangle in Figure 3,
+[check out the code](/assets/webgpu/triangle-bind-groups-updated-aug-30.js) for rendering the triangle in Figure 3,
 or get in touch via [Twitter](https://twitter.com/_wusher) or email.
-
-## Update 8/24
-
-Updated from `device.createBufferMapped` to `device.createBuffer` with the `mappedAtCreation` parameter set.
-See the [corresponding Dawn PSA about these changes in Chrome and WebGPU](https://hackmd.io/szV68rOVQ56GYzPJMBko8A#PSA-for-Chromium--Dawn-WebGPU-API-updates-2020-07-28).
 
