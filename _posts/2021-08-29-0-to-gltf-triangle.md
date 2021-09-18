@@ -14,6 +14,12 @@ This tutorial is an updated version of my previous one and updates the
 code listing to match the finalizing WebGPU APIs. If you've read
 the previous version of this tutorial you can skim through the code
 listings to get up to date.
+For an easy way to get started, I recommend grabbing my
+[WebGPU + webpack starter template](https://github.com/Twinklebear/webgpu-webpack-starter)
+which includes the code from this tutorial. You can start by deleting the code there and
+rewriting it following this tutorial, or follow along in the code
+as you read this page.
+
 
 WebGPU is a modern graphics API for the web, in development by the
 major browser vendors. When compared to WebGL, WebGPU provides more direct
@@ -97,7 +103,7 @@ our triangle!
 
 {% highlight js %}
 (async () => {
-    if (!navigator.gpu) {
+    if (navigator.gpu === undefined) {
         alert("WebGPU is not supported/enabled in your browser");
         return;
     }
