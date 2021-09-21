@@ -37,8 +37,6 @@ a WebGPU context and get a triangle on the screen.
 
 <!--more-->
 
-<meta http-equiv="origin-trial" content="AoMftca5+Dstn4K7mCd1AKVcenGb0/EBkqJgonux6w6fVXhyJ2iHs9LuZKA36+gcaypMdBLAaIpkES6VMXoJtg8AAABQeyJvcmlnaW4iOiJodHRwczovL3d3dy53aWxsdXNoZXIuaW86NDQzIiwiZmVhdHVyZSI6IldlYkdQVSIsImV4cGlyeSI6MTY0MzE1NTE5OX0=">
-
 # Getting a WebGPU Context
 
 The first step to working with WebGPU is to setup a browser
