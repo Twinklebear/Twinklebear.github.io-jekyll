@@ -1,9 +1,17 @@
-[ 	
+[
+    {
+        "date": "2021-10-20",
+        "text": "I served on the IEEE VIS program committee, and again as Tech Chair."
+    },
     {
         "date": "2021-08-04",
         "text": "[Ray Tracing Gems II](https://link.springer.com/book/10.1007/978-1-4842-7185-8)
         is available now online for free,
         and includes a chapter by me on demystifying the shader binding table!"
+    },
+    {
+        "date": "2021-06-14",
+        "text": "I served on the EGPGV program committee."
     },
     {
         "date": "2021-03-17",

@@ -66,13 +66,15 @@
 		"exact_date": "2021-05-17 00:00:00 -0600",
 		"short_title": "aggtree-io",
         "selected": true,
+        "doi": "10.1109/IPDPS49936.2021.00063",
 		"bibtex": "@inproceedings{usher_aggtree_2021,\n
 			booktitle = {35th IEEE International Parallel & Distributed Processing Symposium (IPDPS) (To Appear)},\n
 			title = {{Adaptive} {Spatially} {Aware} {I}/{O} for {Multiresolution} {Particle} {Data} {Layouts}},\n
 			author = {Usher, Will and Huang, Xuan and Petruzza, Steve and Kumar, Sidharth
             and Slattery, Stuart R. and Reeve, Sam T. and Wang, Feng and Johnson, Chris. R.
             and Pascucci, Valerio},\n
-			year = {2021},\n}",
+			year = {2021},
+            doi={10.1109/IPDPS49936.2021.00063}\n}",
         "abstract": "Large-scale simulations on nonuniform particle distributions that evolve
             over time are widely used in cosmology, molecular dynamics, and
             engineering. Such data are often saved in an unstructured format that neither
