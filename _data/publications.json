@@ -58,7 +58,7 @@
 		"title": "Adaptive Spatially Aware I/O for Multiresolution Particle Data Layouts",
 		"authors": "Will Usher, Xuan Huang, Steve Petruzza, Sidharth Kumar, Stuart R. Slattery,
             Sam T. Reeve, Feng Wang, Chris R. Johnson, and Valerio Pascucci",
-		"venue": "IEEE International Parallel & Distributed Processing Symposium (IPDPS) (To Appear)",
+		"venue": "IEEE International Parallel & Distributed Processing Symposium (IPDPS)",
 		"paper_pdf": "http://sci.utah.edu/~will/papers/aggtree-ipdps21.pdf",
 		"teaser": "/assets/img/ipdps-aggtree.svg",
 		"thumb": "https://i.imgur.com/nDURJI4.png",
@@ -68,7 +68,7 @@
         "selected": true,
         "doi": "10.1109/IPDPS49936.2021.00063",
 		"bibtex": "@inproceedings{usher_aggtree_2021,\n
-			booktitle = {35th IEEE International Parallel & Distributed Processing Symposium (IPDPS) (To Appear)},\n
+			booktitle = {35th IEEE International Parallel & Distributed Processing Symposium (IPDPS)},\n
 			title = {{Adaptive} {Spatially} {Aware} {I}/{O} for {Multiresolution} {Particle} {Data} {Layouts}},\n
 			author = {Usher, Will and Huang, Xuan and Petruzza, Steve and Kumar, Sidharth
             and Slattery, Stuart R. and Reeve, Sam T. and Wang, Feng and Johnson, Chris. R.
