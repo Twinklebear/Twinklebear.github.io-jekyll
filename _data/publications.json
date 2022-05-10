@@ -1,4 +1,84 @@
 [
+	{
+		"title": "GraphWaGu: GPU Powered Large Scale Graph Layout Computation and Rendering for the Web",
+		"authors": "Landon Dyken, Pravin Poudel, Will Usher, Steve Petruzza, Jake Y. Chen, Sidharth Kumar",
+		"venue": "Eurographics Symposium on Parallel Graphics and Visualization (To Appear)",
+		"paper_pdf": "https://drive.google.com/file/d/16PWup93vFLCWqQexop2IfRyMeQGniLqa/view?usp=sharing",
+		"thumb": "/assets/img/graphwagu-thumb.png",
+		"year": 2022,
+		"exact_date": "2022-05-09 00:00:00 -0600",
+		"short_title": "graphwagu",
+        "selected": true,
+		"bibtex": "@inproceedings{dyken_graphwagu_2022,\n
+			booktitle = {Eurographics Symposium on Parallel Graphics and Visualization},\n
+			editor = {Bujack, R. and Tierny, J. and Sadlo, F.},\n
+			title = {{GraphWaGu:} {GPU} {Powered} {Large} {Scale} {Graph} {Layout} {Computation} and {Rendering} for the {Web}},\n
+			author = {Dyken, Landon and Poudel, Pravin and Usher, Will and Petruzza, Steve and Chen, Jake Y. and Kumar, Sidharth},\n
+			year = {2022},\n
+		}",
+		"abstract": "Large scale graphs are used to encode data from a variety of application domains such as social networks, the web, biological
+            networks, road maps, and finance. Computing enriching layouts and interactive rendering play an important role in many of
+            these applications. However, producing an efficient and interactive visualization of large graphs remains a major challenge,
+            particularly in the web-browser. Existing state of the art web-based visualization systems such as D3.js, Stardust, and NetV.js
+            struggle to achieve interactive layout and visualization for large scale graphs. In this work, we leverage the latest WebGPU
+            technology to develop GraphWaGu, the first WebGPU-based graph visualization system. WebGPU is a new graphics API that
+            brings the full capabilities of modern GPUs to the web browser. Leveraging the computational capabilities of the GPU using this
+            technology enables GraphWaGu to scale to larger graphs than existing technologies. GraphWaGu embodies both fast parallel
+            rendering and layout creation using modified Frutcherman-Reingold and Barnes-Hut algorithms implemented in WebGPU
+            compute shaders. Experimental results demonstrate that our solution achieves the best performance, scalability, and layout
+            quality when compared to current state of the art web-based graph visualization libraries. All of our source code for the project
+            is available at https://github.com/harp-lab/GraphWaGu .",
+		"downloads": [
+			{
+				"title": "Code",
+				"list": [
+					{
+						"title": "GraphWaGu",
+						"link": "https://github.com/harp-lab/GraphWaGu",
+						"icon": "fab fa-github"
+					},
+                    {
+                        "title": "Live demo!",
+                        "link": "https://harp-lab.github.io/GraphWaGu/",
+                        "icon": "fas fa-flask"
+                    }
+				]
+			}
+		]
+	},
+	{
+		"title": "Design and Evaluation of a GPU Streaming Framework for Visualizing Time-Varying AMR Data",
+		"authors": "Stefan Zellmann, Ingo Wald, Alper Sahistan, Matthias Hellmann, Will Usher",
+		"venue": "Eurographics Symposium on Parallel Graphics and Visualization (To Appear)",
+		"paper_pdf": "https://drive.google.com/file/d/16PYyRugQufJ-ZSJyQ1GHhWG3856hOpsc/view?usp=sharing",
+		"teaser": "/assets/img/exajet-animated-teaser.png",
+		"thumb": "/assets/img/exajet-animated-thumb.png",
+		"year": 2022,
+		"exact_date": "2022-05-09 00:00:00 -0600",
+		"short_title": "exajet-animated",
+        "selected": true,
+		"bibtex": "@inproceedings{zellmann_amr_animated_2022,\n
+			booktitle = {Eurographics Symposium on Parallel Graphics and Visualization},\n
+			editor = {Bujack, R. and Tierny, J. and Sadlo, F.},\n
+			title = {{Design} and {Evaluation} of a {GPU} {Streaming} {Framework} for {Visualizing} {Time}-{Varying} {AMR} {Data}},\n
+			author = {Zellmann, Stefan and Wald, Ingo and Sahistan, Alper and Hellmann, Matthias and Usher, Will},\n
+			year = {2022},\n
+		}",
+		"abstract": "We describe a systematic approach for rendering time-varying simulation data produced by exa-scale simulations, using GPU
+            workstations. The data sets we focus on use adaptive mesh refinement (AMR) to overcome memory bandwidth limitations by
+            representing interesting regions in space with high detail. Particularly, our focus is on data sets where the AMR hierarchy is fixed
+            and does not change over time. Our study is motivated by the NASA Exajet, a large computational fluid dynamics simulation
+            of a civilian cargo aircraft that consists of 423 simulation time steps, each storing 2.5 GB of data per scalar field, amounting
+            to a total of 4 TB. We present strategies for rendering this time series data set with smooth animation and at interactive rates
+            using current generation GPUs. We start with an unoptimized baseline and step by step extend that to support fast streaming
+            updates. Our approach demonstrates how to push current visualization workstations and modern visualization APIs to their
+            limits to achieve interactive visualization of exa-scale time series data sets.",
+		"teaser_caption": "The NASA Exajet serves as the motivating use case for our study. The large computational fluid dynamics data set was computed
+            using an adaptive mesh refinement (AMR) code and consists of 656 million cells and 423 time steps. Each time step stores 2.5 GB of data per
+            scalar field. At four scalar fields for density and X/Y/Z velocity components, the full time series occupies over 4 TB. Data sets such as these
+            pose significant challenges for interactive visualization on current GPU workstations. We present and evaluate a prototypical framework
+            targeting GPU workstations that asynchronously streams and renders such data sets at interactive rates and with high quality."
+	},
     {
 		"title": "Adaptive Multiresolution Techniques for I/O, Data Layout, and Visualization of Massive Simulations",
 		"authors": "Will Usher",
