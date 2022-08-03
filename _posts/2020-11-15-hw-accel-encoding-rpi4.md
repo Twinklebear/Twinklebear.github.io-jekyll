@@ -45,9 +45,10 @@ the `h264_v4l2m2m` encoder, the results are not very good:
     </p>
 </div>
 
-The version of FFmpeg distributed in apt (4.2.4) is missing some commits that
-fix this issue, which didn't make it in til release 4.3. So we'll have to build from
-source. First, we can grab the source for 4.3 from Github:
+The version of FFmpeg distributed in apt (4.2.4 at the time of writing) is missing some commits that
+fix this issue, which didn't make it in until release 4.3. So we'll have to build from
+source. First, we can grab the source for 4.3 from Github. Note: later releases are also fine,
+4.3 was the latest at the time of writing.
 
 {% highlight bash %}
 git clone --depth 1 --branch release/4.3 git@github.com:FFmpeg/FFmpeg.git
