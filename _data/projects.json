@@ -83,7 +83,14 @@
         "layout": 2,
         "gh_user": "Twinklebear",
         "gh_repo": "webgpu-volume-pathtracer",
-        "description": "A volume path tracer implemented in WebGPU. Uses Woodcock sampling to
+        "thumb": "https://i.postimg.cc/QC7ysLYT/wgpu-path-tracer-bonsai-3x2.png",
+        "img": [
+            "https://i.postimg.cc/Ss03Jx0K/wgpu-path-tracer-bonsai.png",
+            "https://i.postimg.cc/13jL1KJw/wgpu-path-tracer-foot.png",
+            "https://i.postimg.cc/gJv5RbdH/wgpu-path-tracer-teapot.png"
+        ],
+        "description": "A volume path tracer implemented in WebGPU. The renderer uses
+            Woodcock sampling to traverse and
             sample the volume and scientific visualization-style coloring to provide
             interactive physically-based visualization of 3D grid volumes. Try it out
             [online](https://www.willusher.io/webgpu-volume-pathtracer/)!"
