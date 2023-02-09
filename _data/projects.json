@@ -93,7 +93,47 @@
             Woodcock sampling to traverse and
             sample the volume and scientific visualization-style coloring to provide
             interactive physically-based visualization of 3D grid volumes. Try it out
-            [online](https://www.willusher.io/webgpu-volume-pathtracer/)!"
+            [online](https://www.willusher.io/webgpu-volume-pathtracer/)!
+            May require Chrome Canary."
+    },
+    {
+        "title": "WebGPU glTF Renderer",
+        "layout": 2,
+        "gh_user": "Twinklebear",
+        "gh_repo": "webgpu-gltf",
+        "thumb": "https://i.postimg.cc/8PfBcBHT/webgpu-gltf-rungholt-thumb.png",
+        "img": [
+            "https://i.postimg.cc/qvfc3hby/webgpu-gltf-helmet.png",
+            "https://i.postimg.cc/wB2DZW6Q/webgpu-gltf-sponza.png",
+            "https://i.postimg.cc/N0B1Nhw0/webgpu-gltf-rungholt.png"
+        ],
+        "description": "A glTF WebGPU renderer and loader written from scratch.
+            Supports uploading glTF binary files to render them with a basic
+            material color model.
+            GLTF primitives are rendered as WebGPU render bundles, with shaders
+            generated for materials/attributes and cached using a shader caching
+            system. Try it out [online](https://www.willusher.io/webgpu-gltf/)!
+            May require Chrome Canary."
+    },
+    {
+        "title": "tray",
+        "layout": 2,
+        "gh_user": "Twinklebear",
+        "gh_repo": "tray",
+        "thumb": "https://i.imgur.com/rF58b9c.png",
+        "img": [
+            "https://i.imgur.com/MALPsD8.png",
+            "https://i.imgur.com/Ns3ZYsE.png",
+            "https://i.imgur.com/ApHMuex.png"
+        ],
+        "description": "tray is a toy physically based ray tracer built off of the techniques discussed in[Physically Based Rendering
+        ](http: //pbrt.org/). It currently has support for path tracing,
+			bidirectional path tracing and photon mapping. tray also supports physically materials such as
+			microfacet models like Torrance-Sparrow and measured data from the
+			[MERL BRDF Database
+        ](http: //www.merl.com/brdf/).\n\n
+			This is the project tray_rust is based on and as such may not see much more development since most
+			of my ray tracing work is now going on there."
     },
     {
         "title": "topo-vol",
@@ -115,26 +155,6 @@
 			create more useful, detailed renderings.
 			See the [report
         ](https: //github.com/Twinklebear/topo-vol/blob/master/report.pdf) for more details."
-    },
-    {
-        "title": "tray",
-        "layout": 2,
-        "gh_user": "Twinklebear",
-        "gh_repo": "tray",
-        "thumb": "https://i.imgur.com/rF58b9c.png",
-        "img": [
-            "https://i.imgur.com/MALPsD8.png",
-            "https://i.imgur.com/Ns3ZYsE.png",
-            "https://i.imgur.com/ApHMuex.png"
-        ],
-        "description": "tray is a toy physically based ray tracer built off of the techniques discussed in[Physically Based Rendering
-        ](http: //pbrt.org/). It currently has support for path tracing,
-			bidirectional path tracing and photon mapping. tray also supports physically materials such as
-			microfacet models like Torrance-Sparrow and measured data from the
-			[MERL BRDF Database
-        ](http: //www.merl.com/brdf/).\n\n
-			This is the project tray_rust is based on and as such may not see much more development since most
-			of my ray tracing work is now going on there."
     },
     {
         "title": "WebGL Volume Raycaster",
