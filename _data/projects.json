@@ -11,9 +11,10 @@
             "https://i.imgur.com/pV4OFlL.jpg"
         ],
         "description": "ChameleonRT is an example interactive path tracer which runs on multiple
-        CPU and GPU ray tracing backends: Embree, DXR, OptiX, and Vulkan. Each backend uses an
-        identical path tracer which supports the Disney BSDF material model to provide the same
-        rendered result in each."
+        CPU and GPU ray tracing backends: Embree, DXR, OptiX, Vulkan, and Metal. Each backend uses an
+        identical path tracer that supports a subset of the Disney BSDF material model to provide the same
+        rendered result in each backend. Supports loading OBJ and glTF files. Binaries are built
+        automatically through Github Actions and preserved for download via [tagged releases](https://github.com/Twinklebear/ChameleonRT/releases)."
     },
     {
         "title": "ispc-rs",
@@ -136,6 +137,26 @@
 			of my ray tracing work is now going on there."
     },
     {
+        "title": "WebGPU Block-Compressed Marching Cubes",
+        "layout": 3,
+        "gh_user": "Twinklebear",
+        "gh_repo": "webgpu-bcmc",
+        "img": [
+            "https://i.postimg.cc/YSzp3RMn/plasma.png",
+            "https://i.postimg.cc/RZfC398z/chameleon.png",
+            "https://i.postimg.cc/pdHWz4b5/kingsnake.png",
+            "https://i.postimg.cc/V6szHtNY/miranda.png"
+        ],
+        "description": "WebGPU Block-Compressed Marching Cubes is an algorithm for interactive isosurface extraction
+        on massive compressed data sets that runs entirely on the GPU in the browser using WebGPU. The technique
+        works on block-compressed volumes using ZFP's fixed-rate compression algorithm. To compute an isosurface
+        the required blocks of the data are decompressed and cached on the fly using a GPU-driven LRU cache.
+        This enables interactive visualization of large volumes entirely in the browser.
+        This work was published at LDAV in 2020, you can learn more [in the paper](/publications/teraweb),
+        [get the code on Github](https://github.com/Twinklebear/webgpu-bcmc),
+        or try it out [online](https://www.willusher.io/webgpu-bcmc/webgpu_bcmc.html)! May require Chrome Canary."
+    },
+    {
         "title": "topo-vol",
         "layout": 4,
         "gh_user": "Twinklebear",
@@ -250,6 +271,31 @@
         ](http: //glmatrix.net/) for matrix/vector operations, and
         [FileSaver.js
         ](https: //github.com/eligrey/FileSaver.js/) for saving models."
+    },
+    {
+        "title": "WebGPU Implicit Isosurface Raycaster",
+        "layout": 1,
+        "gh_user": "Twinklebear",
+        "gh_repo": "webgpu-isosurface-raycaster",
+        "img": "https://i.postimg.cc/SR663NDb/skull.jpg",
+        "description": "An implicit isosurface raycaster using WebGPU.
+            Ray-isosurface intersections are computed using the technique described by Marmitt et al.
+        'Fast and Accurate Ray-Voxel Intersection Techniques for Iso-Surface Ray Tracing', 2004.
+        Try it out [online](https://www.willusher.io/webgpu-isosurface-raycaster/#Skull)! May require Chrome Canary."
+    },
+    {
+        "title": "WebGPU Volume Animation Player",
+        "layout": 1,
+        "gh_user": "Twinklebear",
+        "gh_repo": "webgl-volume-animation",
+        "img": "https://i.postimg.cc/qMH1kghK/webgpu-vol-animation-frame.jpg",
+        "description": "A WebGL tool for playing back time-series volumetric data captures in the browser.
+            Scientists can upload a series of Zipped WebP image stacks which are uploaded to the GPU
+            and volume rendered. The set of image stacks is played back as an animation to view the
+            time-dependent behavior of the data set.
+            Data sets and time series can be specified as URL parameters to enable scientists to quickly
+            share data visualizations with colleagues.
+            Try it out [online](https://www.willusher.io/webgl-volume-animation/#url=https://lab.wushernet.com/data/urllist.txt)!"
     },
     {
         "title": "WebGL Marching Cubes",
