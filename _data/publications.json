@@ -2,10 +2,11 @@
 	{
 		"title": "GraphWaGu: GPU Powered Large Scale Graph Layout Computation and Rendering for the Web",
 		"authors": "Landon Dyken, Pravin Poudel, Will Usher, Steve Petruzza, Jake Y. Chen, Sidharth Kumar",
-		"venue": "Eurographics Symposium on Parallel Graphics and Visualization (To Appear)",
+		"venue": "Eurographics Symposium on Parallel Graphics and Visualization",
 		"paper_pdf": "https://drive.google.com/file/d/16PWup93vFLCWqQexop2IfRyMeQGniLqa/view?usp=sharing",
 		"thumb": "/assets/img/graphwagu-thumb.png",
 		"year": 2022,
+        "doi": "10.2312/pgv.20221067",
 		"exact_date": "2022-05-09 00:00:00 -0600",
 		"short_title": "graphwagu",
         "selected": true,
@@ -14,6 +15,7 @@
 			editor = {Bujack, R. and Tierny, J. and Sadlo, F.},\n
 			title = {{GraphWaGu:} {GPU} {Powered} {Large} {Scale} {Graph} {Layout} {Computation} and {Rendering} for the {Web}},\n
 			author = {Dyken, Landon and Poudel, Pravin and Usher, Will and Petruzza, Steve and Chen, Jake Y. and Kumar, Sidharth},\n
+            DOI = {10.2312/pgv.20221067},\n
 			year = {2022},\n
 		}",
 		"abstract": "Large scale graphs are used to encode data from a variety of application domains such as social networks, the web, biological
@@ -49,11 +51,12 @@
 	{
 		"title": "Design and Evaluation of a GPU Streaming Framework for Visualizing Time-Varying AMR Data",
 		"authors": "Stefan Zellmann, Ingo Wald, Alper Sahistan, Matthias Hellmann, Will Usher",
-		"venue": "Eurographics Symposium on Parallel Graphics and Visualization (To Appear)",
+		"venue": "Eurographics Symposium on Parallel Graphics and Visualization",
 		"paper_pdf": "https://drive.google.com/file/d/16PYyRugQufJ-ZSJyQ1GHhWG3856hOpsc/view?usp=sharing",
 		"teaser": "/assets/img/exajet-animated-teaser.png",
 		"thumb": "/assets/img/exajet-animated-thumb.png",
 		"year": 2022,
+        "doi": "10.2312/pgv.20221066",
 		"exact_date": "2022-05-09 00:00:00 -0600",
 		"short_title": "exajet-animated",
         "selected": true,
@@ -62,6 +65,7 @@
 			editor = {Bujack, R. and Tierny, J. and Sadlo, F.},\n
 			title = {{Design} and {Evaluation} of a {GPU} {Streaming} {Framework} for {Visualizing} {Time}-{Varying} {AMR} {Data}},\n
 			author = {Zellmann, Stefan and Wald, Ingo and Sahistan, Alper and Hellmann, Matthias and Usher, Will},\n
+            DOI = {10.2312/pgv.20221066},\n
 			year = {2022},\n
 		}",
 		"abstract": "We describe a systematic approach for rendering time-varying simulation data produced by exa-scale simulations, using GPU
