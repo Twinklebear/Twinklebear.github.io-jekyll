@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "From 0 to glTF with WebGPU: Bind Groups - Updated"
+title: "From 0 to glTF with WebGPU: Bind Groups - Updated for Chrome 113 Release"
 description: ""
 category: graphics
 tags: [graphics, webgpu]
@@ -26,7 +26,7 @@ parameters in the shader. In WebGPU, the association of data to parameters is ma
 In this post, we'll use Bind Groups to pass a uniform buffer containing a view
 transform to our vertex shader, allowing us to add camera controls to our triangle
 from the previous post.
-If you haven't read the [updated first post in this series]({% post_url 2023-04-11-0-to-gltf-triangle %})
+If you haven't read the [updated first post in this series]({% post_url 2023-04-10-0-to-gltf-triangle %})
 I recommend reading that first, as we'll continue directly off the code written there.
 
 <!--more-->
@@ -89,28 +89,29 @@ The updated vertex shader that applies the transform passed through the uniform
 buffer to our vertices is shown below.
 
 {% highlight glsl %}
-type float4 = vec4<f32>;
+alias float4 = vec4<f32>;
 struct VertexInput {
-    [[location(0)]] position: float4;
-    [[location(1)]] color: float4;
+    @location(0) position: float4,
+    @location(1) color: float4,
 };
 
 struct VertexOutput {
-    [[builtin(position)]] position: float4;
-    [[location(0)]] color: float4;
+    @builtin(position) position: float4,
+    @location(0) color: float4,
 };
 
-// New: define a structure with the block qualifier
-[[block]]
+// New: define a struct that contains the data we want to pass
+// through the uniform buffer
 struct ViewParams {
-    view_proj: mat4x4<f32>;
+    view_proj: mat4x4<f32>,
 };
 
-// And a uniform variable using that structure
-[[group(0), binding(0)]]
+// New: create a uniform variable of our struct type
+// and assign it group and binding indices
+@group(0) @binding(0)
 var<uniform> view_params: ViewParams;
 
-[[stage(vertex)]]
+@vertex
 fn vertex_main(vert: VertexInput) -> VertexOutput {
     var out: VertexOutput;
     out.color = vert.color;
@@ -118,8 +119,8 @@ fn vertex_main(vert: VertexInput) -> VertexOutput {
     return out;
 };
 
-[[stage(fragment)]]
-fn fragment_main(in: VertexOutput) -> [[location(0)]] float4 {
+@fragment
+fn fragment_main(in: VertexOutput) -> @location(0) float4 {
     return float4(in.color);
 }
 {% endhighlight %}
@@ -292,7 +293,7 @@ var frame = function() {
     renderPass.setVertexBuffer(0, dataBuf);
     renderPass.draw(3, 1, 0, 0);
 
-    renderPass.endPass();
+    renderPass.end();
     device.queue.submit([commandEncoder.finish()]);
     requestAnimationFrame(frame);
 };

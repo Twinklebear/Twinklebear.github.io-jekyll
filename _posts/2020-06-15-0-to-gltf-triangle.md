@@ -25,7 +25,7 @@ This post marks our initial step on this journey, where we'll setup
 a WebGPU context and get a triangle on the screen.
 
 **This post has been updated to reflect changes to the WebGPU API!** Please
-see the <a href="{% post_url 2023-04-11-0-to-gltf-triangle %}">updated post.</a>
+see the <a href="{% post_url 2023-04-10-0-to-gltf-triangle %}">updated post.</a>
 
 <!--more-->
 

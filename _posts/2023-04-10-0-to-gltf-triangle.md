@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "From 0 to glTF with WebGPU: The First Triangle - Updated"
+title: "From 0 to glTF with WebGPU: The First Triangle - Updated for Chrome 113 Release"
 description: ""
 category: graphics
 tags: [graphics, webgpu]
@@ -172,27 +172,31 @@ between draw calls, making it challenging to optimize the pipeline.
 Our first step in creating the pipeline is to create the vertex and fragment
 [shader modules](https://gpuweb.github.io/gpuweb/#shader-modules),
 which will be executed in the pipeline.
-WebGPU takes shaders in the form of SPV (compiled from GLSL) or
-[WGSL](https://www.w3.org/TR/WGSL/), which is the WebGPU shading language.
-As WGSL is the main language for future WebGPU applications, we'll take
-this route in the updated tutorial.
+WebGPU shaders are written in [WGSL](https://www.w3.org/TR/WGSL/).
+Our shader for this application is relatively simple. We define a struct
+for our vertex data input and output format and pass through positions
+and colors from the input to the outputs.
 
 {% highlight glsl %}
 // This type definition is just to make typing a bit easier
-type float4 = vec4<f32>;
+alias float4 = vec4<f32>;
 
 struct VertexInput {
-    [[location(0)]] position: float4;
-    [[location(1)]] color: float4;
+    // Input vertex data will in attribute 0 will map to this member
+    @location(0) position: float4,
+    // Input vertex data will in attribute 1 will map to this member
+    @location(1) color: float4,
 };
 
 struct VertexOutput {
-    // This is the equivalent of gl_Position in GLSL
-    [[builtin(position)]] position: float4;
-    [[location(0)]] color: float4;
+    // The builtin position attribute is passed the transformed position
+    // of our input vertex
+    @builtin(position) position: float4,
+    // We can pass other attributes through as well
+    @location(0) color: float4,
 };
 
-[[stage(vertex)]]
+@vertex
 fn vertex_main(vert: VertexInput) -> VertexOutput {
     var out: VertexOutput;
     out.color = vert.color;
@@ -200,13 +204,13 @@ fn vertex_main(vert: VertexInput) -> VertexOutput {
     return out;
 };
 
-[[stage(fragment)]]
-fn fragment_main(in: VertexOutput) -> [[location(0)]] float4 {
+@fragment
+fn fragment_main(in: VertexOutput) -> @location(0) float4 {
     return float4(in.color);
 }
 {% endhighlight %}
 
-We can pass a string containing our WGSL code to the `createShaderModule`
+We pass a string containing our WGSL code to the `createShaderModule`
 method to compile them. We can check the compilation info of the resulting
 shader module to see if any error occured that caused the shader to fail to
 compile.
@@ -214,21 +218,18 @@ compile.
 {% highlight js %}
 // Setup shader modules
 var shaderModule = device.createShaderModule({code: shaderCode});
-// This API is only available in Chrome right now
-if (shaderModule.compilationInfo) {
-    var compilationInfo = await shaderModule.compilationInfo();
-    if (compilationInfo.messages.length > 0) {
-        var hadError = false;
-        console.log("Shader compilation log:");
-        for (var i = 0; i < compilationInfo.messages.length; ++i) {
-            var msg = compilationInfo.messages[i];
-            console.log(`${msg.lineNum}:${msg.linePos} - ${msg.message}`);
-            hadError = hadError || msg.type == "error";
-        }
-        if (hadError) {
-            console.log("Shader failed to compile");
-            return;
-        }
+var compilationInfo = await shaderModule.getCompilationInfo();
+if (compilationInfo.messages.length > 0) {
+    var hadError = false;
+    console.log("Shader compilation log:");
+    for (var i = 0; i < compilationInfo.messages.length; ++i) {
+        var msg = compilationInfo.messages[i];
+        console.log(`${msg.lineNum}:${msg.linePos} - ${msg.message}`);
+        hadError = hadError || msg.type == "error";
+    }
+    if (hadError) {
+        console.log("Shader failed to compile");
+        return;
     }
 }
 {% endhighlight %}
@@ -431,12 +432,20 @@ to the current swap chain image. As the image will change each frame
 to the current swap chain image, we don't set it just yet.
 {% highlight js %}
 var renderPassDesc = {
-    colorAttachments: [{view: undefined, loadValue: [0.3, 0.3, 0.3, 1]}],
+    colorAttachments: [{
+        // view will be set to the current render target each frame
+        view: undefined,
+        loadOp: "clear",
+        loadValue: [0.3, 0.3, 0.3, 1],
+        storeOp: "store"
+    }],
     depthStencilAttachment: {
         view: depthTexture.createView(),
-        depthLoadValue: 1.0,
+        depthLoadOp: "clear",
+        depthClearValue: 1.0,
         depthStoreOp: "store",
-        stencilLoadValue: 0,
+        stencilLoadOp: "clear",
+        stencilClearValue: 0,
         stencilStoreOp: "store"
     }
 };
@@ -477,7 +486,7 @@ var frame = function() {
     renderPass.setVertexBuffer(0, dataBuf);
     renderPass.draw(3, 1, 0, 0);
 
-    renderPass.endPass();
+    renderPass.end();
     device.queue.submit([commandEncoder.finish()]);
     requestAnimationFrame(frame);
 };
