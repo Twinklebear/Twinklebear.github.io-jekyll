@@ -25,7 +25,7 @@ If you haven't read the [first post in this series]({% post_url 2020-06-15-0-to-
 I recommend reading that first, as we'll continue directly off the code written there.
 
 **This post has been updated to reflect changes to the WebGPU API!** Please
-see the <a href="{% post_url 2021-08-30-0-to-gltf-bind-groups %}">updated post.</a>
+see the <a href="{% post_url 2023-04-11-0-to-gltf-bind-groups %}">updated post.</a>
 
 <!--more-->
 

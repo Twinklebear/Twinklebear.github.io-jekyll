@@ -26,7 +26,7 @@ parameters in the shader. In WebGPU, the association of data to parameters is ma
 In this post, we'll use Bind Groups to pass a uniform buffer containing a view
 transform to our vertex shader, allowing us to add camera controls to our triangle
 from the previous post.
-If you haven't read the [updated first post in this series]({% post_url 2021-08-29-0-to-gltf-triangle %})
+If you haven't read the [updated first post in this series]({% post_url 2023-04-11-0-to-gltf-triangle %})
 I recommend reading that first, as we'll continue directly off the code written there.
 
 <!--more-->
@@ -317,7 +317,7 @@ requestAnimationFrame(frame);
 
 <script src="/assets/gl-matrix-min.js"></script>
 <script src="/assets/webgl-util.min.js"></script>
-<script src="/assets/webgpu/triangle-bind-groups-updated-aug-30.js"></script>
+<script src="/assets/webgpu/triangle-bind-groups-updated-apr-11.js"></script>
 
 ## Wrapping Up
 
@@ -326,6 +326,6 @@ object transform matrices, material parameters, and textures, to our shaders. In
 next post, we'll take a look at the glTF Binary format to load and render our
 first real triangle mesh.
 If you run into issues getting the example to work,
-[check out the code](/assets/webgpu/triangle-bind-groups-updated-aug-30.js) for rendering the triangle in Figure 3,
+[check out the code](/assets/webgpu/triangle-bind-groups-updated-apr-11.js) for rendering the triangle in Figure 3,
 or get in touch via [Twitter](https://twitter.com/_wusher) or email.
 
