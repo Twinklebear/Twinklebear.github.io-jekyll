@@ -678,16 +678,16 @@ renders to me on Twitter [@\_wusher](https://twitter.com/_wusher)!
 
 Here's a neat one I put together using Blender's physics simulation by baking the simulation
 to keyframes before exporting. If the video doesn't play
-properly you can download it [here](http://sci.utah.edu/~will/rt/rust_logos.mp4). The Rust logo was
+properly you can download it [here](https://cdn.willusher.io/vid/rust_logos.mp4). The Rust logo was
 modeled by [Nylithius](http://blenderartists.org/forum/showthread.php?362836-Rust-language-3D-logo), many
 of the models in the scene make use of measured material data from the
 [MERL BRDF database](http://www.merl.com/brdf/). The animation was rendered with 28 nodes on *new*
 using the distributed renderer with 1024 samples per pixel and took 03:44:02 to render.
 
-<video class="img-fluid" src="http://sci.utah.edu/~will/rt/rust_logos.mp4" type="video/mp4" controls
+<video class="img-fluid" src="https://cdn.willusher.io/vid/rust_logos.mp4" type="video/mp4" controls
 	style="padding-top:16px;padding-bottom:16px;" preload="metadata" poster="https://cdn.willusher.io/img/KFRqLAo.png">
 Sorry your browser doesn't support HTML5 video, but don't worry you can download the video
-<a href="http://sci.utah.edu/~will/rt/rust_logos.mp4">here</a> and watch it locally.
+<a href="https://cdn.willusher.io/vid/rust_logos.mp4">here</a> and watch it locally.
 </video>
 
 If you'd like to try using the distributed renderer you can do so with any machines on a network, so
