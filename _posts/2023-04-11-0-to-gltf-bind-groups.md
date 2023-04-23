@@ -14,6 +14,7 @@ This tutorial is an updated version of my previous one and updates the
 code listing to match the finalizing WebGPU APIs. If you've read
 the previous version of this tutorial you can skim through the code
 listings to get up to date.
+The code for the blog series is also available [on GitHub](https://github.com/Twinklebear/webgpu-0-to-gltf).
 
 In this second post of the series we'll learn about Bind Groups,
 which let us pass buffers and textures to our shaders.

@@ -19,6 +19,7 @@ For an easy way to get started, I recommend grabbing my
 which includes the code from this tutorial. You can start by deleting the code there and
 rewriting it following this tutorial, or follow along in the code
 as you read this page.
+The code for the blog series is also available [on GitHub](https://github.com/Twinklebear/webgpu-0-to-gltf).
 
 
 WebGPU is a modern graphics API for the web, in development by the
