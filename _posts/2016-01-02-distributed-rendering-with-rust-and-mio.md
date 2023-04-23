@@ -150,28 +150,28 @@ results, I need to look into this some more.
 
 <div class="row">
 <div class="col-md-6 text-md-center">
-<img class="img-fluid" src="http://i.imgur.com/9UfVGse.png" alt="Node 0's results">
+<img class="img-fluid" src="https://cdn.willusher.io/img/9UfVGse.png" alt="Node 0's results">
 <i>Worker 0's Results</i>
 </div>
 <div class="col-md-6 text-md-center">
-<img class="img-fluid" src="http://i.imgur.com/1PrdC7N.png" alt="node 1's results">
+<img class="img-fluid" src="https://cdn.willusher.io/img/1PrdC7N.png" alt="node 1's results">
 <i>Worker 1's Results</i>
 </div>
 </div>
 
 <div class="row">
 <div class="col-md-4 text-md-center">
-<img class="img-fluid" src="http://i.imgur.com/NKXW7ap.png" alt="node 2's results">
+<img class="img-fluid" src="https://cdn.willusher.io/img/NKXW7ap.png" alt="node 2's results">
 <i>Worker 2's Results</i>
 </div>
 
 <div class="col-md-4 text-md-center">
-<img class="img-fluid" src="http://i.imgur.com/lF8jwRE.png" alt="node 3's results">
+<img class="img-fluid" src="https://cdn.willusher.io/img/lF8jwRE.png" alt="node 3's results">
 <i>Worker 3's Results</i>
 </div>
 
 <div class="col-md-4 text-md-center">
-<img class="img-fluid" src="http://i.imgur.com/Qz7yIyL.png" alt="node 4's results">
+<img class="img-fluid" src="https://cdn.willusher.io/img/Qz7yIyL.png" alt="node 4's results">
 <i>Worker 4's Results</i>
 </div>
 </div>
@@ -240,7 +240,7 @@ division for each pixel and conversion to sRGB to save the frame out as a PNG. H
 for our 400x304 Cornell box example with 256 samples per pixel that we've been following along.
 
 <div class="col-md-12 text-md-center">
-<img class="img-fluid" src="http://i.imgur.com/YEhp254.png" alt="Rendered result">
+<img class="img-fluid" src="https://cdn.willusher.io/img/YEhp254.png" alt="Rendered result">
 <i>Rendered Image</i>
 </div>
 
@@ -562,10 +562,10 @@ and intersect the Buddha but the pixels that see it directly will still have mor
 vs. those that hit it indirectly.
 
 <div class="col-md-12 text-md-center">
-<img class="img-fluid" src="http://i.imgur.com/usuLnIj.png" alt="Cornell Box">
+<img class="img-fluid" src="https://cdn.willusher.io/img/usuLnIj.png" alt="Cornell Box">
 <i>Cornell Box test scene</i>
 
-<img class="img-fluid" src="http://i.imgur.com/hOZmzlB.png" alt="Buddha Box">
+<img class="img-fluid" src="https://cdn.willusher.io/img/hOZmzlB.png" alt="Buddha Box">
 <i>Buddha Box test scene</i>
 </div>
 
@@ -685,7 +685,7 @@ of the models in the scene make use of measured material data from the
 using the distributed renderer with 1024 samples per pixel and took 03:44:02 to render.
 
 <video class="img-fluid" src="http://sci.utah.edu/~will/rt/rust_logos.mp4" type="video/mp4" controls
-	style="padding-top:16px;padding-bottom:16px;" preload="metadata" poster="http://i.imgur.com/KFRqLAo.png">
+	style="padding-top:16px;padding-bottom:16px;" preload="metadata" poster="https://cdn.willusher.io/img/KFRqLAo.png">
 Sorry your browser doesn't support HTML5 video, but don't worry you can download the video
 <a href="http://sci.utah.edu/~will/rt/rust_logos.mp4">here</a> and watch it locally.
 </video>

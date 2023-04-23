@@ -12,7 +12,7 @@ mathjax: true
 {% assign figurecount = 0 %}
 
 <figure>
-	<img class="img-fluid" src="https://i.imgur.com/YqdyKCj.png"/>
+	<img class="img-fluid" src="https://cdn.willusher.io/img/YqdyKCj.png"/>
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><i>Figure {{figurecount}}:
 	Example volume renderings, using the WebGL volume renderer described in this post.
@@ -279,7 +279,7 @@ void main(void) {
 {% endhighlight %}
 
 <figure>
-	<img class="img-fluid" width="70%" src="https://i.imgur.com/FMWE7UR.png"/>
+	<img class="img-fluid" width="70%" src="https://cdn.willusher.io/img/FMWE7UR.png"/>
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><i>Figure {{figurecount}}:
 	The volume bounding box back faces, colored by ray direction.
@@ -411,7 +411,7 @@ void main(void) {
 {% endhighlight %}
 
 <figure>
-	<img class="img-fluid" width="80%" src="https://i.imgur.com/vtZqe4m.png"/>
+	<img class="img-fluid" width="80%" src="https://cdn.willusher.io/img/vtZqe4m.png"/>
 	{% assign figurecount = figurecount | plus: 1 %}
 	<figcaption><i>Figure {{figurecount}}:
 	The final rendered result on the Bonsai, from the same
