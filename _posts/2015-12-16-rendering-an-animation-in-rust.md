@@ -49,7 +49,7 @@ cool to implement. For example by controlling the shutter speed we can reduce th
 motion appearance in our animations.
 
 <figure class="img-fluid">
-	<img class="img-fluid" src="https://cdn.willusher.io/img/Q98K76K.png" alt="Shutter Angle, wikipedia" />
+	<img class="img-fluid" src="https://cdn.willusher.io/img/Q98K76K.webp" alt="Shutter Angle, wikipedia" />
 	<figcaption><i>Shutter Angle, (<a href="https://en.wikipedia.org/wiki/Rotary_disc_shutter">Wikipedia</a>)</i>
 	</figcaption>
 </figure>
@@ -153,13 +153,13 @@ included with the library.
 <div class="row">
 <div class="col-xs-12 col-md-6">
 <figure class="img-fluid">
-	<img class="img-fluid" src="https://cdn.willusher.io/img/LL5vG3z.png" alt="Linear Interpolation" />
+	<img class="img-fluid" src="https://cdn.willusher.io/img/LL5vG3z.webp" alt="Linear Interpolation" />
 	<figcaption><i>Linear Interpolation</i></figcaption>
 </figure>
 </div>
 <div class="col-xs-12 col-md-6">
 <figure class="img-fluid">
-	<img class="img-fluid" src="https://cdn.willusher.io/img/kk5rtXK.png" alt="Cubic B-Spline Interpolation" />
+	<img class="img-fluid" src="https://cdn.willusher.io/img/kk5rtXK.webp" alt="Cubic B-Spline Interpolation" />
 	<figcaption><i>Cubic B-Spline Interpolation</i></figcaption>
 </figure>
 </div>
@@ -190,7 +190,7 @@ not as good due to compression. If your browser doesn't play the video properly 
 [download it](https://cdn.willusher.io/vid/rtc_2015_med_quality_420p.mp4) and watch it locally.
 
 <video class="img-fluid" src="https://cdn.willusher.io/vid/rtc_2015_med_quality_420p.mp4" type="video/mp4" controls
-	style="padding-top:16px;padding-bottom:16px;" preload="metadata" poster="https://cdn.willusher.io/img/ftJyrnA.jpg">
+	style="padding-top:16px;padding-bottom:16px;" preload="metadata" poster="https://cdn.willusher.io/img/ftJyrnA.webp">
 Sorry your browser doesn't support HTML5 video, but don't worry you can download the video
 <a href="https://cdn.willusher.io/vid/rtc_2015_med_quality_420p.mp4">here</a> and watch it locally.
 </video>

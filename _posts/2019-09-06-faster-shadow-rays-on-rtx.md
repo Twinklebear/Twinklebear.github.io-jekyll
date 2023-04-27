@@ -104,11 +104,11 @@ void ShadowMiss(inout OcclusionHitInfo occlusion : SV_RayPayload) {
 
 <div class="col-12 row">
     <div class="col-12 col-md-6">
-        <img class="img-fluid" src="https://cdn.willusher.io/img/izqMaBd.jpg"/>
+        <img class="img-fluid" src="https://cdn.willusher.io/img/izqMaBd.webp"/>
         <p class="text-center"><i>Sponza, 262K triangles</i></p>
     </div>
     <div class="col-12 col-md-6">
-        <img class="img-fluid" src="https://cdn.willusher.io/img/DYdbQgS.jpg"/>
+        <img class="img-fluid" src="https://cdn.willusher.io/img/DYdbQgS.webp"/>
         <p class="text-center"><i>Unshaded, primary ray + shadow only</i></p>
     </div>
 </div>

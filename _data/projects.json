@@ -4,11 +4,11 @@
         "layout": 2,
         "gh_user": "Twinklebear",
         "gh_repo": "ChameleonRT",
-        "thumb": "https://cdn.willusher.io/img/EGZPkkV.jpg",
+        "thumb": "https://cdn.willusher.io/img/EGZPkkV.webp",
         "img": [
-            "https://cdn.willusher.io/img/KA2dqKn.jpg",
-            "https://cdn.willusher.io/img/MJ8FRZ1.jpg",
-            "https://cdn.willusher.io/img/pV4OFlL.jpg"
+            "https://cdn.willusher.io/img/KA2dqKn.webp",
+            "https://cdn.willusher.io/img/MJ8FRZ1.webp",
+            "https://cdn.willusher.io/img/pV4OFlL.webp"
         ],
         "description": "ChameleonRT is an example interactive path tracer which runs on multiple
         CPU and GPU ray tracing backends: Embree, DXR, OptiX, Vulkan, and Metal. Each backend uses an
@@ -21,8 +21,8 @@
         "layout": 1,
         "gh_user": "Twinklebear",
         "gh_repo": "ispc-rs",
-        "thumb": "https://cdn.willusher.io/img/sbZCnq6.png",
-        "img": "https://cdn.willusher.io/img/ACzYqAm.png",
+        "thumb": "https://cdn.willusher.io/img/sbZCnq6.webp",
+        "img": "https://cdn.willusher.io/img/ACzYqAm.webp",
         "description": "ispc-rs is a small Rust library meant to be used as a compile time dependency
 			for Rust projects to allow them to build and link with code written in
 			[ISPC
@@ -46,13 +46,13 @@
         "layout": 6,
         "gh_user": "Twinklebear",
         "gh_repo": "tray_rust",
-        "thumb": "https://cdn.willusher.io/img/SHCFQ5C.png",
+        "thumb": "https://cdn.willusher.io/img/SHCFQ5C.webp",
         "wide_img": "https://www.youtube.com/embed/5XY8ua4ysvM",
         "img": [
-            "https://cdn.willusher.io/img/ywNdfGD.png",
-            "https://cdn.willusher.io/img/yiH8xsI.png",
-            "https://cdn.willusher.io/img/iOU7Xys.png",
-            "https://cdn.willusher.io/img/Dzg3Fxr.png"
+            "https://cdn.willusher.io/img/ywNdfGD.webp",
+            "https://cdn.willusher.io/img/yiH8xsI.webp",
+            "https://cdn.willusher.io/img/iOU7Xys.webp",
+            "https://cdn.willusher.io/img/Dzg3Fxr.webp"
         ],
         "description": "tray_rust is a toy physically based ray tracer built off of the techniques
 			discussed in [Physically Based Rendering
@@ -84,11 +84,11 @@
         "layout": 2,
         "gh_user": "Twinklebear",
         "gh_repo": "webgpu-volume-pathtracer",
-        "thumb": "https://cdn.willusher.io/img/wgpu-path-tracer-bonsai-3x2.png",
+        "thumb": "https://cdn.willusher.io/img/wgpu-path-tracer-bonsai-3x2.webp",
         "img": [
-            "https://cdn.willusher.io/img/wgpu-path-tracer-bonsai.png",
-            "https://cdn.willusher.io/img/wgpu-path-tracer-foot.png",
-            "https://cdn.willusher.io/img/wgpu-path-tracer-teapot.png"
+            "https://cdn.willusher.io/img/wgpu-path-tracer-bonsai.webp",
+            "https://cdn.willusher.io/img/wgpu-path-tracer-foot.webp",
+            "https://cdn.willusher.io/img/wgpu-path-tracer-teapot.webp"
         ],
         "description": "A volume path tracer implemented in WebGPU. The renderer uses
             Woodcock sampling to traverse and
@@ -102,11 +102,11 @@
         "layout": 2,
         "gh_user": "Twinklebear",
         "gh_repo": "webgpu-gltf",
-        "thumb": "https://cdn.willusher.io/img/webgpu-gltf-rungholt-thumb.png",
+        "thumb": "https://cdn.willusher.io/img/webgpu-gltf-rungholt-thumb.webp",
         "img": [
-            "https://cdn.willusher.io/img/webgpu-gltf-helmet.png",
-            "https://cdn.willusher.io/img/webgpu-gltf-sponza.png",
-            "https://cdn.willusher.io/img/webgpu-gltf-rungholt.png"
+            "https://cdn.willusher.io/img/webgpu-gltf-helmet.webp",
+            "https://cdn.willusher.io/img/webgpu-gltf-sponza.webp",
+            "https://cdn.willusher.io/img/webgpu-gltf-rungholt.webp"
         ],
         "description": "A glTF WebGPU renderer and loader written from scratch.
             Supports uploading glTF binary files to render them with a basic
@@ -121,11 +121,11 @@
         "layout": 2,
         "gh_user": "Twinklebear",
         "gh_repo": "tray",
-        "thumb": "https://cdn.willusher.io/img/rF58b9c.png",
+        "thumb": "https://cdn.willusher.io/img/rF58b9c.webp",
         "img": [
-            "https://cdn.willusher.io/img/MALPsD8.png",
-            "https://cdn.willusher.io/img/Ns3ZYsE.png",
-            "https://cdn.willusher.io/img/ApHMuex.png"
+            "https://cdn.willusher.io/img/MALPsD8.webp",
+            "https://cdn.willusher.io/img/Ns3ZYsE.webp",
+            "https://cdn.willusher.io/img/ApHMuex.webp"
         ],
         "description": "tray is a toy physically based ray tracer built off of the techniques discussed in[Physically Based Rendering
         ](http://pbrt.org/). It currently has support for path tracing,
@@ -142,10 +142,10 @@
         "gh_user": "Twinklebear",
         "gh_repo": "webgpu-bcmc",
         "img": [
-            "https://cdn.willusher.io/img/bcmc-plasma.png",
-            "https://cdn.willusher.io/img/bcmc-chameleon.png",
-            "https://cdn.willusher.io/img/bcmc-kingsnake.png",
-            "https://cdn.willusher.io/img/bcmc-miranda.png"
+            "https://cdn.willusher.io/img/bcmc-plasma.webp",
+            "https://cdn.willusher.io/img/bcmc-chameleon.webp",
+            "https://cdn.willusher.io/img/bcmc-kingsnake.webp",
+            "https://cdn.willusher.io/img/bcmc-miranda.webp"
         ],
         "description": "WebGPU Block-Compressed Marching Cubes is an algorithm for interactive isosurface extraction
         on massive compressed data sets that runs entirely on the GPU in the browser using WebGPU. The technique
@@ -161,8 +161,8 @@
         "layout": 4,
         "gh_user": "Twinklebear",
         "gh_repo": "topo-vol",
-        "thumb": "https://cdn.willusher.io/img/Lb1UAZM.png",
-        "img": "https://cdn.willusher.io/img/0geW8ma.png",
+        "thumb": "https://cdn.willusher.io/img/Lb1UAZM.webp",
+        "img": "https://cdn.willusher.io/img/0geW8ma.webp",
         "description": "topo-vol is a topology guided volume exploration and analysis tool, written for
 			the final project in [Bei Wang's Computational Topology Course
         ](http://www.sci.utah.edu/~beiwang/teaching/cs6170-spring-2017/schedule.html).
@@ -185,11 +185,11 @@
         "webtoy": 1,
         "toy_url": "/webgl-volume-raycaster/",
         "img": [
-            "https://cdn.willusher.io/img/yLa27hG.png",
-            "https://cdn.willusher.io/img/FOUKtV1.png",
-            "https://cdn.willusher.io/img/Vv98vJZ.png"
+            "https://cdn.willusher.io/img/yLa27hG.webp",
+            "https://cdn.willusher.io/img/FOUKtV1.webp",
+            "https://cdn.willusher.io/img/Vv98vJZ.webp"
         ],
-        "thumb": "https://cdn.willusher.io/img/g5a0I5Y.jpg",
+        "thumb": "https://cdn.willusher.io/img/g5a0I5Y.webp",
         "description": "A scientific visualization style volume raycaster written
 			using WebGL2 and Javascript. The renderer uses an arcball camera which supports
 			mouse or touch input, and dynamically adjusts the sampling rate
@@ -207,8 +207,8 @@
         "layout": 1,
         "gh_user": "Twinklebear",
         "gh_repo": "micro-packet",
-        "thumb": "https://cdn.willusher.io/img/Z4qlp42.png",
-        "img": "https://cdn.willusher.io/img/WcM6Rcl.png",
+        "thumb": "https://cdn.willusher.io/img/Z4qlp42.webp",
+        "img": "https://cdn.willusher.io/img/WcM6Rcl.webp",
         "description": "μPacket is an extremely simple packet based ray tracer that uses the AVX/AVX2 instruction
 			set to trace eight rays at once through the scene. Currently it only supports spheres and planes
 			with Lambertian BRDFs illuminated by a single point light. Illumination is computed with Whitted ray
@@ -228,7 +228,7 @@
         "layout": 1,
         "gh_user": "Twinklebear",
         "gh_repo": "dxr-ao-bake",
-        "img": "https://cdn.willusher.io/img/O3BSRJ9.png",
+        "img": "https://cdn.willusher.io/img/O3BSRJ9.webp",
         "description": "
         A demo of ambient occlusion map baking using DXR inline ray tracing.
         Uses [xatlas
@@ -246,9 +246,9 @@
         "webtoy": 1,
         "toy_url": "/webgl-ewa-splatter/",
         "img": [
-            "https://cdn.willusher.io/img/yqCfPZz.png",
-            "https://cdn.willusher.io/img/c6Cj6xa.png",
-            "https://cdn.willusher.io/img/UBjFKRa.png"
+            "https://cdn.willusher.io/img/yqCfPZz.webp",
+            "https://cdn.willusher.io/img/c6Cj6xa.webp",
+            "https://cdn.willusher.io/img/UBjFKRa.webp"
         ],
         "description": "
 		An elliptical weighted average (EWA) surface splatter renderer, implemented in WebGL,
@@ -277,7 +277,7 @@
         "layout": 1,
         "gh_user": "Twinklebear",
         "gh_repo": "webgpu-isosurface-raycaster",
-        "img": "https://cdn.willusher.io/img/wgpu-implicit-iso-skull.jpg",
+        "img": "https://cdn.willusher.io/img/wgpu-implicit-iso-skull.webp",
         "description": "An implicit isosurface raycaster using WebGPU.
             Ray-isosurface intersections are computed using the technique described by Marmitt et al.
         'Fast and Accurate Ray-Voxel Intersection Techniques for Iso-Surface Ray Tracing', 2004.
@@ -288,7 +288,7 @@
         "layout": 1,
         "gh_user": "Twinklebear",
         "gh_repo": "webgl-volume-animation",
-        "img": "https://cdn.willusher.io/img/webgpu-vol-animation-frame.jpg",
+        "img": "https://cdn.willusher.io/img/webgpu-vol-animation-frame.webp",
         "description": "A WebGL tool for playing back time-series volumetric data captures in the browser.
             Scientists can upload a series of Zipped WebP image stacks which are uploaded to the GPU
             and volume rendered. The set of image stacks is played back as an animation to view the
@@ -305,9 +305,9 @@
         "webtoy": 1,
         "toy_url": "/webgl-marching-cubes/",
         "img": [
-            "https://cdn.willusher.io/img/JW9UZYP.png",
-            "https://cdn.willusher.io/img/aRJzV7x.png",
-            "https://cdn.willusher.io/img/kW5sr9a.png"
+            "https://cdn.willusher.io/img/JW9UZYP.webp",
+            "https://cdn.willusher.io/img/aRJzV7x.webp",
+            "https://cdn.willusher.io/img/kW5sr9a.webp"
         ],
         "description": "A WebGL + WebASM implementation of the classic [Marching Cubes](https://en.wikipedia.org/wiki/Marching_cubes)
         algorithm for extracting [isosurfaces
@@ -329,9 +329,9 @@
         "webtoy": 1,
         "toy_url": "/webgpu-experiments/",
         "img": [
-            "https://cdn.willusher.io/img/GQBJC92.png",
-            "https://cdn.willusher.io/img/j21k9Z9.png",
-            "https://cdn.willusher.io/img/3XMumHL.png"
+            "https://cdn.willusher.io/img/GQBJC92.webp",
+            "https://cdn.willusher.io/img/j21k9Z9.webp",
+            "https://cdn.willusher.io/img/3XMumHL.webp"
         ],
         "description": "
         A series of examples written while learning about [WebGPU
@@ -360,9 +360,9 @@
         "webtoy": 1,
         "toy_url": "/webgl-neuron/",
         "img": [
-            "https://cdn.willusher.io/img/9vVRCLE.png",
-            "https://cdn.willusher.io/img/lwlbLCw.png",
-            "https://cdn.willusher.io/img/bXMjno0.png"
+            "https://cdn.willusher.io/img/9vVRCLE.webp",
+            "https://cdn.willusher.io/img/lwlbLCw.webp",
+            "https://cdn.willusher.io/img/bXMjno0.webp"
         ],
         "description": "A neuron visualization system using WebGL2. The
 		renderer uses my WebGL2 volume renderer to display the RAW volume or imported TIFF
@@ -385,7 +385,7 @@
         "layout": 1,
         "gh_user": "Twinklebear",
         "gh_repo": "Charm-experiments",
-        "img": "https://cdn.willusher.io/img/V47bIPs.png",
+        "img": "https://cdn.willusher.io/img/V47bIPs.webp",
         "description": "A set of different test applications to learn and try
 			out [Charm++
         ](http://charmplusplus.org/) for distributed rendering applications. The image
@@ -400,7 +400,7 @@
         "layout": 1,
         "gh_user": "Twinklebear",
         "gh_repo": "bspline",
-        "img": "https://cdn.willusher.io/img/JvVlYKf.png",
+        "img": "https://cdn.willusher.io/img/JvVlYKf.webp",
         "description": "A Rust library for computing B-spline interpolating curves on generic control points.
 			bspline can be used to evaluate B-splines of varying orders on any type that can be linearly
 			interpolated, ranging from floats, positions, RGB colors to transformation matrices and so on.
@@ -413,7 +413,7 @@
         "layout": 4,
         "gh_user": "Twinklebear",
         "gh_repo": "spline-viewer",
-        "img": "https://cdn.willusher.io/img/EzAQZyM.png",
+        "img": "https://cdn.willusher.io/img/EzAQZyM.webp",
         "description": "A viewer for B-spline curves and surfaces, initially written for a course on
 			computer aided geometric design. You can edit and create 2D B-splines
 			and tweak some properties of loaded 3D curves and surfaces. Useful for learning
@@ -424,7 +424,7 @@
         "layout": 1,
         "gh_user": "Twinklebear",
         "gh_repo": "tobj",
-        "img": "https://cdn.willusher.io/img/wImyNG4.png",
+        "img": "https://cdn.willusher.io/img/wImyNG4.webp",
         "description": "tobj is a tiny OBJ loader in Rust that draws inspiration for its API and design from
 			Syoyo's excellent library,
         [tinyobjloader
@@ -445,8 +445,8 @@
         "gh_user": "Twinklebear",
         "gh_repo": "ssao",
         "img": [
-            "https://cdn.willusher.io/img/byM8iNh.png",
-            "https://cdn.willusher.io/img/v7wWg9O.png"
+            "https://cdn.willusher.io/img/byM8iNh.webp",
+            "https://cdn.willusher.io/img/v7wWg9O.webp"
         ],
         "description": "This is sort of an implementation of[Scalable Ambient Obscurance by McGuire et al.
         ](http://graphics.cs.williams.edu/papers/SAOHPG12/)
