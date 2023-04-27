@@ -465,7 +465,7 @@ The executable and library modules are built and the executable run with `cargo 
 While the resulting image isn't very impressive, we're well on our way to writing a flexible
 physically based ray tracer.
 
-<img src="https://cdn.willusher.io/img/fO5GVbt.png" class="img-fluid">
+<img src="https://cdn.willusher.io/img/fO5GVbt.webp" class="img-fluid">
 
 Final Thoughts
 ---
