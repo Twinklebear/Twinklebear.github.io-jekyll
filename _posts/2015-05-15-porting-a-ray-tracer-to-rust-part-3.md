@@ -342,7 +342,7 @@ Render times are formatted as hh:mm:ss along with the total time in milliseconds
 </div>
 <div class="col-lg-12 col-md-12 col-xs-12" style="text-align:center">
 <a href="https://cdn.willusher.io/img/fUEv6Au.webp">
-<img class="img-fluid" src="https://cdn.willusher.io/fUEv6Au.webp">
+<img class="img-fluid" src="https://cdn.willusher.io/img/fUEv6Au.webp">
 </a>
 <p>800x600, 1024 samples, smallpt scene with specularly reflective and transparent spheres. Render time: 00:03:15.86 (195862ms)</p>
 </div>
