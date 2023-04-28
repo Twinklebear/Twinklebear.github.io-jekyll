@@ -185,28 +185,28 @@ The core scenes in our OBS configuration are:
 <div class="col-12 row mb-2">
 <div class="col-6 mb-2 text-center">
 	<img class="img-fluid"
-		src="https://cdn.willusher.io/img/yXFNK18.png"/>
+		src="https://cdn.willusher.io/img/yXFNK18.webp"/>
     <b>(a)</b> <i>Session Start</i>
 </div>
 <div class="col-6 mb-2 text-center">
 	<img class="img-fluid"
-		src="https://cdn.willusher.io/img/I0eBuMM.png"/>
+		src="https://cdn.willusher.io/img/I0eBuMM.webp"/>
     <b>(b)</b> <i>Session Start w/ Chair Intro</i>
 </div>
 
 <div class="col-6 mb-2 text-center">
 	<img class="img-fluid"
-		src="https://cdn.willusher.io/img/4PnWAO1.png"/>
+		src="https://cdn.willusher.io/img/4PnWAO1.webp"/>
     <b>(c)</b> <i>Zoom Q&A</i>
 </div>
 <div class="col-6 mb-2 text-center">
 	<img class="img-fluid"
-		src="https://cdn.willusher.io/img/BYQ54sd.png"/>
+		src="https://cdn.willusher.io/img/BYQ54sd.webp"/>
     <b>(d)</b> <i>Zoom Direct/Panel</i>
 </div>
 <div class="col-6 offset-3 mb-2 text-center">
 	<img class="img-fluid"
-		src="https://cdn.willusher.io/img/P60XBKm.png"/>
+		src="https://cdn.willusher.io/img/P60XBKm.webp"/>
     <b>(e)</b> <i>Zoom Screenshare</i>
 </div>
 
@@ -574,7 +574,7 @@ for each session is built in `Session.discord_embed_dict` in
 and posted in the corresponding channel in `schedule_day.py`.
 
 <div class="col-8 offset-2 mb-2 text-center">
-	<img class="img-fluid" src="https://cdn.willusher.io/img/UiCgj3C.png"/>
+	<img class="img-fluid" src="https://cdn.willusher.io/img/UiCgj3C.webp"/>
 </div>
 
 ## 3.5. Sending Emails with Amazon SES
@@ -901,7 +901,7 @@ The rest of the week had fewer parallel tracks and/or sessions, and resulted in 
 Our API use during the week is shown below.
 
 <div class="col-12">
-<img class="img-fluid" src="https://cdn.willusher.io/img/6cvLSz2.png"/>
+<img class="img-fluid" src="https://cdn.willusher.io/img/6cvLSz2.webp"/>
 {% assign figurecount = figurecount | plus: 1 %}
 <b>Figure {{figurecount}}:</b>
 <i>Our YouTube API usage during the conference. Sunday is our largest day, with 8 parallel tracks
@@ -980,7 +980,7 @@ async def update_viewer_stats():
 {% endhighlight %}
 
 <div class="col-12 text-center">
-<img class="img-fluid" src="https://cdn.willusher.io/img/jEct3fA.png"/>
+<img class="img-fluid" src="https://cdn.willusher.io/img/jEct3fA.webp"/>
 {% assign figurecount = figurecount | plus: 1 %}
 <b>Figure {{figurecount}}:</b>
 <i>An example of the plot posted by the view count tracking bot.</i>

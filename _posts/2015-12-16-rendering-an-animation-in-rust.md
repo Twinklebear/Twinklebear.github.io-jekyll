@@ -185,15 +185,9 @@ while working on the animation which took some time as well, but bug fixing is t
 per second we need to render 600 individual frames. Each frame is saved out as a separate png, to produce
 the animation I used ffmpeg to stitch them together into a video.
 
-Here's the resulting video. If you'd prefer to watch on YouTube I've [uploaded it there](https://youtu.be/sweEpfRyDlE) as well but the quality is
-not as good due to compression. If your browser doesn't play the video properly you can
-[download it](https://cdn.willusher.io/vid/rtc_2015_med_quality_420p.mp4) and watch it locally.
-
-<video class="img-fluid" src="https://cdn.willusher.io/vid/rtc_2015_med_quality_420p.mp4" type="video/mp4" controls
-	style="padding-top:16px;padding-bottom:16px;" preload="metadata" poster="https://cdn.willusher.io/img/ftJyrnA.webp">
-Sorry your browser doesn't support HTML5 video, but don't worry you can download the video
-<a href="https://cdn.willusher.io/vid/rtc_2015_med_quality_420p.mp4">here</a> and watch it locally.
-</video>
+<div class="embed-responsive embed-responsive-16by9">
+<iframe class="embed-responsive-item" src="https://www.youtube-nocookie.com/embed/sweEpfRyDlE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
 
 The animation contains quite a few different models:
 
