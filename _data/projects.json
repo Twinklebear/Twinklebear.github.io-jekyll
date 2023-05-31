@@ -94,8 +94,7 @@
             Woodcock sampling to traverse and
             sample the volume and scientific visualization-style coloring to provide
             interactive physically-based visualization of 3D grid volumes. Try it out
-            [online](https://www.willusher.io/webgpu-volume-pathtracer/)!
-            May require Chrome Canary."
+            [online](https://www.willusher.io/webgpu-volume-pathtracer/)!"
     },
     {
         "title": "WebGPU glTF Renderer",
@@ -113,8 +112,7 @@
             material color model.
             GLTF primitives are rendered as WebGPU render bundles, with shaders
             generated for materials/attributes and cached using a shader caching
-            system. Try it out [online](https://www.willusher.io/webgpu-gltf/)!
-            May require Chrome Canary."
+            system. Try it out [online](https://www.willusher.io/webgpu-gltf/)!"
     },
     {
         "title": "tray",
@@ -154,7 +152,24 @@
         This enables interactive visualization of large volumes entirely in the browser.
         This work was published at LDAV in 2020, you can learn more [in the paper](/publications/teraweb),
         [get the code on Github](https://github.com/Twinklebear/webgpu-bcmc),
-        or try it out [online](https://www.willusher.io/webgpu-bcmc/webgpu_bcmc.html)! May require Chrome Canary."
+        or try it out [online](https://www.willusher.io/webgpu-bcmc/webgpu_bcmc.html)!"
+    },
+    {
+        "title": "WebGPU Marching Cubes",
+        "layout": 2,
+        "gh_user": "Twinklebear",
+        "gh_repo": "webgpu-marching-cubes",
+        "img": [
+            "https://cdn.willusher.io/img/webgpu-marching-cubes-bonsai.webp",
+            "https://cdn.willusher.io/img/webgpu-marching-cubes-foot.webp",
+            "https://cdn.willusher.io/img/webgpu-marching-cubes-skull.webp"
+        ],
+        "description": "A GPU parallel implementation of the classic [Marching Cubes](https://en.wikipedia.org/wiki/Marching_cubes)
+        algorithm using WebGPU. Work is parallelized over the dual grid to find active voxels,
+        active voxel IDs are compacted down via exclusive scans and compactions,
+        vertices are output to a single buffer for rendering by computing vertex offsets via
+        an exclusive scan and then writing vertices to the offsets for each voxel in parallel.
+        Try it out [online](https://www.willusher.io/webgpu-marching-cubes/)!"
     },
     {
         "title": "topo-vol",
@@ -281,7 +296,7 @@
         "description": "An implicit isosurface raycaster using WebGPU.
             Ray-isosurface intersections are computed using the technique described by Marmitt et al.
         'Fast and Accurate Ray-Voxel Intersection Techniques for Iso-Surface Ray Tracing', 2004.
-        Try it out [online](https://www.willusher.io/webgpu-isosurface-raycaster/#Skull)! May require Chrome Canary."
+        Try it out [online](https://www.willusher.io/webgpu-isosurface-raycaster/#Skull)!"
     },
     {
         "title": "WebGPU Volume Animation Player",
