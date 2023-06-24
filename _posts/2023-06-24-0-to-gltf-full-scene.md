@@ -498,7 +498,10 @@ That’s it! Now we can correctly render the 2CylinderEngine glTF scene, properl
 
 Feel free to ask any questions or post comments on the [Github discussion board for this post](https://github.com/Twinklebear/webgpu-0-to-gltf/discussions/3).
 
-Now that we’re rendering entire glTF scenes we find that we’re creating a lot of redundant render pipelines and repeatedly binding them. In the next post, we’ll look at how we can optimize rendering by re-using pipelines and batching rendering commands into render bundles to reduce repeated call overhead. See you next time!
+Now that we’re rendering entire glTF scenes we find that we’re creating a lot of redundant render pipelines and repeatedly binding them.
+In the next post, we’ll look at how we can optimize rendering by re-using pipelines and batching rendering commands into render bundles to reduce repeated call overhead.
+I also highly recommend checking out [Brandon Jones's write up on efficient rendering of glTF in WebGPU](https://toji.github.io/webgpu-gltf-case-study/)!
+See you next time!
 
 
 <div class="embed-responsive embed-responsive-4by3">
