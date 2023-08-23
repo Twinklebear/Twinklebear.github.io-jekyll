@@ -1,5 +1,14 @@
 [
     {
+        "date": "2023-08-22",
+        "text": "The pre-print of our paper on speculative progressive isosurface raycasting
+            in the browser using WebGPU is now [*online*](/publications/wgpu-prog-iso)!"
+    },
+    {
+        "date": "2022-05-09",
+        "text": "Landon presented our paper on [*GraphWaGu*](/publications/graphwagu) at EGPGV!"
+    },
+    {
         "date": "2021-10-20",
         "text": "I served on the IEEE VIS program committee, and again as Tech Chair."
     },
