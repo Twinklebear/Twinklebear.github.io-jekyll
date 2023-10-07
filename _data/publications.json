@@ -7,7 +7,7 @@
 		"thumb": "https://cdn.willusher.io/img/wgpu-prog-iso-thumb.webp",
         "teaser": "https://cdn.willusher.io/img/wgpu-prog-iso-teaser.webp",
 		"year": 2023,
-		"exact_date": "2023-10-2 00:00:00 -0600",
+		"exact_date": "2023-10-23 00:00:00 -0600",
 		"short_title": "wgpu-prog-iso",
         "selected": true,
 		"bibtex": "@inproceedings{usher_speculative_2023,\n
@@ -32,6 +32,49 @@
                         "title": "Live demo!",
                         "link": "https://www.willusher.io/webgpu-prog-iso/",
                         "icon": "fas fa-flask"
+                    }
+				]
+			}
+		]
+	},
+	{
+		"title": "Ray Tracing Spherical Harmonics Glyphs",
+		"authors": "Christoph Peters, Tark Patel, Will Usher, and Chris R. Johnson",
+		"venue": "International Symposium on Vision, Modeling and Visualization (VMV)",
+		"paper_pdf": "https://drive.google.com/file/d/1MVL-2Qk6UIGLXoCe5GRbPUN974mqgOrf/view?usp=sharing",
+		"thumb": "https://cdn.willusher.io/img/peters-2023-glyphs-thumb.webp",
+        "teaser": "https://cdn.willusher.io/img/peters-2023-glyphs-teaser.webp",
+		"year": 2023,
+		"exact_date": "2023-10-6 00:00:00 -0600",
+		"short_title": "rt-sph-glyphs",
+        "selected": true,
+        "award": "Honorable Mention",
+		"bibtex": "@inproceedings{peters_rtglyphs_23,\n
+			booktitle = {International Symposium on Vision, Modeling, and Visualization (VMV)},\n
+			title = {{Ray} {Tracing} {Spherical} {Harmonics} {Glyphs}},\n
+			author = {Peters, Christoph and Patel, Tark and Usher, Will and Johnson, Chris R.},\n
+			year = {2023},\n
+		}",
+		"abstract": "Spherical harmonics glyphs are an established way to visualize high angular resolution diffusion imaging data. Starting from a unit sphere, each point on the surface is scaled according to the value of a linear combination of spherical harmonics basis functions. The resulting glyph visualizes an orientation distribution function. We present an efficient method to render these glyphs using ray tracing. Our method constructs a polynomial whose roots correspond to ray-glyph intersections. This polynomial has degree 2k+2 for spherical harmonics bands 0,2,...,k. We then find all intersections in an efficient and numerically stable fashion through polynomial root finding. Our formulation also gives rise to a simple formula for normal vectors of the glyph. Additionally, we compute a nearly exact axis-aligned bounding box to make ray tracing of these glyphs even more efficient. Since our method finds all intersections for arbitrary rays, it lets us perform sophisticated shading and uncertainty visualization. Compared to prior work, it is faster, more flexible and more accurate.",
+		"teaser_caption": "Left: We render spherical harmonics glyphs using an efficient and accurate method based on polynomial root finding. A second glyph visualizes uncertainty and we trace secondary rays to render soft shadows. Right: Our method renders large HARDI datasets in real time on a single GPU.",
+		"downloads": [
+			{
+				"title": "Downloads and Links",
+				"list": [
+					{
+						"title": "Code",
+						"link": "https://momentsingraphics.de/Media/VMV2023/peters2023-ray_tracing_spherical_harmonics_glyphs_code.zip",
+						"icon": "far fa-file-archive"
+					},
+                    {
+                        "title": "Live demo on Shadertoy!",
+                        "link": "https://www.shadertoy.com/view/dlGSDV",
+                        "icon": "fas fa-flask"
+                    },
+                    {
+                        "title": "Christoph's recorded presentation",
+                        "link": "https://momentsingraphics.de/Media/VMV2023/peters2023-ray_tracing_spherical_harmonics_glyphs_presentation.mp4",
+                        "icon": "fas fa-video"
                     }
 				]
 			}

@@ -1,5 +1,10 @@
 [
     {
+        "date": "2023-10-03",
+        "text": "Our paper on [ray tracing spherical harmonics glyphs](/publications/rt-sph-glyphs) received an
+            honorable mention at VMV 2023!"
+    },
+    {
         "date": "2023-08-22",
         "text": "The pre-print of our paper on speculative progressive isosurface raycasting
             in the browser using WebGPU is now [*online*](/publications/wgpu-prog-iso)!"
