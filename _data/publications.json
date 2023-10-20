@@ -10,6 +10,7 @@
 		"exact_date": "2023-10-23 00:00:00 -0600",
 		"short_title": "wgpu-prog-iso",
         "selected": true,
+        "award": "Best Paper",
 		"bibtex": "@inproceedings{usher_speculative_2023,\n
 			booktitle = {13th IEEE Symposium on Large Data Analysis and Visualization},\n
 			title = {{Speculative} {Progressive} {Raycasting} for {Memory} {Constrained} {Isosurface} {Visualization} of {Massive} {Volumes}},\n
